@@ -1,0 +1,15 @@
+.DS_Store
+**/.DS_Store
+
+# Local preview / packaged exports
+adforge-site.zip
+screenshots/
+
+# Other local experiments in this workspace
+adforge-line-bot/
+ecommerce-image-generator/
+
+# Secrets and environment files
+.env
+*.env
+*.local

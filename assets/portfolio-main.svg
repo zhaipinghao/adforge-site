@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">極簡白底賣場圖</title>
+  <desc id="desc">高級黑色瓶身商品搭配乾淨白底與電光藍細節的電商主圖版型。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e8eef7"/>
+      <stop offset="0.52" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#c8f4ff"/>
+    </linearGradient>
+    <linearGradient id="bottle" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#020713"/>
+      <stop offset="0.14" stop-color="#dbe8f8"/>
+      <stop offset="0.3" stop-color="#35455f"/>
+      <stop offset="0.62" stop-color="#142033"/>
+      <stop offset="1" stop-color="#030814"/>
+    </linearGradient>
+    <linearGradient id="whiteBottle" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.58" stop-color="#e9f2fb"/>
+      <stop offset="1" stop-color="#cfdce9"/>
+    </linearGradient>
+    <filter id="shadow" x="-40%" y="-30%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="34" stdDeviation="28" flood-color="#0b1422" flood-opacity="0.22"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="820" fill="url(#bg)"/>
+  <circle cx="908" cy="182" r="220" fill="#19b8ff" opacity="0.1" filter="url(#soft)"/>
+  <circle cx="184" cy="642" r="230" fill="#19b8ff" opacity="0.09" filter="url(#soft)"/>
+  <rect x="58" y="58" width="144" height="58" rx="14" fill="#ffffff"/>
+  <text x="130" y="96" text-anchor="middle" font-family="'Noto Sans TC', Arial, sans-serif" font-size="25" font-weight="800" fill="#06111d">主圖</text>
+  <g filter="url(#shadow)">
+    <ellipse cx="518" cy="640" rx="180" ry="36" fill="#07101d" opacity="0.12"/>
+    <rect x="402" y="230" width="174" height="382" rx="52" fill="url(#bottle)"/>
+    <rect x="452" y="146" width="74" height="108" rx="18" fill="#1c2a3f"/>
+    <rect x="437" y="424" width="104" height="98" rx="14" fill="#ffffff" opacity="0.18" stroke="#ffffff" stroke-opacity="0.66" stroke-width="2"/>
+    <rect x="590" y="318" width="156" height="288" rx="48" fill="url(#whiteBottle)"/>
+    <rect x="633" y="250" width="70" height="82" rx="18" fill="#edf5fc"/>
+    <rect x="620" y="448" width="94" height="74" rx="14" fill="#ffffff" opacity="0.72"/>
+  </g>
+  <rect x="58" y="624" width="1084" height="116" rx="18" fill="#ffffff" opacity="0.88"/>
+  <text x="600" y="680" text-anchor="middle" font-family="'Noto Sans TC', Arial, sans-serif" font-size="38" font-weight="900" fill="#06111d">極簡白底賣場圖</text>
+  <text x="600" y="716" text-anchor="middle" font-family="'Noto Sans TC', Arial, sans-serif" font-size="22" font-weight="700" fill="#526176">清楚呈現商品主體與上架視覺</text>
+</svg>
