@@ -3,6 +3,7 @@
 
 # Local preview / packaged exports
 adforge-site.zip
+adforge-netlify/
 screenshots/
 
 # Other local experiments in this workspace

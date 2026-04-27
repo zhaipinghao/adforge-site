@@ -238,19 +238,21 @@ video {
 
 .ambient-video {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: -18px;
+  width: calc(100% + 36px);
+  height: calc(100% + 36px);
   object-fit: cover;
-  opacity: 0.04;
-  filter: grayscale(1) contrast(0.9);
+  opacity: 0.3;
+  filter: blur(9px) saturate(1.08) contrast(0.94) brightness(1.06);
   mix-blend-mode: multiply;
 }
 
 .video-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78) 54%, rgba(255, 255, 255, 0.92));
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.91), rgba(255, 255, 255, 0.58) 54%, rgba(255, 255, 255, 0.84)),
+    radial-gradient(ellipse 72% 62% at 74% 22%, rgba(37, 99, 235, 0.11), transparent 68%);
 }
 
 .hero-layout,
@@ -2304,13 +2306,15 @@ body::before {
 }
 
 .ambient-video {
-  opacity: 0.04;
-  filter: grayscale(1) contrast(0.9);
+  opacity: 0.3;
+  filter: blur(9px) saturate(1.08) contrast(0.94) brightness(1.06);
   mix-blend-mode: multiply;
 }
 
 .video-shade {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78) 54%, rgba(255, 255, 255, 0.94));
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.91), rgba(255, 255, 255, 0.58) 54%, rgba(255, 255, 255, 0.84)),
+    radial-gradient(ellipse 72% 62% at 74% 22%, rgba(37, 99, 235, 0.11), transparent 68%);
 }
 
 .hero-copy .kicker,
