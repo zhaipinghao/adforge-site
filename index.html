@@ -45,9 +45,9 @@
       </nav>
 
       <div class="social-links" aria-label="社群連結">
-        <a href="#contact">Email</a>
-        <a href="#contact">Instagram</a>
-        <a href="#contact">LINE</a>
+        <a href="mailto:hello@adforge.ai">Email</a>
+        <a href="https://www.instagram.com/adforge.ai/" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://line.me/R/ti/p/@adforge" target="_blank" rel="noreferrer">LINE</a>
       </div>
     </header>
 
@@ -93,7 +93,7 @@
             </div>
 
             <div class="hero-actions" aria-label="主要操作">
-              <a class="button button-primary" href="#contact">免費試圖申請</a>
+              <a class="button button-primary" href="#inquiry">免費諮詢 / 試圖申請</a>
               <a class="button button-secondary" href="#showcase">查看成品範例</a>
             </div>
 
@@ -301,7 +301,7 @@
               <div class="showcase-media">
                 <img class="showcase-output" src="assets/showcase/wet-wipes-grid.jpg" alt="濕紙巾九張商品圖案例" />
                 <div class="showcase-before">
-                  <span>客戶提供原圖</span>
+                  <span>客戶提供的原始照片</span>
                   <img class="showcase-source" src="assets/showcase/wet-wipes-source.jpg" alt="濕紙巾原始照片" />
                 </div>
               </div>
@@ -314,7 +314,7 @@
               <div class="showcase-media">
                 <img class="showcase-output" src="assets/showcase/mom-bag-grid.jpg" alt="媽媽包九張商品圖案例" />
                 <div class="showcase-before">
-                  <span>客戶提供原圖</span>
+                  <span>客戶提供的原始照片</span>
                   <img class="showcase-source" src="assets/showcase/mom-bag-source.jpg" alt="媽媽包原始照片" />
                 </div>
               </div>
@@ -327,7 +327,7 @@
               <div class="showcase-media">
                 <img class="showcase-output" src="assets/showcase/herbal-grid.jpg" alt="中藥商品九張圖案例" />
                 <div class="showcase-before">
-                  <span>客戶提供原圖</span>
+                  <span>客戶提供的原始照片</span>
                   <img class="showcase-source" src="assets/showcase/herbal-source.jpg" alt="中藥原始照片" />
                 </div>
               </div>
@@ -340,7 +340,7 @@
               <div class="showcase-media">
                 <img class="showcase-output" src="assets/showcase/dinosaur-grid.jpg" alt="恐龍夜燈九張商品圖案例" />
                 <div class="showcase-before">
-                  <span>客戶提供原圖</span>
+                  <span>客戶提供的原始照片</span>
                   <img class="showcase-source" src="assets/showcase/dinosaur-source.jpg" alt="恐龍夜燈原始照片" />
                 </div>
               </div>
@@ -353,7 +353,7 @@
               <div class="showcase-media">
                 <img class="showcase-output" src="assets/showcase/dish-dryer-grid.jpg" alt="烘碗機九張商品圖案例" />
                 <div class="showcase-before">
-                  <span>客戶提供原圖</span>
+                  <span>客戶提供的原始照片</span>
                   <img class="showcase-source" src="assets/showcase/dish-dryer-source.jpg" alt="烘碗機原始照片" />
                 </div>
               </div>
@@ -366,7 +366,7 @@
               <div class="showcase-media">
                 <img class="showcase-output" src="assets/showcase/ring-grid.jpg" alt="戒指九張商品圖案例" />
                 <div class="showcase-before">
-                  <span>客戶提供原圖</span>
+                  <span>客戶提供的原始照片</span>
                   <img class="showcase-source" src="assets/showcase/ring-source.jpg" alt="戒指原始照片" />
                 </div>
               </div>
@@ -505,7 +505,7 @@
                 <li>可折抵正式方案</li>
                 <li>24hr 交付</li>
               </ul>
-              <a class="button button-secondary" href="#inquiry">點我體驗</a>
+              <a class="button button-secondary" href="#inquiry" data-plan="體驗方案">點我體驗</a>
             </article>
 
             <article class="price-card">
@@ -520,7 +520,7 @@
                 <li>含 1 次微調</li>
                 <li>24hr 交付</li>
               </ul>
-              <a class="button button-secondary" href="#inquiry">立即購買</a>
+              <a class="button button-secondary" href="#inquiry" data-plan="上架素材包">立即購買</a>
             </article>
 
             <article class="price-card">
@@ -534,7 +534,7 @@
                 <li>LINE 交付</li>
                 <li>適合小賣家</li>
               </ul>
-              <a class="button button-secondary green-button" href="#inquiry">訂閱月包</a>
+              <a class="button button-secondary green-button" href="#inquiry" data-plan="入門月包">訂閱月包</a>
             </article>
 
             <article class="price-card highlight-plan">
@@ -549,7 +549,7 @@
                 <li>固定品牌視覺風格</li>
                 <li>線上設計師協作</li>
               </ul>
-              <a class="button button-primary" href="#inquiry">訂閱商家月包</a>
+              <a class="button button-primary" href="#inquiry" data-plan="商家月包">訂閱商家月包</a>
               <p class="saving-note">比單次省 75%</p>
             </article>
 
@@ -564,7 +564,7 @@
                 <li>專人 LINE 對接</li>
                 <li>自訂排版模板</li>
               </ul>
-              <a class="button button-secondary gold-button" href="#inquiry">洽詢品牌方案</a>
+              <a class="button button-secondary gold-button" href="#inquiry" data-plan="品牌方案 / 大量商品">洽詢品牌方案</a>
             </article>
           </div>
 
@@ -578,7 +578,19 @@
 
       <section class="inquiry-section section-pad" id="inquiry" aria-labelledby="inquiry-title">
         <div class="section-shell">
-          <form class="inquiry-form" action="#" aria-label="詢價資料表單">
+          <form
+            class="inquiry-form"
+            name="adforge-inquiry"
+            method="POST"
+            action="/thanks.html"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            aria-label="詢價資料表單"
+          >
+            <input type="hidden" name="form-name" value="adforge-inquiry" />
+            <p class="hidden-field">
+              <label>不要填寫這欄 <input name="bot-field" /></label>
+            </p>
             <div class="form-heading">
               <h2 id="inquiry-title">立即諮詢 / 填寫詢價資料</h2>
               <p>所有資料僅用於報價聯絡，不會外洩。也可以直接加入 LINE，把商品照傳給我們。</p>
@@ -587,11 +599,11 @@
             <div class="form-grid">
               <label>
                 <span>姓名 / 品牌名稱 *</span>
-                <input type="text" name="name" placeholder="王小明 / BrandName" />
+                <input type="text" name="name" placeholder="王小明 / BrandName" required />
               </label>
               <label>
                 <span>聯絡方式 *</span>
-                <input type="text" name="contact" placeholder="LINE ID / Email / WhatsApp" />
+                <input type="text" name="contact" placeholder="LINE ID / Email / WhatsApp" required />
               </label>
               <label class="full-field">
                 <span>電子信箱</span>
@@ -599,13 +611,13 @@
               </label>
               <label>
                 <span>需求方案</span>
-                <select name="plan">
+                <select name="plan" required>
                   <option value="">請選擇</option>
-                  <option>體驗方案</option>
-                  <option>上架素材包</option>
-                  <option>入門月包</option>
-                  <option>商家月包</option>
-                  <option>品牌方案 / 大量商品</option>
+                  <option value="體驗方案">體驗方案</option>
+                  <option value="上架素材包">上架素材包</option>
+                  <option value="入門月包">入門月包</option>
+                  <option value="商家月包">商家月包</option>
+                  <option value="品牌方案 / 大量商品">品牌方案 / 大量商品</option>
                 </select>
               </label>
               <label>
@@ -627,15 +639,15 @@
             </div>
 
             <label class="terms-line">
-              <input type="checkbox" />
+              <input type="checkbox" name="terms" required />
               <span>我已閱讀並同意服務條款</span>
             </label>
 
             <div class="form-actions">
-              <button class="button button-primary" type="button">送出詢價申請</button>
-              <a class="button button-secondary line-button" href="#contact">LINE 直接詢問</a>
+              <button class="button button-primary" type="submit">送出詢價申請</button>
+              <a class="button button-secondary line-button" href="https://line.me/R/ti/p/@adforge" target="_blank" rel="noreferrer">LINE 直接詢問</a>
             </div>
-            <p class="form-note">通常 24 小時內回覆，免費試圖體驗無需付款。</p>
+            <p class="form-note">通常 24 小時內回覆。免費諮詢，NT$100 體驗方案可折抵正式方案。</p>
           </form>
         </div>
       </section>
@@ -689,10 +701,10 @@
               電商主圖、九宮格、AI 短片，一站式交付
             </p>
             <div class="hero-actions" aria-label="聯絡操作">
-              <a class="button button-primary" href="#inquiry">免費試圖申請</a>
+              <a class="button button-primary" href="#inquiry">免費諮詢 / 試圖申請</a>
               <a class="button button-secondary" href="#pricing">查看收費方案</a>
             </div>
-            <p class="final-note">NT$100 體驗方案・NT$399 上架素材包・月包 NT$690 起・免費試圖可申請</p>
+            <p class="final-note">免費諮詢・NT$100 體驗方案可折抵・NT$399 上架素材包・月包 NT$690 起</p>
           </div>
         </div>
 
@@ -718,8 +730,8 @@
           </div>
           <div class="footer-menu">
             <strong>聯絡合作</strong>
-            <a href="#inquiry">LINE 詢價：@adforge</a>
-            <a href="#inquiry">IG：@adforge.ai</a>
+            <a href="https://line.me/R/ti/p/@adforge" target="_blank" rel="noreferrer">LINE 詢價：@adforge</a>
+            <a href="https://www.instagram.com/adforge.ai/" target="_blank" rel="noreferrer">IG：@adforge.ai</a>
             <a href="mailto:hello@adforge.ai">Email：hello@adforge.ai</a>
           </div>
         </footer>
@@ -728,11 +740,21 @@
           <span>© 2026 ADFORGE AI・All rights reserved.</span>
           <div class="footer-links" aria-label="底部社群">
             <a href="mailto:hello@adforge.ai">Email</a>
-            <a href="#contact">Instagram</a>
-            <a href="#contact">LINE</a>
+            <a href="https://www.instagram.com/adforge.ai/" target="_blank" rel="noreferrer">Instagram</a>
+            <a href="https://line.me/R/ti/p/@adforge" target="_blank" rel="noreferrer">LINE</a>
           </div>
         </footer>
       </section>
     </main>
+    <script>
+      document.querySelectorAll("[data-plan]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const planSelect = document.querySelector('select[name="plan"]');
+          if (planSelect) {
+            planSelect.value = button.dataset.plan;
+          }
+        });
+      });
+    </script>
   </body>
 </html>
