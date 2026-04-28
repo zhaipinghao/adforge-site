@@ -3020,33 +3020,36 @@ textarea:focus-visible {
 
 .showcase-before {
   position: absolute;
-  right: 14px;
-  bottom: 14px;
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-  width: auto;
-  max-width: 174px;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 31.5%;
+  max-width: none;
   min-width: 0;
-  padding: 7px 10px 7px 7px;
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 14px 34px rgba(26, 26, 46, 0.16);
-  backdrop-filter: blur(10px);
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(26, 26, 46, 0.18);
+  transform: translate(-50%, -50%);
 }
 
 .showcase-before span {
-  display: block;
-  order: 2;
-  padding: 0;
-  color: var(--ink);
-  font-size: 0.72rem;
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 1;
+  display: inline-flex;
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(26, 26, 46, 0.82);
+  font-size: 0.58rem;
   font-weight: 950;
   letter-spacing: 0;
-  line-height: 1.15;
-  text-align: left;
+  line-height: 1;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -3054,9 +3057,8 @@ textarea:focus-visible {
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 10px;
+  border-radius: 0;
   object-fit: cover;
-  order: 1;
 }
 
 .showcase-card .card-index {
@@ -3542,23 +3544,21 @@ textarea:focus-visible {
   }
 
   .showcase-before {
-    right: 10px;
-    bottom: 10px;
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: 6px;
-    max-width: 138px;
-    padding: 5px 8px 5px 5px;
-    border-radius: 14px;
-    box-shadow: 0 10px 24px rgba(26, 26, 46, 0.15);
+    width: 31%;
+    border-width: 2px;
+    border-radius: 3px;
+    box-shadow: 0 8px 18px rgba(26, 26, 46, 0.16);
   }
 
   .showcase-before span {
-    font-size: 0.62rem;
-    line-height: 1.15;
+    left: 5px;
+    bottom: 5px;
+    padding: 3px 6px;
+    font-size: 0.52rem;
   }
 
   .showcase-source {
-    border-radius: 9px;
+    border-radius: 0;
   }
 
   .service-item-card {
@@ -3811,17 +3811,16 @@ textarea:focus-visible {
   }
 
   .showcase-before {
-    right: 8px;
-    bottom: 8px;
-    grid-template-columns: 42px minmax(0, 1fr);
-    gap: 5px;
-    max-width: 118px;
-    padding: 4px 7px 4px 4px;
-    border-radius: 13px;
+    width: 31%;
+    border-width: 2px;
+    border-radius: 2px;
   }
 
   .showcase-before span {
-    font-size: 0.56rem;
+    left: 4px;
+    bottom: 4px;
+    padding: 3px 5px;
+    font-size: 0.48rem;
   }
 
   .showcase-source {
