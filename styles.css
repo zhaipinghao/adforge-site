@@ -3531,6 +3531,30 @@ textarea:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .showcase-before {
+    right: 10px;
+    bottom: 10px;
+    width: min(30%, 132px);
+    min-width: 104px;
+    padding: 5px;
+    border-width: 1px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 12px 28px rgba(26, 26, 46, 0.16);
+  }
+
+  .showcase-before span {
+    padding: 4px 3px 5px;
+    font-size: 0.62rem;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .showcase-source {
+    aspect-ratio: 1;
+    border-radius: 9px;
+  }
+
   .service-item-card {
     grid-template-columns: 1fr;
     padding: 26px;
@@ -3778,6 +3802,24 @@ textarea:focus-visible {
 
   .service-source {
     width: min(48%, 150px);
+  }
+
+  .showcase-before {
+    right: 8px;
+    bottom: 8px;
+    width: min(28%, 112px);
+    min-width: 92px;
+    padding: 4px;
+    border-radius: 12px;
+  }
+
+  .showcase-before span {
+    padding: 3px 2px 4px;
+    font-size: 0.56rem;
+  }
+
+  .showcase-source {
+    border-radius: 8px;
   }
 
   .case-story-copy {
