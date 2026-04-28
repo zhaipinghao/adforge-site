@@ -24,15 +24,27 @@
           <img src="assets/adforge-logo-mark.png" alt="" />
         </span>
         <p class="kicker">ADFORGE AI</p>
-        <h1 id="thanks-title">已收到你的詢價資料</h1>
+        <h1 id="thanks-title">已收到你的需求資料</h1>
         <p>
-          我們通常會在 24 小時內回覆。若你想更快開始，也可以直接加入 LINE，把商品原圖、商品名稱與想做的風格傳給我們。
+          我們通常會在 24 小時內回覆。若你想更快開始，請加入 LINE 傳商品照片、商品名稱、上架平台與 3 個賣點，我們會協助確認免費試做 9 張上架圖。
         </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="https://page.line.me/ndb3949k?openQrModal=true">LINE 直接詢問</a>
+          <a class="button button-primary" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">加入 LINE 傳商品照片</a>
           <a class="button button-secondary" href="/">回到首頁</a>
         </div>
       </section>
     </main>
+    <script>
+      document.querySelectorAll('a[href^="https://page.line.me/"]').forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button > 0) {
+            return;
+          }
+
+          event.preventDefault();
+          window.location.assign(link.href);
+        });
+      });
+    </script>
   </body>
 </html>

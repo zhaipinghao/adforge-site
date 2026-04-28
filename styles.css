@@ -199,8 +199,8 @@ video {
 
 .social-links a,
 .footer-links a {
-  min-height: 34px;
-  padding: 8px 11px;
+  min-height: 44px;
+  padding: 9px 13px;
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--ink-3);
