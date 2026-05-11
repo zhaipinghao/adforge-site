@@ -1,6 +1,6 @@
 # ADFORGE Supabase Google 登入設定
 
-這份設定讓 ADFORGE 先驗證三件事：Google 登入、建立會員、建立訂單。第一版不做付款。
+這份設定讓 ADFORGE 先驗證三件事：Google 登入、建立會員、建立訂單。第一版不做付款，所有付款欄位只先保留狀態與金額，不會真的收款。
 
 ## 1. 建立 Supabase 專案
 
@@ -33,8 +33,10 @@ export const SUPABASE_CONFIG = {
 會建立：
 
 - `profiles`：會員資料、LINE ID、剩餘點數
-- `orders`：商品圖需求與訂單狀態
+- `orders`：商品圖需求、方案、金額、LINE ID、風格、素材連結與訂單狀態
 - RLS policy：每個會員只能讀寫自己的資料
+
+如果之前已經執行過舊版 SQL，也可以再執行一次。這份 SQL 使用 `if not exists`，會補上新欄位與索引。
 
 ## 3. 啟用 Google 登入
 
@@ -50,8 +52,11 @@ Google Cloud Console 需要設定：
 
 ```text
 Authorized JavaScript origins:
+https://adforgetw.com
+https://www.adforgetw.com
 https://zhaipinghao.github.io
 https://adforge-ai-tw.netlify.app
+https://adforge-site.pages.dev
 http://127.0.0.1:8771
 
 Authorized redirect URI:
@@ -64,13 +69,24 @@ Supabase 需要設定：
 Authentication > URL Configuration
 
 Site URL:
-https://zhaipinghao.github.io/adforge-site/
+https://adforgetw.com/
 
 Redirect URLs:
+https://adforgetw.com/app.html
+https://www.adforgetw.com/app.html
 https://zhaipinghao.github.io/adforge-site/app.html
 https://adforge-ai-tw.netlify.app/app.html
+https://adforge-site.pages.dev/app.html
 http://127.0.0.1:8771/app.html
 ```
+
+如果正式網域還沒接好，`Site URL` 可以先用：
+
+```text
+https://zhaipinghao.github.io/adforge-site/
+```
+
+等 `adforgetw.com` 指到正式部署後再改回正式網域。
 
 ## 4. 測試流程
 
@@ -80,6 +96,14 @@ http://127.0.0.1:8771/app.html
 4. 填商品名稱、方案、平台、LINE ID、需求說明。
 5. 送出後確認 `orders` 有新增資料。
 6. 到 LINE 人工接手客戶傳圖與報價。
+
+訂單建立成功後，目前網站會自動開啟：
+
+```text
+https://page.line.me/ndb3949k
+```
+
+讓客戶接著傳商品照片。
 
 ## 5. 目前刻意不做
 

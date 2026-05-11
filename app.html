@@ -42,8 +42,8 @@
       <div class="container app-hero-grid">
         <div>
           <p class="eyebrow">Member Center</p>
-          <h1>Google 登入後，先驗證會員與訂單流程。</h1>
-          <p class="lead">這一版先不做付款。客人可以登入、留下商品需求、建立訂單，我們再用 LINE 人工接手確認素材與報價。</p>
+          <h1>登入後建立商品圖訂單，我們用 LINE 人工接手。</h1>
+          <p class="lead">這一版先不做付款。客人可以用 Google 登入、留下商品需求、建立訂單，資料會寫入 Supabase，後續由設計師確認素材與報價。</p>
         </div>
         <div class="auth-card">
           <div class="setup-warning" id="setup-warning" hidden>
@@ -83,9 +83,13 @@
         <form class="app-panel order-panel" id="order-form">
           <p class="kicker">Create Order</p>
           <h2>建立商品圖需求</h2>
-          <p class="panel-note">先留下需求，不收款。送出後我們會在 LINE 或 Email 人工確認素材是否適合製作。</p>
+          <p class="panel-note">先留下需求，不收款。送出後會建立訂單編號，我們再到 LINE 或 Email 人工確認素材是否適合製作。</p>
 
           <div class="form-grid">
+            <label>
+              <span>稱呼 / 品牌名稱</span>
+              <input name="contact_name" type="text" placeholder="例：小萍 / ADFORGE / 你的品牌名稱">
+            </label>
             <label>
               <span>商品名稱 *</span>
               <input name="product_name" type="text" placeholder="例：韓系濕紙巾、媽媽包、露營燈" required>
@@ -97,6 +101,7 @@
                 <option value="trial_399">NT$399 體驗包</option>
                 <option value="batch_999">NT$999 小批量包</option>
                 <option value="page_2999">NT$2,999 商品頁包</option>
+                <option value="monthly_6900">NT$6,900+ 品牌月包</option>
               </select>
             </label>
             <label>
@@ -107,13 +112,25 @@
               <span>LINE ID</span>
               <input name="line_id" type="text" placeholder="@ndb3949k 或你的 LINE ID">
             </label>
+            <label>
+              <span>想要風格</span>
+              <input name="target_style" type="text" placeholder="韓系乾淨 / MUJI / 精品感 / 小紅書感">
+            </label>
+            <label>
+              <span>希望交付時間</span>
+              <input name="deadline" type="text" placeholder="例：24 小時內、這週五前、先不急">
+            </label>
+            <label class="full-span">
+              <span>商品照片連結 / 資料連結</span>
+              <input name="image_link" type="url" placeholder="可貼 Google Drive、雲端相簿、商品頁；也可以先留空，等一下到 LINE 傳照片">
+            </label>
             <label class="full-span">
               <span>商品描述 / 需求說明</span>
               <textarea name="notes" rows="5" placeholder="請簡述商品類型、目標風格、想強調的 3 個賣點。若你只有照片，也可以寫：文案請協助整理。"></textarea>
             </label>
           </div>
 
-          <button class="button button-primary app-button" id="submit-order-button" type="submit">送出需求並建立訂單</button>
+          <button class="button button-primary app-button" id="submit-order-button" type="submit">建立訂單，下一步傳照片到 LINE</button>
           <p class="form-status" id="form-status" role="status"></p>
         </form>
 
@@ -125,7 +142,7 @@
             <article><strong>02</strong><span>客人是否願意留下商品需求資料。</span></article>
             <article><strong>03</strong><span>我們能不能把 LINE 詢問轉成訂單紀錄。</span></article>
           </div>
-          <p class="panel-note">付款、點數扣款、AI 自動生成、後台審核，都先留到下一階段。</p>
+          <p class="panel-note">付款、點數扣款、AI 自動生成、後台審核，都先留到下一階段。現在先把登入、留資料、建立訂單跑通。</p>
         </aside>
       </div>
     </section>

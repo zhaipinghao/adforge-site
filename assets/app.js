@@ -3,6 +3,7 @@ import { SUPABASE_CONFIG } from "./supabase-config.js";
 const LINE_URL = "https://page.line.me/ndb3949k";
 const configured =
   SUPABASE_CONFIG.url.startsWith("https://") &&
+  SUPABASE_CONFIG.url.endsWith(".supabase.co") &&
   !SUPABASE_CONFIG.url.includes("YOUR_PROJECT_ID") &&
   SUPABASE_CONFIG.anonKey &&
   !SUPABASE_CONFIG.anonKey.includes("YOUR_SUPABASE");
@@ -34,6 +35,14 @@ if (!configured) {
   elements.submitOrderButton.disabled = true;
   elements.refreshOrdersButton.disabled = true;
   setStatus("尚未設定 Supabase，現在只能看會員中心版型。", "muted");
+} else if (!window.supabase) {
+  elements.setupWarning.hidden = false;
+  elements.setupWarning.querySelector("strong").textContent = "Supabase SDK 載入失敗";
+  elements.setupWarning.querySelector("p").textContent = "請確認網路可以載入 cdn.jsdelivr.net 的 @supabase/supabase-js。";
+  elements.googleLoginButton.disabled = true;
+  elements.submitOrderButton.disabled = true;
+  elements.refreshOrdersButton.disabled = true;
+  setStatus("Supabase SDK 載入失敗，暫時無法登入或建立訂單。", "error");
 } else {
   supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
   boot();
@@ -89,14 +98,22 @@ elements.orderForm.addEventListener("submit", async (event) => {
   }
 
   const formData = new FormData(elements.orderForm);
+  const selectedPackage = String(formData.get("package_type") || "").trim();
   const payload = {
     order_no: createOrderNo(),
     user_id: currentUser.id,
+    contact_name: String(formData.get("contact_name") || "").trim(),
+    contact_email: currentUser.email || "",
     product_name: String(formData.get("product_name") || "").trim(),
-    package_type: String(formData.get("package_type") || "").trim(),
+    package_type: selectedPackage,
+    amount_ntd: packageAmount(selectedPackage),
     platform: String(formData.get("platform") || "").trim(),
     line_id: String(formData.get("line_id") || "").trim(),
+    target_style: String(formData.get("target_style") || "").trim(),
+    deadline: String(formData.get("deadline") || "").trim(),
+    image_link: String(formData.get("image_link") || "").trim(),
     notes: String(formData.get("notes") || "").trim(),
+    payment_status: "not_required",
     status: "new"
   };
 
@@ -116,6 +133,7 @@ elements.orderForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  await updateProfileFromOrder(payload);
   elements.orderForm.reset();
   setStatus(`已建立訂單 ${payload.order_no}，請到 LINE 傳商品照片。`, "success");
   await loadOrders();
@@ -161,6 +179,22 @@ async function ensureProfile(user) {
   );
 }
 
+async function updateProfileFromOrder(order) {
+  const patch = {
+    id: currentUser.id,
+    email: currentUser.email,
+    updated_at: new Date().toISOString()
+  };
+
+  if (order.contact_name) patch.display_name = order.contact_name;
+  if (order.line_id) patch.line_id = order.line_id;
+
+  const { error } = await supabaseClient.from("profiles").upsert(patch, { onConflict: "id" });
+  if (error) {
+    setStatus(`訂單已建立，但會員資料更新失敗：${error.message}`, "error");
+  }
+}
+
 async function loadProfile(userId) {
   const { data, error } = await supabaseClient
     .from("profiles")
@@ -181,7 +215,7 @@ async function loadOrders() {
 
   const { data, error } = await supabaseClient
     .from("orders")
-    .select("id,order_no,product_name,package_type,platform,status,created_at")
+    .select("id,order_no,product_name,package_type,platform,status,amount_ntd,payment_status,created_at")
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false });
 
@@ -215,7 +249,7 @@ function renderOrder(order) {
       </div>
       <div>
         <span>${escapeHtml(order.platform || "未填平台")}</span>
-        <small>${date}</small>
+        <small>${date}・${formatAmount(order.amount_ntd)}</small>
       </div>
       <mark>${escapeHtml(labelStatus(order.status))}</mark>
     </article>
@@ -238,8 +272,24 @@ function labelPackage(value) {
     free_diagnosis: "免費診斷",
     trial_399: "NT$399 體驗包",
     batch_999: "NT$999 小批量包",
-    page_2999: "NT$2,999 商品頁包"
+    page_2999: "NT$2,999 商品頁包",
+    monthly_6900: "NT$6,900+ 品牌月包"
   }[value] || value;
+}
+
+function packageAmount(value) {
+  return {
+    free_diagnosis: 0,
+    trial_399: 399,
+    batch_999: 999,
+    page_2999: 2999,
+    monthly_6900: 6900
+  }[value] ?? 0;
+}
+
+function formatAmount(value) {
+  const amount = Number(value || 0);
+  return amount > 0 ? `NT$${amount.toLocaleString("zh-TW")}` : "未收款";
 }
 
 function labelStatus(value) {
