@@ -581,6 +581,24 @@ a {
   padding: 26px;
 }
 
+.template-library-card {
+  grid-column: 1 / -1;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(47, 102, 244, 0.13), transparent 34%),
+    linear-gradient(135deg, #ffffff, #f4f7ff);
+}
+
+.template-library-card .tool-icon {
+  color: #fff;
+  background: var(--ink);
+}
+
+.template-library-card a {
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
 .tool-card-top {
   display: flex;
   align-items: center;
