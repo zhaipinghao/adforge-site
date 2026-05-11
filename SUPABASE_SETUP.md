@@ -10,12 +10,21 @@
    - Project URL
    - anon public key
 
+目前專案：
+
+```text
+Project URL:
+https://vcyuttzpbjfqzelcgurr.supabase.co
+```
+
+還需要從 Supabase `Project Settings > API` 複製 `anon public` key，貼到 `assets/supabase-config.js`。不要貼 `service_role` key。
+
 把資料填到：
 
 ```js
 // assets/supabase-config.js
 export const SUPABASE_CONFIG = {
-  url: "https://你的專案.supabase.co",
+  url: "https://vcyuttzpbjfqzelcgurr.supabase.co",
   anonKey: "你的 anon public key"
 };
 ```
@@ -35,6 +44,7 @@ export const SUPABASE_CONFIG = {
 - `profiles`：會員資料、LINE ID、剩餘點數
 - `orders`：商品圖需求、方案、金額、LINE ID、風格、素材連結與訂單狀態
 - RLS policy：每個會員只能讀寫自己的資料
+- 訂單安全規則：會員只能新增自己的訂單，不能自己改訂單狀態或金額
 
 如果之前已經執行過舊版 SQL，也可以再執行一次。這份 SQL 使用 `if not exists`，會補上新欄位與索引。
 
@@ -60,7 +70,7 @@ https://adforge-site.pages.dev
 http://127.0.0.1:8771
 
 Authorized redirect URI:
-https://你的專案.supabase.co/auth/v1/callback
+https://vcyuttzpbjfqzelcgurr.supabase.co/auth/v1/callback
 ```
 
 Supabase 需要設定：
@@ -97,7 +107,7 @@ https://zhaipinghao.github.io/adforge-site/
 5. 送出後確認 `orders` 有新增資料。
 6. 到 LINE 人工接手客戶傳圖與報價。
 
-訂單建立成功後，目前網站會自動開啟：
+訂單建立成功後，目前網站會顯示「前往 LINE 傳照片」按鈕：
 
 ```text
 https://page.line.me/ndb3949k

@@ -1115,6 +1115,44 @@ a {
   margin: 0;
 }
 
+.login-gate,
+.next-step-card {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #cad7ff;
+  border-radius: 8px;
+  color: #21409a;
+  background: #f2f6ff;
+}
+
+.login-gate[hidden],
+.next-step-card[hidden] {
+  display: none;
+}
+
+.login-gate strong,
+.next-step-card strong {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.login-gate span,
+.next-step-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.next-step-card {
+  border-color: #9ad9b4;
+  color: #07863d;
+  background: #f0fff5;
+}
+
 .member-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -19,8 +19,12 @@ const elements = {
   creditsCount: document.querySelector("#credits-count"),
   ordersCount: document.querySelector("#orders-count"),
   orderForm: document.querySelector("#order-form"),
+  packageSelect: document.querySelector('select[name="package_type"]'),
   submitOrderButton: document.querySelector("#submit-order-button"),
   formStatus: document.querySelector("#form-status"),
+  loginGate: document.querySelector("#login-gate"),
+  lineHandoff: document.querySelector("#line-handoff"),
+  lineHandoffTitle: document.querySelector("#line-handoff-title"),
   refreshOrdersButton: document.querySelector("#refresh-orders-button"),
   ordersEmpty: document.querySelector("#orders-empty"),
   ordersList: document.querySelector("#orders-list")
@@ -29,12 +33,15 @@ const elements = {
 let supabaseClient = null;
 let currentUser = null;
 
+applyPackageFromUrl();
+
 if (!configured) {
   elements.setupWarning.hidden = false;
   elements.googleLoginButton.disabled = true;
   elements.submitOrderButton.disabled = true;
   elements.refreshOrdersButton.disabled = true;
-  setStatus("尚未設定 Supabase，現在只能看會員中心版型。", "muted");
+  setOrderFormAvailability(false);
+  setStatus("會員中心資料庫設定中，請先用 LINE 聯絡。", "muted");
 } else if (!window.supabase) {
   elements.setupWarning.hidden = false;
   elements.setupWarning.querySelector("strong").textContent = "Supabase SDK 載入失敗";
@@ -42,6 +49,7 @@ if (!configured) {
   elements.googleLoginButton.disabled = true;
   elements.submitOrderButton.disabled = true;
   elements.refreshOrdersButton.disabled = true;
+  setOrderFormAvailability(false);
   setStatus("Supabase SDK 載入失敗，暫時無法登入或建立訂單。", "error");
 } else {
   supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
@@ -66,10 +74,11 @@ async function boot() {
 elements.googleLoginButton.addEventListener("click", async () => {
   if (!supabaseClient) return;
 
-  const redirectTo = new URL("app.html", window.location.href).toString();
+  const redirectUrl = new URL(window.location.href);
+  redirectUrl.hash = "";
   const { error } = await supabaseClient.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo }
+    options: { redirectTo: redirectUrl.toString() }
   });
 
   if (error) {
@@ -86,9 +95,10 @@ elements.refreshOrdersButton.addEventListener("click", loadOrders);
 
 elements.orderForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  hideLineHandoff();
 
   if (!supabaseClient) {
-    setStatus("尚未設定 Supabase，無法建立訂單。", "error");
+    setStatus("會員中心資料庫設定中，請先用 LINE 聯絡。", "error");
     return;
   }
 
@@ -135,12 +145,10 @@ elements.orderForm.addEventListener("submit", async (event) => {
 
   await updateProfileFromOrder(payload);
   elements.orderForm.reset();
+  applyPackageFromUrl();
   setStatus(`已建立訂單 ${payload.order_no}，請到 LINE 傳商品照片。`, "success");
+  showLineHandoff(payload.order_no);
   await loadOrders();
-
-  setTimeout(() => {
-    window.open(LINE_URL, "_blank", "noopener,noreferrer");
-  }, 700);
 });
 
 async function renderAuthState() {
@@ -150,11 +158,13 @@ async function renderAuthState() {
   elements.signOutButton.hidden = !isSignedIn;
   elements.submitOrderButton.disabled = !configured || !isSignedIn;
   elements.refreshOrdersButton.disabled = !configured || !isSignedIn;
+  setOrderFormAvailability(configured && isSignedIn);
 
   if (!isSignedIn) {
     elements.ordersList.innerHTML = "";
     elements.ordersEmpty.hidden = false;
     elements.ordersCount.textContent = "0";
+    hideLineHandoff();
     return;
   }
 
@@ -164,6 +174,35 @@ async function renderAuthState() {
   elements.memberEmail.textContent = currentUser.email || "";
   elements.creditsCount.textContent = String(profile?.credits ?? 0);
   await loadOrders();
+}
+
+function applyPackageFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const packageType = params.get("package");
+  if (!packageType || !elements.packageSelect) return;
+
+  const option = Array.from(elements.packageSelect.options).find((item) => item.value === packageType);
+  if (option) {
+    elements.packageSelect.value = packageType;
+  }
+}
+
+function setOrderFormAvailability(enabled) {
+  elements.loginGate.hidden = enabled;
+  elements.orderForm
+    .querySelectorAll("input, select, textarea")
+    .forEach((field) => {
+      field.disabled = !enabled;
+    });
+}
+
+function showLineHandoff(orderNo) {
+  elements.lineHandoff.hidden = false;
+  elements.lineHandoffTitle.textContent = `訂單 ${orderNo} 已建立`;
+}
+
+function hideLineHandoff() {
+  elements.lineHandoff.hidden = true;
 }
 
 async function ensureProfile(user) {

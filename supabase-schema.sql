@@ -48,6 +48,16 @@ alter table public.orders
   add column if not exists image_link text,
   add column if not exists payment_status text not null default 'not_required';
 
+alter table public.orders
+  drop constraint if exists orders_package_type_check,
+  add constraint orders_package_type_check check (
+    package_type in ('free_diagnosis', 'trial_399', 'batch_999', 'page_2999', 'monthly_6900')
+  );
+
+alter table public.orders
+  drop constraint if exists orders_amount_ntd_check,
+  add constraint orders_amount_ntd_check check (amount_ntd >= 0);
+
 create index if not exists orders_user_id_created_at_idx
   on public.orders (user_id, created_at desc);
 
@@ -84,10 +94,47 @@ create policy "Users can create own orders"
   with check (auth.uid() = user_id);
 
 drop policy if exists "Users can update own draft orders" on public.orders;
-create policy "Users can update own draft orders"
-  on public.orders for update
-  using (auth.uid() = user_id and status in ('new', 'reviewing'))
-  with check (auth.uid() = user_id and status in ('new', 'reviewing'));
+
+revoke update on public.orders from authenticated;
+revoke update on public.profiles from authenticated;
+grant select, insert on public.profiles to authenticated;
+grant select, insert on public.orders to authenticated;
+grant update (id, email, display_name, line_id, updated_at) on public.profiles to authenticated;
+
+create or replace function public.package_amount(package text)
+returns integer
+language sql
+immutable
+as $$
+  select case package
+    when 'trial_399' then 399
+    when 'batch_999' then 999
+    when 'page_2999' then 2999
+    when 'monthly_6900' then 6900
+    else 0
+  end
+$$;
+
+create or replace function public.normalize_order_defaults()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.amount_ntd = public.package_amount(new.package_type);
+
+  if tg_op = 'INSERT' then
+    new.payment_status = 'not_required';
+    new.status = 'new';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists orders_normalize_defaults on public.orders;
+create trigger orders_normalize_defaults
+  before insert or update on public.orders
+  for each row execute function public.normalize_order_defaults();
 
 create or replace function public.set_updated_at()
 returns trigger

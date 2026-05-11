@@ -47,8 +47,8 @@
         </div>
         <div class="auth-card">
           <div class="setup-warning" id="setup-warning" hidden>
-            <strong>尚未設定 Supabase</strong>
-            <p>請先把 `assets/supabase-config.js` 裡的 Project URL 與 anon key 填好，並在 Supabase 執行 `supabase-schema.sql`。</p>
+            <strong>會員中心設定中</strong>
+            <p>目前線上訂單系統正在接資料庫。你仍可先用 LINE 聯絡，我們會人工協助建立需求。</p>
           </div>
 
           <div id="signed-out-view">
@@ -84,6 +84,10 @@
           <p class="kicker">Create Order</p>
           <h2>建立商品圖需求</h2>
           <p class="panel-note">先留下需求，不收款。送出後會建立訂單編號，我們再到 LINE 或 Email 人工確認素材是否適合製作。</p>
+          <div class="login-gate" id="login-gate">
+            <strong>請先使用 Google 登入</strong>
+            <span>登入後就能建立訂單，避免資料只留在 LINE 對話裡。</span>
+          </div>
 
           <div class="form-grid">
             <label>
@@ -132,6 +136,11 @@
 
           <button class="button button-primary app-button" id="submit-order-button" type="submit">建立訂單，下一步傳照片到 LINE</button>
           <p class="form-status" id="form-status" role="status"></p>
+          <div class="next-step-card" id="line-handoff" hidden>
+            <strong id="line-handoff-title">訂單已建立</strong>
+            <p>下一步請到 LINE 傳商品原圖、商品名稱、價格與想強調的賣點。我們會人工確認素材是否適合製作。</p>
+            <a class="button button-primary app-button" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">前往 LINE 傳照片</a>
+          </div>
         </form>
 
         <aside class="app-panel">
