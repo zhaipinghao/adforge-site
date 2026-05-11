@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>生成電商九宮格圖｜ADFORGE AI</title>
+    <meta
+      name="description"
+      content="上傳商品照片，整理商品名稱、價格、賣點、平台與風格方向，快速送出 ADFORGE 九張電商商品圖需求。"
+    />
+    <link rel="canonical" href="https://adforgetw.com/generator.html" />
+    <link rel="icon" href="assets/adforge-logo-mark.png" />
+    <link rel="apple-touch-icon" href="assets/adforge-logo-mark.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="generator-page">
+    <header class="site-header" aria-label="主導覽">
+      <a class="brand" href="index.html#top" aria-label="ADFORGE 首頁">
+        <span class="brand-logo-mark">
+          <img src="assets/adforge-logo-mark.png" alt="" />
+        </span>
+        <span class="brand-copy">
+          <strong>ADFORGE</strong>
+          <small>AI 商品圖鍛造所</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="頁面區塊">
+        <a href="index.html#cases">成果展示</a>
+        <a href="index.html#pricing">收費方案</a>
+        <a href="generator.html" aria-current="page">生成工具</a>
+        <a href="index.html#pricing">立即諮詢</a>
+      </nav>
+
+      <div class="social-links" aria-label="社群連結">
+        <a href="mailto:hello@adforge.ai">Email</a>
+        <a href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">LINE</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="generator-hero section-pad" aria-labelledby="generator-title">
+        <div class="section-shell generator-hero-grid">
+          <div class="generator-copy">
+            <p class="kicker">ADFORGE REQUEST BUILDER</p>
+            <h1 id="generator-title">
+              <span>生成電商</span>
+              <span><em>九宮格需求單</em></span>
+            </h1>
+            <p class="hero-subtitle">
+              把商品照片、價格、平台、賣點與風格整理成可製作的需求格式。送出後可由 ADFORGE 設計師接手，也能作為未來自動生成流程的資料入口。
+            </p>
+            <div class="generator-status-grid" aria-label="交付內容">
+              <div>
+                <strong>1</strong>
+                <span>張九宮格總覽</span>
+              </div>
+              <div>
+                <strong>9</strong>
+                <span>張獨立上架圖</span>
+              </div>
+              <div>
+                <strong>PNG</strong>
+                <span>打包交付</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="generator-preview-card" aria-label="需求生成流程預覽">
+            <div class="studio-topbar">
+              <span></span>
+              <span></span>
+              <span></span>
+              <strong>ADFORGE 圖片生成工作台</strong>
+            </div>
+            <div class="request-flow-preview">
+              <div class="request-flow-step active">
+                <b>01</b>
+                <span>上傳商品照</span>
+              </div>
+              <div class="request-flow-step">
+                <b>02</b>
+                <span>整理賣點與平台</span>
+              </div>
+              <div class="request-flow-step">
+                <b>03</b>
+                <span>送出 LINE / 表單</span>
+              </div>
+              <div class="request-flow-step">
+                <b>04</b>
+                <span>交付 PNG / ZIP</span>
+              </div>
+            </div>
+            <div class="generator-mini-grid" aria-hidden="true">
+              <span>主圖</span>
+              <span>外觀</span>
+              <span>材質</span>
+              <span>功能</span>
+              <span>情境</span>
+              <span>送禮</span>
+              <span>場景</span>
+              <span>賣點</span>
+              <span>成交</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="request-builder-section section-pad" aria-labelledby="builder-title">
+        <div class="section-shell request-builder-grid">
+          <form
+            class="request-form"
+            name="adforge-generator-request"
+            method="POST"
+            action="/thanks.html"
+            enctype="multipart/form-data"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            aria-label="商品圖生成需求表單"
+          >
+            <input type="hidden" name="form-name" value="adforge-generator-request" />
+            <textarea class="hidden-field" name="generated_brief" id="generatedBriefField" tabindex="-1" aria-hidden="true"></textarea>
+            <p class="hidden-field">
+              <label>不要填寫這欄 <input name="bot-field" /></label>
+            </p>
+
+            <div class="form-heading">
+              <p class="kicker">商品資料</p>
+              <h2 id="builder-title">上傳照片，建立九張圖需求</h2>
+              <p>一般商品會整理成高轉化上架圖；管制類商品只整理成中性型錄圖，不做促銷、價格與 CTA。</p>
+            </div>
+
+            <div class="upload-dropzone" id="uploadDropzone">
+              <input id="productPhoto" type="file" name="product_photo" accept="image/png,image/jpeg,image/webp" />
+              <div class="upload-placeholder" id="uploadPlaceholder">
+                <strong>上傳商品照片</strong>
+                <span>支援 JPG / PNG / WebP</span>
+              </div>
+              <img id="photoPreview" alt="商品照片預覽" hidden />
+            </div>
+
+            <div class="form-grid">
+              <label>
+                <span>商品名稱 *</span>
+                <input id="productName" type="text" name="product_name" placeholder="例：草本原味軟喉糖" required />
+              </label>
+              <label>
+                <span>價格 / 優惠價</span>
+                <input id="productPrice" type="text" name="product_price" placeholder="例：NT$399 / 今日優惠 $299" />
+              </label>
+              <label>
+                <span>品牌名稱</span>
+                <input id="brandName" type="text" name="brand_name" placeholder="例：ADFORGE Select" />
+              </label>
+              <label>
+                <span>上架平台</span>
+                <select id="platform" name="platform">
+                  <option value="蝦皮">蝦皮</option>
+                  <option value="小紅書">小紅書</option>
+                  <option value="TikTok Shop">TikTok Shop</option>
+                  <option value="Amazon">Amazon</option>
+                  <option value="MOMO / 官網">MOMO / 官網</option>
+                  <option value="其他平台">其他平台</option>
+                </select>
+              </label>
+              <label>
+                <span>商品類型</span>
+                <select id="productType" name="product_type">
+                  <option value="一般商品">一般商品</option>
+                  <option value="服飾 / 配件">服飾 / 配件</option>
+                  <option value="食品 / 飲品">食品 / 飲品</option>
+                  <option value="居家 / 生活用品">居家 / 生活用品</option>
+                  <option value="3C / 家電">3C / 家電</option>
+                  <option value="美妝 / 保養">美妝 / 保養</option>
+                  <option value="管制類商品">管制類商品</option>
+                </select>
+              </label>
+              <label>
+                <span>視覺風格</span>
+                <select id="visualStyle" name="visual_style">
+                  <option value="高級電商感">高級電商感</option>
+                  <option value="小紅書爆款感">小紅書爆款感</option>
+                  <option value="蝦皮高轉化">蝦皮高轉化</option>
+                  <option value="日系乾淨">日系乾淨</option>
+                  <option value="韓系生活感">韓系生活感</option>
+                  <option value="中性型錄">中性型錄</option>
+                </select>
+              </label>
+              <label class="full-field">
+                <span>主要賣點</span>
+                <textarea id="sellingPoints" name="selling_points" rows="4" placeholder="例：小包裝、方便攜帶、原味口感、適合送禮"></textarea>
+              </label>
+              <label class="full-field">
+                <span>補充需求</span>
+                <textarea id="extraNotes" name="extra_notes" rows="3" placeholder="例：不要太可愛、想要精品感、文字以繁體中文為主"></textarea>
+              </label>
+              <label>
+                <span>姓名 / 品牌窗口 *</span>
+                <input id="contactName" type="text" name="contact_name" placeholder="王小明 / BrandName" required />
+              </label>
+              <label>
+                <span>LINE ID / Email *</span>
+                <input id="contactInfo" type="text" name="contact_info" placeholder="@lineid / your@email.com" required />
+              </label>
+            </div>
+
+            <fieldset class="mode-options">
+              <legend>輸出模式</legend>
+              <label>
+                <input type="radio" name="output_mode" value="高轉化電商圖" checked />
+                <span>高轉化電商圖</span>
+              </label>
+              <label>
+                <input type="radio" name="output_mode" value="中性型錄圖" />
+                <span>中性型錄圖</span>
+              </label>
+            </fieldset>
+
+            <label class="terms-line">
+              <input type="checkbox" name="terms" required />
+              <span>我已閱讀並同意 <a href="terms.html">服務條款</a> 與 <a href="privacy.html">隱私政策</a></span>
+            </label>
+
+            <div class="form-actions">
+              <button class="button button-primary" type="submit">送出需求資料</button>
+              <button class="button button-secondary" type="button" id="copyBriefButton">複製需求單</button>
+              <a class="button button-secondary line-button" id="lineBriefLink" href="https://line.me/R/oaMessage/%40ndb3949k/?%E6%88%91%E8%A6%81%E5%85%8D%E8%B2%BB%E8%A9%A6%E5%81%9A%20ADFORGE%20%E5%95%86%E5%93%81%E5%9C%96" target="_blank" rel="noopener noreferrer">LINE 傳需求</a>
+            </div>
+            <p class="form-note" id="builderStatus" aria-live="polite">填寫後會自動整理成可交付給設計師的需求單。</p>
+          </form>
+
+          <aside class="brief-panel" aria-labelledby="brief-title">
+            <div class="studio-topbar">
+              <span></span>
+              <span></span>
+              <span></span>
+              <strong>生成需求預覽</strong>
+            </div>
+            <div class="brief-body">
+              <p class="panel-label">OUTPUT BRIEF</p>
+              <h2 id="brief-title">九張圖結構</h2>
+              <ol class="output-list">
+                <li><span>01</span>主圖：產品全景、主標、價格、CTA</li>
+                <li><span>02</span>外觀設計：造型、比例、設計亮點</li>
+                <li><span>03</span>材質細節：紋理、做工、質感</li>
+                <li><span>04</span>功能特性：使用方式、耐用、優勢</li>
+                <li><span>05</span>居家情境：桌面、房間、生活感</li>
+                <li><span>06</span>送禮情境：禮盒、高級感、情緒</li>
+                <li><span>07</span>多場景：3 至 4 格使用場景</li>
+                <li><span>08</span>四大賣點：icon 整理</li>
+                <li><span>09</span>成交圖：價格、限時感、CTA</li>
+              </ol>
+              <div class="brief-warning" id="restrictedNotice" hidden>
+                <strong>中性型錄模式</strong>
+                <p>此模式不放價格、折扣、促銷 CTA，也不建立使用情境，只保留產品辨識、規格、包裝與標示資訊。</p>
+              </div>
+              <textarea id="briefPreview" readonly></textarea>
+              <button class="button button-secondary" type="button" id="downloadBriefButton">下載 TXT 需求單</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <footer class="site-footer-bottom section-shell generator-footer">
+        <span>© 2026 ADFORGE AI・商品圖生成需求工具</span>
+        <div class="footer-links" aria-label="底部連結">
+          <a href="index.html">回到首頁</a>
+          <a href="index.html#pricing">收費方案</a>
+          <a href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">LINE</a>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const fields = {
+        productName: document.querySelector("#productName"),
+        productPrice: document.querySelector("#productPrice"),
+        brandName: document.querySelector("#brandName"),
+        platform: document.querySelector("#platform"),
+        productType: document.querySelector("#productType"),
+        visualStyle: document.querySelector("#visualStyle"),
+        sellingPoints: document.querySelector("#sellingPoints"),
+        extraNotes: document.querySelector("#extraNotes"),
+        contactName: document.querySelector("#contactName"),
+        contactInfo: document.querySelector("#contactInfo"),
+        generatedBrief: document.querySelector("#generatedBriefField"),
+        briefPreview: document.querySelector("#briefPreview"),
+        lineBriefLink: document.querySelector("#lineBriefLink"),
+        restrictedNotice: document.querySelector("#restrictedNotice"),
+        builderStatus: document.querySelector("#builderStatus"),
+      };
+
+      const restrictedTypes = new Set(["管制類商品"]);
+
+      function getOutputMode() {
+        return document.querySelector('input[name="output_mode"]:checked')?.value || "高轉化電商圖";
+      }
+
+      function setOutputMode(value) {
+        const radio = document.querySelector(`input[name="output_mode"][value="${value}"]`);
+        if (radio) {
+          radio.checked = true;
+        }
+      }
+
+      function buildBrief() {
+        const mode = getOutputMode();
+        const isNeutral = mode === "中性型錄圖";
+        const priceLine = isNeutral ? "價格資訊：中性型錄模式不放價格與促銷" : `價格資訊：${fields.productPrice.value || "待補"}`;
+        const ctaLine = isNeutral ? "CTA：不放促銷 CTA" : "CTA：可加入立即入手 / 加入購物車 / 限時優惠";
+        const imageLine = document.querySelector("#productPhoto").files.length ? "商品照片：已在網站上傳" : "商品照片：會在 LINE 補傳";
+
+        return [
+          "我要製作 ADFORGE 商品圖",
+          "",
+          `輸出模式：${mode}`,
+          `商品名稱：${fields.productName.value || "待補"}`,
+          `品牌名稱：${fields.brandName.value || "待補"}`,
+          priceLine,
+          `上架平台：${fields.platform.value}`,
+          `商品類型：${fields.productType.value}`,
+          `視覺風格：${fields.visualStyle.value}`,
+          `主要賣點：${fields.sellingPoints.value || "請協助整理"}`,
+          `補充需求：${fields.extraNotes.value || "無"}`,
+          imageLine,
+          "",
+          "需要輸出：1 張九宮格總覽 + 9 張獨立 PNG 圖片",
+          isNeutral
+            ? "九張方向：產品資料、正面辨識、側邊外觀、尺寸參考、色彩辨識、標示區域、包裝結構、中性資訊、型錄參考"
+            : "九張方向：主圖、外觀設計、材質細節、功能特性、居家情境、送禮情境、多場景、四大賣點、成交圖",
+          ctaLine,
+          "",
+          `聯絡窗口：${fields.contactName.value || "待補"}`,
+          `聯絡方式：${fields.contactInfo.value || "待補"}`,
+        ].join("\n");
+      }
+
+      function updateBrief() {
+        if (restrictedTypes.has(fields.productType.value)) {
+          setOutputMode("中性型錄圖");
+          fields.visualStyle.value = "中性型錄";
+        }
+
+        const isNeutral = getOutputMode() === "中性型錄圖";
+        const brief = buildBrief();
+        fields.generatedBrief.value = brief;
+        fields.briefPreview.value = brief;
+        fields.restrictedNotice.hidden = !isNeutral;
+        fields.lineBriefLink.href = `https://line.me/R/oaMessage/%40ndb3949k/?${encodeURIComponent(brief)}`;
+      }
+
+      document.querySelectorAll("input, select, textarea").forEach((field) => {
+        field.addEventListener("input", updateBrief);
+        field.addEventListener("change", updateBrief);
+      });
+
+      document.querySelector("#productPhoto").addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        const preview = document.querySelector("#photoPreview");
+        const placeholder = document.querySelector("#uploadPlaceholder");
+
+        if (!file) {
+          preview.hidden = true;
+          placeholder.hidden = false;
+          updateBrief();
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          preview.src = reader.result;
+          preview.hidden = false;
+          placeholder.hidden = true;
+        };
+        reader.readAsDataURL(file);
+        updateBrief();
+      });
+
+      document.querySelector("#copyBriefButton").addEventListener("click", async () => {
+        updateBrief();
+        try {
+          await navigator.clipboard.writeText(fields.briefPreview.value);
+          fields.builderStatus.textContent = "需求單已複製，可以直接貼到 LINE。";
+        } catch (error) {
+          fields.briefPreview.select();
+          document.execCommand("copy");
+          fields.builderStatus.textContent = "需求單已複製，可以直接貼到 LINE。";
+        }
+      });
+
+      document.querySelector("#downloadBriefButton").addEventListener("click", () => {
+        updateBrief();
+        const blob = new Blob([fields.briefPreview.value], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const name = fields.productName.value.trim() || "adforge-request";
+        link.href = url;
+        link.download = `${name}-九宮格需求單.txt`;
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+
+      document.querySelector(".request-form").addEventListener("submit", updateBrief);
+
+      document.querySelectorAll('a[href^="https://page.line.me/"], a[href^="https://line.me/"]').forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button > 0) {
+            return;
+          }
+
+          event.preventDefault();
+          window.location.assign(link.href);
+        });
+      });
+
+      updateBrief();
+    </script>
+  </body>
+</html>
