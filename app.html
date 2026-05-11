@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會員中心｜ADFORGE AI</title>
+  <meta name="description" content="ADFORGE AI 會員中心，使用 Google 登入後可留下需求、建立商品圖訂單與查看訂單狀態。">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" href="assets/adforge-logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app-body">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="回到 ADFORGE AI 首頁">
+        <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
+        <span>
+          <strong>ADFORGE</strong>
+          <small>AI 商品圖鍛造所</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="會員中心導覽">
+        <a href="index.html">官網首頁</a>
+        <a href="#order-form">建立訂單</a>
+        <a href="#orders">我的訂單</a>
+        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 客服</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="header-button" id="sign-out-button" type="button" hidden>登出</button>
+        <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="app-hero">
+      <div class="container app-hero-grid">
+        <div>
+          <p class="eyebrow">Member Center</p>
+          <h1>Google 登入後，先驗證會員與訂單流程。</h1>
+          <p class="lead">這一版先不做付款。客人可以登入、留下商品需求、建立訂單，我們再用 LINE 人工接手確認素材與報價。</p>
+        </div>
+        <div class="auth-card">
+          <div class="setup-warning" id="setup-warning" hidden>
+            <strong>尚未設定 Supabase</strong>
+            <p>請先把 `assets/supabase-config.js` 裡的 Project URL 與 anon key 填好，並在 Supabase 執行 `supabase-schema.sql`。</p>
+          </div>
+
+          <div id="signed-out-view">
+            <p class="auth-label">登入方式</p>
+            <h2>使用 Google 建立會員</h2>
+            <p>登入後會自動建立會員資料，接著可以送出第一筆商品圖需求。</p>
+            <button class="button button-primary app-button" id="google-login-button" type="button">使用 Google 登入</button>
+            <a class="button button-secondary app-button" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">先用 LINE 詢問</a>
+          </div>
+
+          <div id="signed-in-view" hidden>
+            <p class="auth-label">已登入</p>
+            <h2 id="member-name">ADFORGE 會員</h2>
+            <p id="member-email"></p>
+            <div class="member-stats">
+              <div>
+                <strong id="credits-count">0</strong>
+                <span>剩餘點數</span>
+              </div>
+              <div>
+                <strong id="orders-count">0</strong>
+                <span>訂單數</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section app-section">
+      <div class="container app-grid">
+        <form class="app-panel order-panel" id="order-form">
+          <p class="kicker">Create Order</p>
+          <h2>建立商品圖需求</h2>
+          <p class="panel-note">先留下需求，不收款。送出後我們會在 LINE 或 Email 人工確認素材是否適合製作。</p>
+
+          <div class="form-grid">
+            <label>
+              <span>商品名稱 *</span>
+              <input name="product_name" type="text" placeholder="例：韓系濕紙巾、媽媽包、露營燈" required>
+            </label>
+            <label>
+              <span>需求方案 *</span>
+              <select name="package_type" required>
+                <option value="free_diagnosis">免費診斷</option>
+                <option value="trial_399">NT$399 體驗包</option>
+                <option value="batch_999">NT$999 小批量包</option>
+                <option value="page_2999">NT$2,999 商品頁包</option>
+              </select>
+            </label>
+            <label>
+              <span>主要銷售平台</span>
+              <input name="platform" type="text" placeholder="蝦皮 / 小紅書 / TikTok / Amazon / MOMO">
+            </label>
+            <label>
+              <span>LINE ID</span>
+              <input name="line_id" type="text" placeholder="@ndb3949k 或你的 LINE ID">
+            </label>
+            <label class="full-span">
+              <span>商品描述 / 需求說明</span>
+              <textarea name="notes" rows="5" placeholder="請簡述商品類型、目標風格、想強調的 3 個賣點。若你只有照片，也可以寫：文案請協助整理。"></textarea>
+            </label>
+          </div>
+
+          <button class="button button-primary app-button" id="submit-order-button" type="submit">送出需求並建立訂單</button>
+          <p class="form-status" id="form-status" role="status"></p>
+        </form>
+
+        <aside class="app-panel">
+          <p class="kicker">MVP Scope</p>
+          <h2>這版先驗證三件事</h2>
+          <div class="scope-list">
+            <article><strong>01</strong><span>客人能不能順利用 Google 登入。</span></article>
+            <article><strong>02</strong><span>客人是否願意留下商品需求資料。</span></article>
+            <article><strong>03</strong><span>我們能不能把 LINE 詢問轉成訂單紀錄。</span></article>
+          </div>
+          <p class="panel-note">付款、點數扣款、AI 自動生成、後台審核，都先留到下一階段。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section app-section" id="orders">
+      <div class="container">
+        <div class="app-panel">
+          <div class="orders-head">
+            <div>
+              <p class="kicker">Orders</p>
+              <h2>我的訂單</h2>
+            </div>
+            <button class="button button-secondary app-button small" id="refresh-orders-button" type="button">重新整理</button>
+          </div>
+          <div class="orders-empty" id="orders-empty">
+            目前還沒有訂單。登入後送出第一筆商品需求，這裡就會出現紀錄。
+          </div>
+          <div class="orders-list" id="orders-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>
