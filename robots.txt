@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://adforge-ai-tw.netlify.app/sitemap.xml
+Sitemap: https://adforgetw.com/sitemap.xml
