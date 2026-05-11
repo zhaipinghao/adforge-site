@@ -1,783 +1,481 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ADFORGE｜AI 商品圖鍛造所</title>
-    <meta
-      name="description"
-      content="ADFORGE 是專為電商賣家打造的 AI 商品圖服務，把普通商品照延伸成主圖、賣點圖、情境圖、廣告圖與促銷圖。"
-    />
-    <link rel="canonical" href="https://adforge-ai-tw.netlify.app/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="zh_TW" />
-    <meta property="og:site_name" content="ADFORGE AI" />
-    <meta property="og:title" content="ADFORGE｜AI 商品圖鍛造所" />
-    <meta
-      property="og:description"
-      content="一張商品照生成 9 張可上架電商素材，適合蝦皮、小紅書、TikTok、Amazon、MOMO 與獨立站。"
-    />
-    <meta property="og:url" content="https://adforge-ai-tw.netlify.app/" />
-    <meta property="og:image" content="https://adforge-ai-tw.netlify.app/assets/adforge-home-bg-poster.jpg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#ffffff" />
-    <link rel="icon" href="assets/adforge-logo-mark.png" />
-    <link rel="apple-touch-icon" href="assets/adforge-logo-mark.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Anton&family=Condiment&family=IBM+Plex+Mono:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header" aria-label="主導覽">
-      <a class="brand" href="#top" aria-label="ADFORGE 首頁">
-        <span class="brand-logo-mark">
-          <img src="assets/adforge-logo-mark.png" alt="" />
-        </span>
-        <span class="brand-copy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADFORGE AI｜台灣電商 AI 商品素材工廠</title>
+  <meta name="description" content="一張手機隨手拍商品照，24 小時內整理成 9 張可上架電商素材。適合蝦皮、小紅書、TikTok、IG、Amazon、MOMO 與獨立站。">
+  <meta property="og:title" content="ADFORGE AI｜一張商品照，24 小時內生成 9 張可上架電商素材">
+  <meta property="og:description" content="不用棚拍、不用攝影師、不用後製，傳商品照就能整理成主圖、賣點圖、情境圖、廣告圖與促銷圖。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/adforge-logo-header.png">
+  <link rel="icon" href="assets/adforge-logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="ADFORGE AI 首頁">
+        <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
+        <span>
           <strong>ADFORGE</strong>
           <small>AI 商品圖鍛造所</small>
         </span>
       </a>
 
-      <nav class="nav-links" aria-label="頁面區塊">
+      <nav class="nav-links" aria-label="主要導覽">
         <a href="#top">首頁</a>
-        <a href="#about">關於我們</a>
-        <a href="#advantages">核心優勢</a>
-        <a href="#services">服務項目</a>
-        <a href="#showcase">成果展示</a>
-        <a href="#process">合作流程</a>
+        <a href="#tools">服務工具</a>
+        <a href="#cases">成果展示</a>
         <a href="#pricing">收費方案</a>
-        <a href="#inquiry">立即諮詢</a>
         <a href="#faq">FAQ</a>
       </nav>
 
-      <div class="social-links" aria-label="社群連結">
+      <div class="header-actions">
         <a href="mailto:hello@adforge.ai">Email</a>
-        <a href="https://www.instagram.com/adforge.ai/" target="_blank" rel="noreferrer">Instagram</a>
-        <a href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">LINE</a>
+        <a href="https://www.instagram.com/adforge.ai" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main id="top">
-      <section class="hero-section" aria-labelledby="hero-title">
-        <video
-          class="ambient-video"
-          src="assets/adforge-home-bg.mp4"
-          poster="assets/adforge-home-bg-poster.jpg"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="auto"
-          aria-hidden="true"
-        ></video>
-        <div class="video-shade" aria-hidden="true"></div>
+  <main id="top">
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">ADFORGE AI — 台灣電商 AI 商品素材工廠</p>
+          <h1>一張商品照，<br><span>24 小時內生成 9 張可上架電商素材</span></h1>
+          <p class="lead">不用棚拍、不用攝影師、不用後製。傳商品照就能整理成主圖、賣點圖、情境圖、廣告圖與促銷圖，適合蝦皮、小紅書、TikTok、IG、Amazon、MOMO 與獨立站。</p>
 
-        <div class="section-shell hero-layout">
-          <div class="hero-copy">
-            <p class="kicker">ADFORGE AI — AI 電商素材專家</p>
-            <h1 id="hero-title">
-              <span>一張商品照，</span>
-              <span><em>生成 9 張</em>可上架</span>
-              <span>電商素材</span>
-            </h1>
-            <p class="hero-subtitle">
-              白底商品一鍵升級商業畫面。<strong>蝦皮、小紅書、跨境電商適用</strong>，從隨手拍商品照延伸出主圖、賣點圖、情境圖、廣告圖與促銷圖。
-            </p>
+          <a class="prompt-box" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">
+            <span>你想把什麼商品變成可上架素材？</span>
+            <strong>加入 LINE 免費試做</strong>
+          </a>
 
-            <div class="hero-stats" aria-label="ADFORGE 服務數據">
-              <div>
-                <strong>500+</strong>
-                <span>完成商品組圖</span>
-              </div>
-              <div>
-                <strong>24小時</strong>
-                <span>最快交付</span>
-              </div>
-              <div>
-                <strong>98%</strong>
-                <span>客戶回購率</span>
-              </div>
-            </div>
-
-            <div class="hero-actions" aria-label="主要操作">
-              <a class="button button-primary" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">加入 LINE，免費試做 9 張上架圖</a>
-              <a class="button button-secondary" href="#showcase">查看成品範例</a>
-            </div>
-
-            <div class="platform-chips" aria-label="適用平台">
-              <span>蝦皮商城</span>
-              <span>小紅書</span>
-              <span>TikTok</span>
-              <span>Amazon</span>
-              <span>獨立站</span>
-              <span>MOMO</span>
-            </div>
+          <div class="hero-cta">
+            <a class="button button-primary" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">免費試圖申請</a>
+            <a class="button button-secondary" href="#pricing">查看收費方案</a>
           </div>
 
-          <div class="hero-studio transform-card" aria-label="濕紙巾商品照轉換成九張電商素材">
-            <div class="studio-topbar">
-              <span></span>
-              <span></span>
-              <span></span>
-              <strong>一張照片變成可上架商品圖</strong>
-            </div>
-            <div class="transform-stage">
-              <div class="transform-flow">
-                <article class="transform-panel before-transform">
-                  <p class="panel-eyebrow">Before / 客戶隨手拍</p>
-                  <div class="raw-photo-frame">
-                    <img src="assets/hero-carousel/wet-wipes-source.jpeg" alt="客戶用手機隨手拍的濕紙巾商品照" />
-                    <span>普通商品照</span>
-                  </div>
-                  <p>只要提供手機原圖、商品名稱、價格與幾個賣點。</p>
-                </article>
-
-                <div class="transform-arrow" aria-hidden="true">→</div>
-
-                <article class="transform-panel after-transform">
-                  <p class="panel-eyebrow">After / ADFORGE 商品圖</p>
-                  <div class="product-carousel" aria-label="濕紙巾九張商品素材輪播">
-                    <div class="carousel-main">
-                      <img class="carousel-slide slide-1" src="assets/hero-carousel/wet-wipes-01.png" alt="濕紙巾主圖商品素材" />
-                      <img class="carousel-slide slide-2" src="assets/hero-carousel/wet-wipes-02.png" alt="濕紙巾賣點商品素材" />
-                      <img class="carousel-slide slide-3" src="assets/hero-carousel/wet-wipes-03.png" alt="濕紙巾細節商品素材" />
-                      <img class="carousel-slide slide-4" src="assets/hero-carousel/wet-wipes-04.png" alt="濕紙巾柔軟觸感商品素材" />
-                      <img class="carousel-slide slide-5" src="assets/hero-carousel/wet-wipes-05.png" alt="濕紙巾居家情境商品素材" />
-                      <img class="carousel-slide slide-6" src="assets/hero-carousel/wet-wipes-06.png" alt="濕紙巾送禮情境商品素材" />
-                      <img class="carousel-slide slide-7" src="assets/hero-carousel/wet-wipes-07.png" alt="濕紙巾外出攜帶商品素材" />
-                      <img class="carousel-slide slide-8" src="assets/hero-carousel/wet-wipes-08.png" alt="濕紙巾功能亮點商品素材" />
-                      <img class="carousel-slide slide-9" src="assets/hero-carousel/wet-wipes-09.png" alt="濕紙巾促銷商品素材" />
-                    </div>
-                    <div class="carousel-caption">
-                      <strong>濕紙巾主圖輪播</strong>
-                      <small>9 張：主圖、賣點、情境、廣告、促銷</small>
-                    </div>
-                    <div class="carousel-thumbs" aria-hidden="true">
-                      <img src="assets/hero-carousel/wet-wipes-01.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-02.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-03.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-04.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-05.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-06.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-07.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-08.png" alt="" />
-                      <img src="assets/hero-carousel/wet-wipes-09.png" alt="" />
-                    </div>
-                  </div>
-                </article>
-              </div>
-
-              <div class="transform-summary" aria-label="轉換重點">
-                <div>
-                  <strong>商品理解</strong>
-                  <span>讓買家快速看懂用途</span>
-                </div>
-                <div>
-                  <strong>點擊吸引</strong>
-                  <span>主圖與廣告更有停留感</span>
-                </div>
-                <div>
-                  <strong>成交導向</strong>
-                  <span>促銷與賣點一次補齊</span>
-                </div>
-              </div>
-            </div>
+          <div class="hero-metrics" aria-label="服務數據">
+            <div><strong>500+</strong><span>完成商品組圖</span></div>
+            <div><strong>24hr</strong><span>最快交付</span></div>
+            <div><strong>9 張</strong><span>標準上架素材</span></div>
           </div>
         </div>
-      </section>
 
-      <section class="about-section section-pad" id="about" aria-labelledby="about-title">
-        <div class="section-shell about-grid">
-          <div class="about-copy">
-            <p class="kicker">關於我們</p>
-            <h2 id="about-title">把普通商品照鍛造成能賣貨的電商素材</h2>
-            <p>
-              ADFORGE 是專為電商賣家打造的 AI 商品圖鍛造所。我們把客戶手機隨手拍、白底圖或現有商品照，整理成可上架、可投廣告、可做促銷的一整套商業視覺。
-            </p>
-            <p>
-              不只是把圖片變漂亮，而是讓買家更快理解產品、更願意停下來看、更容易點擊與下單。
-            </p>
-            <div class="about-stats">
-              <span><strong>500+</strong>完成商品組圖</span>
-              <span><strong>24小時</strong>最快交付</span>
-              <span><strong>9張</strong>標準商品素材</span>
+        <aside class="hero-panel" aria-label="商品照生成示意">
+          <div class="hero-panel-head">
+            <span class="status-dot"></span>
+            <strong>商品圖生成工作台</strong>
+            <small>Live Case</small>
+          </div>
+          <div class="before-after">
+            <div class="before-card">
+              <p>客戶原圖</p>
+              <img src="assets/showcase/wet-wipes-source.jpg" alt="客戶提供的濕紙巾原始照片">
+            </div>
+            <div class="after-card">
+              <p>ADFORGE 成品</p>
+              <img src="assets/hero-carousel/wet-wipes-03.png" alt="ADFORGE 產出的濕紙巾商品圖">
             </div>
           </div>
-          <figure class="about-team-card">
-            <img src="assets/adforge-expert-team.png" alt="ADFORGE 設計與攝影團隊" loading="lazy" decoding="async" />
-          </figure>
-        </div>
-      </section>
-
-      <section class="advantages-section section-pad" id="advantages" aria-labelledby="advantages-title">
-        <div class="section-shell">
-          <div class="section-heading centered">
-            <p class="kicker">核心優勢</p>
-            <h2 id="advantages-title">小賣家也能有品牌級商品視覺</h2>
-            <p>用 AI 加上設計師檢查，把拍照、排版、賣點整理與平台素材一次補齊。</p>
+          <div class="output-strip">
+            <span>首圖</span>
+            <span>賣點</span>
+            <span>情境</span>
+            <span>廣告</span>
+            <span>促銷</span>
           </div>
+        </aside>
+      </div>
+    </section>
 
-          <div class="advantage-grid">
-            <article>
-              <span>01</span>
-              <h3>不用棚拍也能升級</h3>
-              <p>手機原圖、白底圖都能開始，把商品放進更適合銷售的情境。</p>
+    <section class="quick-tools section-tight" aria-labelledby="quick-title">
+      <div class="container">
+        <div class="section-head compact">
+          <p class="kicker">Tools</p>
+          <h2 id="quick-title">你現在要做哪一種商品素材？</h2>
+        </div>
+        <div class="tool-shortcuts">
+          <a href="#tools"><span>01</span><strong>9 張上架圖</strong><small>主圖、賣點、促銷一次整理</small></a>
+          <a href="#tools"><span>02</span><strong>廣告素材</strong><small>FB、IG、Threads 測試用</small></a>
+          <a href="#tools"><span>03</span><strong>小紅書封面</strong><small>高點擊封面與筆記素材</small></a>
+          <a href="#tools"><span>04</span><strong>短影音封面</strong><small>TikTok、Reels、Shorts</small></a>
+          <a href="#tools"><span>05</span><strong>品牌統一</strong><small>官網、社群、活動頁一致</small></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="container about-grid">
+        <div>
+          <p class="kicker">About</p>
+          <h2>把普通商品照，整理成能賣貨的電商素材。</h2>
+        </div>
+        <div class="about-copy">
+          <p>ADFORGE 是專為電商賣家打造的 AI 商品圖鍛造所。我們把客戶手機隨手拍、白底圖或現有商品照，整理成可以上架、投廣告、做活動的一整套商業視覺。</p>
+          <p>第一階段採「AI 輔助 + 設計師人工校稿」，避免文字亂碼、比例錯誤與賣點不清楚。你只要提供照片、商品名稱、價格與幾個賣點，文案方向也可以由我們先協助整理。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tools-section" id="tools">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker">Service Tools</p>
+          <h2>我們能幫你做什麼？</h2>
+          <p>從靜態商品圖到短影音封面，一站式產出可上架素材。</p>
+        </div>
+
+        <div class="tools-layout">
+          <aside class="category-rail" aria-label="工具分類">
+            <a href="#product-tools" class="active">商品圖生產</a>
+            <a href="#ad-tools">廣告測試</a>
+            <a href="#social-tools">社群封面</a>
+            <a href="#brand-tools">品牌統一</a>
+            <a href="#line-tools">LINE 接單</a>
+          </aside>
+
+          <div class="tool-grid">
+            <article class="tool-card" id="product-tools">
+              <div class="tool-card-top">
+                <span class="tool-icon">01</span>
+                <small>Product Page Set</small>
+              </div>
+              <h3>商品九張上架圖</h3>
+              <p>主圖、賣點圖、材質圖、使用方式、情境圖、送禮圖、促銷圖，一次整理成完整商品頁素材。</p>
+              <ul>
+                <li>適合新品上架與賣場重整</li>
+                <li>固定 9 張模板，速度快、成本低</li>
+                <li>繁體中文排版，可直接上架</li>
+              </ul>
+              <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">傳商品照試做</a>
             </article>
-            <article>
-              <span>02</span>
-              <h3>賣點整理更清楚</h3>
-              <p>把材質、用途、尺寸、促銷與情境拆成買家看得懂的圖片。</p>
+
+            <article class="tool-card" id="ad-tools">
+              <div class="tool-card-top">
+                <span class="tool-icon">02</span>
+                <small>Ad Creative</small>
+              </div>
+              <h3>廣告素材設計</h3>
+              <p>把商品變成適合 FB、IG、Threads、短影音封面的廣告素材，方便快速測試不同賣點。</p>
+              <ul>
+                <li>主訴求、價格、活動檔期清楚</li>
+                <li>適合投放前先測點擊吸引力</li>
+                <li>可依平台裁切 1:1、4:5、9:16</li>
+              </ul>
+              <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">製作廣告圖</a>
             </article>
-            <article>
-              <span>03</span>
-              <h3>繁體中文可上架</h3>
-              <p>交付前檢查標題、價格與賣點，降低亂碼與語意不順的風險。</p>
+
+            <article class="tool-card" id="social-tools">
+              <div class="tool-card-top">
+                <span class="tool-icon">03</span>
+                <small>Social Cover</small>
+              </div>
+              <h3>小紅書 / TikTok 封面</h3>
+              <p>將商品照片整理成更像內容封面的視覺，適合短影音、筆記、限動與社群首圖。</p>
+              <ul>
+                <li>標題清楚，第一眼知道賣點</li>
+                <li>可延伸成短影音第一張封面</li>
+                <li>適合小賣家持續發文測款</li>
+              </ul>
+              <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">做社群封面</a>
             </article>
-            <article>
-              <span>04</span>
-              <h3>多平台直接使用</h3>
-              <p>適用蝦皮、小紅書、IG、TikTok、Amazon、MOMO 與獨立站。</p>
+
+            <article class="tool-card" id="brand-tools">
+              <div class="tool-card-top">
+                <span class="tool-icon">04</span>
+                <small>Brand System</small>
+              </div>
+              <h3>品牌視覺統一</h3>
+              <p>讓商品圖、官網、社群、活動頁風格一致，提升品牌質感與信任感。</p>
+              <ul>
+                <li>固定色系、字體、版面節奏</li>
+                <li>適合多商品批量製作</li>
+                <li>讓賣場看起來更像品牌</li>
+              </ul>
+              <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">統一品牌視覺</a>
             </article>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="service-items-section section-pad" id="services" aria-labelledby="services-title">
-        <div class="section-shell">
-          <div class="section-heading centered">
-            <p class="kicker">服務項目</p>
-            <h2 id="services-title">我們能幫你做什麼？</h2>
-            <p>從靜態商品圖到動態短影音，一站式產出。</p>
-          </div>
-
-          <div class="service-items-grid">
-            <article class="service-item-card">
-              <div class="service-icon blue-icon">▣</div>
-              <div>
-                <h3>AI 商品靜態視覺 <span>圖片</span></h3>
-                <ul>
-                  <li>任何商品照都可開始（手機隨手拍、白底圖、現有照片）</li>
-                  <li>多角度細節特寫圖</li>
-                  <li>場景種草氛圍圖</li>
-                  <li>品牌海報・形象視覺</li>
-                  <li>詳情頁素材・促銷 banner</li>
-                  <li>完整九張電商組圖（上架標準）</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="service-item-card">
-              <div class="service-icon gold-icon">▶</div>
-              <div>
-                <h3>AI 商業短影音 <span>影片</span></h3>
-                <ul>
-                  <li>AI 商品展示短片（15–30秒）</li>
-                  <li>TikTok 流量短影音</li>
-                  <li>小紅書種草影片</li>
-                  <li>蝦皮商品介紹影片</li>
-                  <li>品牌形象廣告影片</li>
-                  <li>批量產出，效率交付</li>
-                </ul>
-              </div>
-            </article>
-          </div>
-
-          <div class="platform-bar" aria-label="適用平台">
-            <strong>適用平台：</strong>
-            <span>蝦皮商城</span>
-            <span>小紅書</span>
-            <span>TikTok</span>
-            <span>Amazon</span>
-            <span>MOMO</span>
-            <span>獨立站</span>
-            <span>Shopee SG/MY</span>
-          </div>
+    <section class="section cases-section" id="cases">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker">Works</p>
+          <h2>成果展示</h2>
+          <p>每組案例都把「客戶提供原圖」放在九宮格中間，讓你清楚看到前後差異。</p>
         </div>
-      </section>
 
-      <section class="showcase-section section-pad" id="showcase" aria-labelledby="showcase-title">
-        <div class="section-shell">
-          <div class="section-heading centered">
-            <p class="kicker">成果展示</p>
-            <h2 id="showcase-title">一張原圖，延伸一整套上架素材</h2>
-            <p>以下案例都可以從客戶原圖、商品資訊與風格方向開始製作。</p>
-          </div>
-
-          <div class="showcase-grid">
-            <article class="showcase-card">
-              <div class="showcase-media">
-                <img class="showcase-output" src="assets/showcase/wet-wipes-grid.jpg" alt="濕紙巾九張商品圖案例" loading="lazy" decoding="async" />
-                <div class="showcase-before">
-                  <span>客戶原圖</span>
-                  <img class="showcase-source" src="assets/showcase/wet-wipes-source.jpg" alt="濕紙巾原始照片" loading="lazy" decoding="async" />
-                </div>
+        <div class="case-grid">
+          <article class="case-card">
+            <div class="case-mosaic">
+              <img class="case-output" src="assets/showcase/wet-wipes-grid.jpg" alt="濕紙巾商品九張套圖">
+              <div class="source-cell">
+                <img src="assets/showcase/wet-wipes-source.jpg" alt="濕紙巾客戶原圖">
+                <span>客戶提供原圖</span>
               </div>
-              <p class="card-index">01 / Product Page Set</p>
+            </div>
+            <div class="case-body">
+              <p class="case-index">01 / Product Page Set</p>
               <h3>濕紙巾商品九張套圖</h3>
               <p>適合母嬰、生活用品、促銷活動與短影音封面。</p>
-            </article>
+              <div class="case-tags"><span>主圖</span><span>賣點</span><span>情境</span><span>促銷</span></div>
+              <a href="assets/showcase/wet-wipes-grid.jpg" target="_blank" rel="noopener noreferrer">看完整圖組</a>
+            </div>
+          </article>
 
-            <article class="showcase-card">
-              <div class="showcase-media">
-                <img class="showcase-output" src="assets/showcase/mom-bag-grid.jpg" alt="媽媽包九張商品圖案例" loading="lazy" decoding="async" />
-                <div class="showcase-before">
-                  <span>客戶原圖</span>
-                  <img class="showcase-source" src="assets/showcase/mom-bag-source.jpg" alt="媽媽包原始照片" loading="lazy" decoding="async" />
-                </div>
+          <article class="case-card">
+            <div class="case-mosaic">
+              <img class="case-output" src="assets/showcase/mom-bag-grid.jpg" alt="媽媽包生活情境套圖">
+              <div class="source-cell">
+                <img src="assets/showcase/mom-bag-source.jpg" alt="媽媽包客戶原圖">
+                <span>客戶提供原圖</span>
               </div>
-              <p class="card-index">02 / Mom & Baby</p>
+            </div>
+            <div class="case-body">
+              <p class="case-index">02 / Mom & Baby</p>
               <h3>媽媽包生活情境套圖</h3>
               <p>把容量、收納、外出便利性拆成買家容易理解的畫面。</p>
-            </article>
+              <div class="case-tags"><span>容量</span><span>收納</span><span>情境</span><span>贈品</span></div>
+              <a href="assets/showcase/mom-bag-grid.jpg" target="_blank" rel="noopener noreferrer">看完整圖組</a>
+            </div>
+          </article>
 
-            <article class="showcase-card">
-              <div class="showcase-media">
-                <img class="showcase-output" src="assets/showcase/herbal-grid.jpg" alt="中藥商品九張圖案例" loading="lazy" decoding="async" />
-                <div class="showcase-before">
-                  <span>客戶原圖</span>
-                  <img class="showcase-source" src="assets/showcase/herbal-source.jpg" alt="中藥原始照片" loading="lazy" decoding="async" />
-                </div>
+          <article class="case-card">
+            <div class="case-mosaic">
+              <img class="case-output" src="assets/showcase/herbal-grid.jpg" alt="中藥保健商品素材">
+              <div class="source-cell">
+                <img src="assets/showcase/herbal-source.jpg" alt="中藥商品客戶原圖">
+                <span>客戶提供原圖</span>
               </div>
-              <p class="card-index">03 / Health Product</p>
+            </div>
+            <div class="case-body">
+              <p class="case-index">03 / Health Product</p>
               <h3>中藥保健商品素材</h3>
               <p>補上信任感、用途說明與禮盒情境，適合長輩送禮市場。</p>
-            </article>
+              <div class="case-tags"><span>信任</span><span>用途</span><span>禮盒</span><span>說明</span></div>
+              <a href="assets/showcase/herbal-grid.jpg" target="_blank" rel="noopener noreferrer">看完整圖組</a>
+            </div>
+          </article>
 
-            <article class="showcase-card">
-              <div class="showcase-media">
-                <img class="showcase-output" src="assets/showcase/dinosaur-grid.jpg" alt="恐龍夜燈九張商品圖案例" loading="lazy" decoding="async" />
-                <div class="showcase-before">
-                  <span>客戶原圖</span>
-                  <img class="showcase-source" src="assets/showcase/dinosaur-source.jpg" alt="恐龍夜燈原始照片" loading="lazy" decoding="async" />
-                </div>
+          <article class="case-card">
+            <div class="case-mosaic">
+              <img class="case-output" src="assets/showcase/dinosaur-grid.jpg" alt="恐龍夜燈禮物套圖">
+              <div class="source-cell">
+                <img src="assets/showcase/dinosaur-source.jpg" alt="恐龍夜燈客戶原圖">
+                <span>客戶提供原圖</span>
               </div>
-              <p class="card-index">04 / Gift Item</p>
+            </div>
+            <div class="case-body">
+              <p class="case-index">04 / Gift Item</p>
               <h3>恐龍夜燈禮物套圖</h3>
               <p>從商品本體延伸到桌面、床邊、送禮與購買提醒。</p>
-            </article>
+              <div class="case-tags"><span>禮物</span><span>桌面</span><span>兒童</span><span>促銷</span></div>
+              <a href="assets/showcase/dinosaur-grid.jpg" target="_blank" rel="noopener noreferrer">看完整圖組</a>
+            </div>
+          </article>
 
-            <article class="showcase-card">
-              <div class="showcase-media">
-                <img class="showcase-output" src="assets/showcase/dish-dryer-grid.jpg" alt="烘碗機九張商品圖案例" loading="lazy" decoding="async" />
-                <div class="showcase-before">
-                  <span>客戶原圖</span>
-                  <img class="showcase-source" src="assets/showcase/dish-dryer-source.jpg" alt="烘碗機原始照片" loading="lazy" decoding="async" />
-                </div>
+          <article class="case-card">
+            <div class="case-mosaic">
+              <img class="case-output" src="assets/showcase/dish-dryer-grid.jpg" alt="烘碗機功能說明素材">
+              <div class="source-cell">
+                <img src="assets/showcase/dish-dryer-source.jpg" alt="烘碗機客戶原圖">
+                <span>客戶提供原圖</span>
               </div>
-              <p class="card-index">05 / Appliance</p>
+            </div>
+            <div class="case-body">
+              <p class="case-index">05 / Appliance</p>
               <h3>烘碗機功能說明素材</h3>
               <p>把規格、使用情境、功能亮點轉成清楚的家電銷售圖片。</p>
-            </article>
+              <div class="case-tags"><span>規格</span><span>功能</span><span>使用</span><span>對比</span></div>
+              <a href="assets/showcase/dish-dryer-grid.jpg" target="_blank" rel="noopener noreferrer">看完整圖組</a>
+            </div>
+          </article>
 
-            <article class="showcase-card">
-              <div class="showcase-media">
-                <img class="showcase-output" src="assets/showcase/ring-grid.jpg" alt="戒指九張商品圖案例" loading="lazy" decoding="async" />
-                <div class="showcase-before">
-                  <span>客戶原圖</span>
-                  <img class="showcase-source" src="assets/showcase/ring-source.jpg" alt="戒指原始照片" loading="lazy" decoding="async" />
-                </div>
+          <article class="case-card">
+            <div class="case-mosaic">
+              <img class="case-output" src="assets/showcase/ring-grid.jpg" alt="飾品精品品牌視覺">
+              <div class="source-cell">
+                <img src="assets/showcase/ring-source.jpg" alt="飾品客戶原圖">
+                <span>客戶提供原圖</span>
               </div>
-              <p class="card-index">06 / Brand System</p>
+            </div>
+            <div class="case-body">
+              <p class="case-index">06 / Brand System</p>
               <h3>飾品精品品牌視覺</h3>
               <p>統一金色精品風格，補齊材質、配戴情境與品牌信任感。</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="testimonials-section section-pad" id="feedback" aria-labelledby="feedback-title">
-        <div class="section-shell">
-          <div class="section-heading centered feedback-heading">
-            <h2 id="feedback-title">WHAT SELLERS SAY</h2>
-            <p class="script-word">Real Feedback</p>
-            <p>不是只把圖片變漂亮，而是讓商品更容易被理解、被點擊、被下單。</p>
-          </div>
-
-          <div class="testimonial-grid">
-            <article class="testimonial-card">
-              <div class="testimonial-top">
-                <span class="avatar"><img src="assets/testimonials/ivy.jpg" alt="Ivy Chen" loading="lazy" decoding="async" /></span>
-                <div><h3>Ivy Chen</h3><strong>蝦皮生活用品賣家</strong></div>
-                <b>“</b>
-              </div>
-              <p>原本我的商品照看起來很像隨手拍，客人常問基本問題。改成 ADFORGE 的九張商品圖後，商品特色變清楚很多，頁面看起來也比較像品牌在經營。</p>
-              <div class="testimonial-tags"><span>商品頁優化</span><span>蝦皮賣家</span><span>生活用品</span></div>
-            </article>
-
-            <article class="testimonial-card">
-              <div class="testimonial-top">
-                <span class="avatar"><img src="assets/testimonials/sean.jpg" alt="Sean Lin" loading="lazy" decoding="async" /></span>
-                <div><h3>Sean Lin</h3><strong>3C 電商品牌主</strong></div>
-                <b>“</b>
-              </div>
-              <p>以前只有白底圖，廣告投出去沒有記憶點。ADFORGE 幫我們整理情境、賣點和促銷圖，素材可以直接拿去上架跟投放，省掉很多溝通時間。</p>
-              <div class="testimonial-tags"><span>廣告素材</span><span>3C 商品</span><span>品牌視覺</span></div>
-            </article>
-
-            <article class="testimonial-card">
-              <div class="testimonial-top">
-                <span class="avatar"><img src="assets/testimonials/mina.jpg" alt="Mina Wu" loading="lazy" decoding="async" /></span>
-                <div><h3>Mina Wu</h3><strong>香氛禮品品牌負責人</strong></div>
-                <b>“</b>
-              </div>
-              <p>最有感的是送禮情境圖。以前客人不知道產品適合送誰，改圖後整個商品頁更有故事感，也比較容易做節慶活動。</p>
-              <div class="testimonial-tags"><span>送禮情境</span><span>品牌質感</span><span>節慶檔期</span></div>
-            </article>
-
-            <article class="testimonial-card">
-              <div class="testimonial-top">
-                <span class="avatar"><img src="assets/testimonials/karen.jpg" alt="Karen Hsu" loading="lazy" decoding="async" /></span>
-                <div><h3>Karen Hsu</h3><strong>飾品與配件賣家</strong></div>
-                <b>“</b>
-              </div>
-              <p>我不太會設計，也沒有時間一直修圖。現在只要丟商品照，就可以拿到主圖、情境圖、促銷圖，對一人電商來說真的省很多時間。</p>
-              <div class="testimonial-tags"><span>一人電商</span><span>快速出圖</span><span>社群素材</span></div>
-            </article>
-
-            <article class="testimonial-card">
-              <div class="testimonial-top">
-                <span class="avatar"><img src="assets/testimonials/ahong.jpg" alt="阿宏" loading="lazy" decoding="async" /></span>
-                <div><h3>阿宏</h3><strong>伴手禮品牌經營者</strong></div>
-                <b>“</b>
-              </div>
-              <p>我們本來只會拍產品本身，但圖片沒有把特色講清楚。ADFORGE 幫我們把口味、份量、送禮感都做出來，客人看圖就比較容易懂。</p>
-              <div class="testimonial-tags"><span>食品電商</span><span>商品說明</span><span>轉換提升</span></div>
-            </article>
-
-            <article class="testimonial-card">
-              <div class="testimonial-top">
-                <span class="avatar"><img src="assets/testimonials/ryan.jpg" alt="Ryan Tsai" loading="lazy" decoding="async" /></span>
-                <div><h3>Ryan Tsai</h3><strong>新品牌創業者</strong></div>
-                <b>“</b>
-              </div>
-              <p>剛開始沒有完整品牌素材，ADFORGE 最有用的地方是先做出一套可以賣的視覺，讓商品看起來不像剛起步的品牌。</p>
-              <div class="testimonial-tags"><span>新品牌啟動</span><span>商品上架</span><span>品牌一致</span></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="process-section section-pad" id="process" aria-labelledby="process-title">
-        <div class="section-shell">
-          <div class="section-heading centered">
-            <p class="kicker">合作流程</p>
-            <h2 id="process-title">四步驟，輕鬆取得 AI 商業視覺</h2>
-            <p>從詢價到交付，流程清晰透明。線上設計師會協助確認素材方向與文字內容。</p>
-          </div>
-
-          <div class="process-grid">
-            <article class="process-step">
-              <div class="step-icon">01</div>
-              <h3>提交需求</h3>
-              <p>傳送商品白底圖或隨手拍照片，補上商品名稱、售價、賣點與想要的風格。</p>
-            </article>
-            <article class="process-step">
-              <div class="step-icon gold-step">02</div>
-              <h3>確認報價</h3>
-              <p>我們提供清楚報價，台幣 / 美金方案透明，確認後排入製作。</p>
-            </article>
-            <article class="process-step">
-              <div class="step-icon purple-step">03</div>
-              <h3>設計師 + AI 製作中</h3>
-              <p>線上設計師整理賣點與版面，AI 生成商品視覺圖組，並檢查繁體中文。</p>
-            </article>
-            <article class="process-step">
-              <div class="step-icon green-step">04</div>
-              <h3>交付下載</h3>
-              <p>高清圖片與素材檔打包交付，可直接用於上架平台、社群與廣告。</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="pricing-section section-pad" id="pricing" aria-labelledby="pricing-title">
-        <div class="section-shell">
-          <div class="section-heading centered">
-            <p class="kicker">收費方案</p>
-            <h2 id="pricing-title">
-              <span>透明定價，按需選購</span>
-            </h2>
-            <p>先免費試做，再依需求升級。免棚拍、免後製，線上設計師會協助整理需求與交付檢查。</p>
-          </div>
-
-          <div class="pricing-grid" aria-label="方案價格">
-            <article class="price-card trial-plan">
-              <p class="panel-label">限量免費體驗</p>
-              <h3>免費試做</h3>
-              <p class="plan-intro">1 組 9 張上架圖</p>
-              <p class="price">NT$0</p>
-              <ul class="plan-features">
-                <li>試做 9 張上架圖</li>
-                <li>LINE 交付</li>
-                <li>文案與賣點可協助整理</li>
-                <li>素材足夠即可安排</li>
-              </ul>
-              <a class="button button-secondary" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer" data-plan="免費試做">LINE 申請免費試做</a>
-            </article>
-
-            <article class="price-card">
-              <p class="panel-label">單次購買</p>
-              <h3>上架素材包</h3>
-              <p class="plan-intro">9 張圖・1 個商品</p>
-              <p class="price">NT$399</p>
-              <ul class="plan-features">
-                <li>9 張 AI 商品圖</li>
-                <li>1 個商品</li>
-                <li>繁體中文排版</li>
-                <li>含 1 次微調</li>
-                <li>24hr 交付</li>
-              </ul>
-              <a class="button button-secondary" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer" data-plan="上架素材包">LINE 詢問上架素材包</a>
-            </article>
-
-            <article class="price-card">
-              <p class="panel-label">小賣家首選</p>
-              <h3>入門月包</h3>
-              <p class="plan-intro">每月 30 張圖</p>
-              <p class="price">NT$690 <span>/月</span></p>
-              <ul class="plan-features">
-                <li>每月 30 張商品圖</li>
-                <li>約 3 個商品</li>
-                <li>LINE 交付</li>
-                <li>適合小賣家</li>
-              </ul>
-              <a class="button button-secondary green-button" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer" data-plan="入門月包">LINE 詢問入門月包</a>
-            </article>
-
-            <article class="price-card highlight-plan">
-              <p class="panel-label">主力推薦</p>
-              <h3>商家月包</h3>
-              <p class="plan-intro">每月 90 張圖</p>
-              <p class="price">NT$1,990 <span>/月</span></p>
-              <ul class="plan-features">
-                <li>每月 90 張商品圖</li>
-                <li>約 10 個商品</li>
-                <li>優先製作排程</li>
-                <li>固定品牌視覺風格</li>
-                <li>線上設計師協作</li>
-              </ul>
-              <a class="button button-primary" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer" data-plan="商家月包">LINE 詢問商家月包</a>
-              <p class="saving-note">比單次省 75%</p>
-            </article>
-
-            <article class="price-card brand-plan">
-              <p class="panel-label">品牌專屬</p>
-              <h3>品牌方案</h3>
-              <p class="plan-intro">每月 300 張起</p>
-              <p class="price">NT$6,900 <span>/月起</span></p>
-              <ul class="plan-features">
-                <li>每月 300 張商品圖起</li>
-                <li>多商品批量製作</li>
-                <li>專人 LINE 對接</li>
-                <li>自訂排版模板</li>
-              </ul>
-              <a class="button button-secondary gold-button" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer" data-plan="品牌方案 / 大量商品">LINE 洽詢品牌方案</a>
-            </article>
-          </div>
-
-          <div class="pricing-reminder pricing-notes">
-            <span>免費試做採人工審核，素材足夠優先安排</span>
-            <span>正式上架素材包 NT$399 起</span>
-            <span>大量需求另提專屬報價</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="inquiry-section section-pad" id="inquiry" aria-labelledby="inquiry-title">
-        <div class="section-shell">
-          <form
-            class="inquiry-form"
-            name="adforge-inquiry"
-            method="POST"
-            action="/thanks.html"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            aria-label="詢價資料表單"
-          >
-            <input type="hidden" name="form-name" value="adforge-inquiry" />
-            <p class="hidden-field">
-              <label>不要填寫這欄 <input name="bot-field" /></label>
-            </p>
-            <div class="form-heading">
-              <h2 id="inquiry-title">加入 LINE / 填寫需求資料</h2>
-              <p>想最快開始，請直接加入 LINE 傳商品照片。只傳照片也可以，文案、賣點與風格方向我們可以協助整理。</p>
+              <div class="case-tags"><span>精品</span><span>配戴</span><span>材質</span><span>品牌</span></div>
+              <a href="assets/showcase/ring-grid.jpg" target="_blank" rel="noopener noreferrer">看完整圖組</a>
             </div>
-
-            <div class="form-grid">
-              <label>
-                <span>姓名 / 品牌名稱 *</span>
-                <input type="text" name="name" placeholder="王小明 / BrandName" required />
-              </label>
-              <label>
-                <span>聯絡方式 *</span>
-                <input type="text" name="contact" placeholder="LINE ID / Email / WhatsApp" required />
-              </label>
-              <label class="full-field">
-                <span>電子信箱</span>
-                <input type="email" name="email" placeholder="your@email.com" />
-              </label>
-              <label>
-                <span>需求方案</span>
-                <select name="plan" required>
-                  <option value="">請選擇</option>
-                  <option value="免費試做">免費試做</option>
-                  <option value="上架素材包">上架素材包</option>
-                  <option value="入門月包">入門月包</option>
-                  <option value="商家月包">商家月包</option>
-                  <option value="品牌方案 / 大量商品">品牌方案 / 大量商品</option>
-                </select>
-              </label>
-              <label>
-                <span>主要銷售平台</span>
-                <input type="text" name="platform" placeholder="蝦皮 / 小紅書 / Amazon / TikTok..." />
-              </label>
-              <label class="full-field">
-                <span>商品描述 / 需求說明</span>
-                <textarea name="message" rows="5" placeholder="請簡述商品品類、目標風格、特殊需求（例：質感生活風、日式極簡、歐美電商風）..."></textarea>
-              </label>
-            </div>
-
-            <div class="payment-options" aria-label="付款方式偏好">
-              <span>付款方式偏好</span>
-              <label><input type="radio" name="payment" value="ATM 轉帳" checked /> ATM 轉帳</label>
-              <label><input type="radio" name="payment" value="LINE Pay" /> LINE Pay</label>
-              <label><input type="radio" name="payment" value="PayPal (USD)" /> PayPal (USD)</label>
-              <label><input type="radio" name="payment" value="Wise (USD)" /> Wise (USD)</label>
-            </div>
-
-            <label class="terms-line">
-              <input type="checkbox" name="terms" required />
-              <span>我已閱讀並同意 <a href="terms.html">服務條款</a> 與 <a href="privacy.html">隱私政策</a></span>
-            </label>
-
-            <div class="form-actions">
-              <button class="button button-primary" type="submit">送出需求資料</button>
-              <a class="button button-secondary line-button" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">LINE 傳商品照片</a>
-            </div>
-            <p class="form-note">通常 24 小時內回覆。免費試做可先加入 LINE，收到商品照片後會協助確認是否可製作。</p>
-          </form>
+          </article>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="faq-section section-pad" id="faq" aria-labelledby="faq-title">
-        <div class="section-shell faq-shell">
-          <div class="section-heading centered">
-            <p class="kicker">常見問題</p>
-            <h2 id="faq-title">常見問題</h2>
-          </div>
-
-          <div class="faq-list">
-            <details>
-              <summary>我只有手機隨手拍，可以直接使用嗎？</summary>
-              <p>可以。你只要提供商品照片、商品名稱、售價、三個賣點和想上架的平台，我們會協助整理成可用於商品頁與廣告的素材方向。</p>
-            </details>
-            <details>
-              <summary>生成的商品圖繁體中文會正確嗎？</summary>
-              <p>我們會以繁體中文排版為主，並在交付前檢查主要標題、賣點文字與價格資訊，避免常見亂碼與語意不順。</p>
-            </details>
-            <details>
-              <summary>九張圖裡面可以放一張原始商品照嗎？</summary>
-              <p>可以。若你希望買家看到實拍感，我們可以把其中一張設計成「原始商品照 / 實拍參考」或做成 before-after 對照素材。</p>
-            </details>
-            <details>
-              <summary>交付時間需要多久？</summary>
-              <p>一般單品素材包約 24 至 48 小時交付。若商品資料完整、風格方向清楚，速度會更快；大量商品會另外排程。</p>
-            </details>
-            <details>
-              <summary>可以指定風格嗎？例如日式、歐美、簡約或精品感？</summary>
-              <p>可以。你可以提供參考圖、競品連結或風格關鍵字，我們會依照商品定位整理視覺方向。</p>
-            </details>
-            <details>
-              <summary>可以直接加入 LINE 詢問嗎？</summary>
-              <p>可以。你可以先用 LINE 傳商品照和需求，我們會回覆適合的方案、交付內容與報價。</p>
-            </details>
-          </div>
-        </div>
-      </section>
-
-      <section class="final-section" id="contact" aria-labelledby="final-title">
-        <div class="section-shell final-cta">
-          <p class="kicker">AI 電商視覺・立即開始</p>
-          <div class="final-copy">
-            <h2 id="final-title">
-              <span>一張白底圖，</span>
-              <span>讓 AI 幫你做完剩下的事。</span>
-            </h2>
-            <p class="final-text">
-              不用棚拍・不用攝影師・不用後製<br />
-              電商主圖、九宮格、AI 短片，一站式交付
-            </p>
-            <div class="hero-actions" aria-label="聯絡操作">
-              <a class="button button-primary" href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">加入 LINE，免費試做 9 張上架圖</a>
-              <a class="button button-secondary" href="#pricing">查看收費方案</a>
-            </div>
-            <p class="final-note">免費試做可申請・NT$399 上架素材包・月包 NT$690 起</p>
-          </div>
+    <section class="section pricing-section" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker">Pricing</p>
+          <h2>透明定價，先低成本驗證商品圖有沒有感。</h2>
+          <p>第一階段以模板體驗包為主，適合小賣家先快速把素材做出來。</p>
         </div>
 
-        <footer class="site-footer section-shell">
-          <div class="footer-brand">
-            <span class="brand-logo-mark">
-              <img src="assets/adforge-logo-mark.png" alt="" />
-            </span>
-            <strong>ADFORGE AI</strong>
-            <p>
-              AI 電商素材專家<br />
-              一張商品照，生成 9 張可上架電商素材<br />
-              蝦皮・小紅書・IG・TikTok・跨境電商適用
-            </p>
-          </div>
-          <div class="footer-menu">
-            <strong>服務方案</strong>
-            <a href="#pricing">免費試做 9 張上架圖</a>
-            <a href="#pricing">NT$399 上架素材包</a>
-            <a href="#pricing">NT$690 入門月包</a>
-            <a href="#pricing">NT$1,990 商家月包</a>
-            <a href="#pricing">NT$6,900 品牌方案</a>
-          </div>
-          <div class="footer-menu">
-            <strong>聯絡合作</strong>
-            <a href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">LINE 詢價：@ndb3949k</a>
-            <a href="https://www.instagram.com/adforge.ai/" target="_blank" rel="noreferrer">IG：@adforge.ai</a>
-            <a href="mailto:hello@adforge.ai">Email：hello@adforge.ai</a>
-          </div>
-        </footer>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <p class="plan-label">限時</p>
+            <h3>免費診斷</h3>
+            <strong>前 10 位</strong>
+            <ul>
+              <li>檢查照片是否適合製作</li>
+              <li>建議 9 張圖的方向</li>
+              <li>素材足夠才安排試做</li>
+            </ul>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">加入 LINE</a>
+          </article>
 
-        <footer class="site-footer-bottom section-shell">
-          <span>© 2026 ADFORGE AI・All rights reserved.</span>
-          <div class="footer-links" aria-label="底部社群">
-            <a href="mailto:hello@adforge.ai">Email</a>
-            <a href="https://www.instagram.com/adforge.ai/" target="_blank" rel="noreferrer">Instagram</a>
-            <a href="https://page.line.me/ndb3949k?openQrModal=true" target="_blank" rel="noopener noreferrer">LINE</a>
+          <article class="price-card featured">
+            <p class="plan-label">主力推薦</p>
+            <h3>NT$399 體驗包</h3>
+            <strong>1 商品 / 9 張圖</strong>
+            <ul>
+              <li>9 張模板上架圖</li>
+              <li>24-48 小時交付</li>
+              <li>含 1 次小修</li>
+            </ul>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">訂購體驗包</a>
+          </article>
+
+          <article class="price-card">
+            <p class="plan-label">小批量</p>
+            <h3>NT$999 小批量包</h3>
+            <strong>3 商品 / 各 9 張</strong>
+            <ul>
+              <li>適合新品一批上架</li>
+              <li>同風格批量整理</li>
+              <li>LINE 對稿交付</li>
+            </ul>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">詢問小批量</a>
+          </article>
+
+          <article class="price-card">
+            <p class="plan-label">賣場重整</p>
+            <h3>NT$2,999 商品頁包</h3>
+            <strong>10 商品 / 批量製作</strong>
+            <ul>
+              <li>適合賣場整批優化</li>
+              <li>固定品牌視覺風格</li>
+              <li>可另談月包 NT$6,900+</li>
+            </ul>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">洽談商品頁包</a>
+          </article>
+        </div>
+
+        <p class="pricing-note">不包含複雜修圖、重新攝影、保證銷量、平台審核保證。若照片素材不足，會先回覆建議補拍方式。</p>
+      </div>
+    </section>
+
+    <section class="section flow-section">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker">Workflow</p>
+          <h2>四步驟，拿到可上架素材。</h2>
+        </div>
+        <div class="flow-grid">
+          <article><span>01</span><h3>提交需求</h3><p>加入 LINE，傳商品照片、商品名稱、價格與幾個賣點。</p></article>
+          <article><span>02</span><h3>確認方向</h3><p>我們人工檢查素材，建議 9 張圖的內容與風格。</p></article>
+          <article><span>03</span><h3>AI 製作中</h3><p>AI 輔助生成，設計師校稿文字、版面與商品合理性。</p></article>
+          <article><span>04</span><h3>交付下載</h3><p>提供圖片檔案，可直接用於上架、社群與廣告測試。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" id="faq">
+      <div class="container narrow">
+        <div class="section-head">
+          <p class="kicker">FAQ</p>
+          <h2>常見問題</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>我只有手機隨手拍，可以直接使用嗎？</summary>
+            <p>可以。你先傳照片，我們會判斷素材是否足夠。如果光線太暗、商品被遮住或角度不足，會請你補拍幾張更適合生成的照片。</p>
+          </details>
+          <details>
+            <summary>生成的商品圖繁體中文會正確嗎？</summary>
+            <p>第一階段不是全自動交付，會用設計師人工校稿檢查文字、價格、商品名稱與主要賣點，降低亂碼與錯字風險。</p>
+          </details>
+          <details>
+            <summary>可以指定風格嗎？例如韓系、MUJI、小紅書、精品感？</summary>
+            <p>可以。下單時直接告訴我們希望的風格，也可以丟參考圖。若沒有方向，我們會依商品類型給建議。</p>
+          </details>
+          <details>
+            <summary>可以直接上傳蝦皮、MOMO 或 IG 嗎？</summary>
+            <p>交付會以常用比例為主。若平台有特殊規格，請先告訴我們，會依需求調整輸出尺寸。</p>
+          </details>
+          <details>
+            <summary>為什麼價格比傳統設計便宜？</summary>
+            <p>NT$399 是模板體驗包，重點是快速產出可測試素材，不等於完整客製品牌設計。若需要大量商品或固定品牌風格，建議使用小批量包或月包。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta section" id="contact">
+      <div class="container">
+        <div class="cta-card">
+          <p class="kicker">Start Now</p>
+          <h2>一張白底圖，讓 AI 幫你做完剩下的事。</h2>
+          <p>加入 LINE，直接傳商品照。現在限時免費 10 位診斷，文案與賣點也可以先由我們協助整理。</p>
+          <div class="hero-cta">
+            <a class="button button-primary" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 直接詢問</a>
+            <a class="button button-secondary" href="#cases">查看成果案例</a>
           </div>
-        </footer>
-      </section>
-    </main>
-    <script>
-      document.querySelectorAll('a[href^="https://page.line.me/"]').forEach((link) => {
-        link.addEventListener("click", (event) => {
-          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button > 0) {
-            return;
-          }
+        </div>
+      </div>
+    </section>
+  </main>
 
-          event.preventDefault();
-          window.location.assign(link.href);
-        });
-      });
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="footer-brand" href="#top">
+          <img src="assets/adforge-logo-mark.png" alt="ADFORGE logo">
+          <span>ADFORGE AI</span>
+        </a>
+        <p>AI 電商素材專家。一張商品照，生成 9 張可上架電商素材。</p>
+      </div>
+      <div>
+        <h3>服務方案</h3>
+        <a href="#pricing">NT$399 體驗包</a>
+        <a href="#pricing">NT$999 小批量包</a>
+        <a href="#pricing">NT$2,999 商品頁包</a>
+      </div>
+      <div>
+        <h3>聯絡合作</h3>
+        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE：@ndb3949k</a>
+        <a href="https://www.instagram.com/adforge.ai" target="_blank" rel="noopener noreferrer">IG：@adforge.ai</a>
+        <a href="mailto:hello@adforge.ai">Email：hello@adforge.ai</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 ADFORGE AI</span>
+      <a href="terms.html">服務條款</a>
+      <a href="privacy.html">隱私權政策</a>
+    </div>
+  </footer>
 
-      document.querySelectorAll("[data-plan]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const planSelect = document.querySelector('select[name="plan"]');
-          if (planSelect) {
-            planSelect.value = button.dataset.plan;
-          }
-        });
-      });
-    </script>
-  </body>
+  <a class="floating-line" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 免費試做</a>
+
+  <nav class="mobile-sticky" aria-label="手機快速操作">
+    <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">加入 LINE 免費試做</a>
+    <a href="#pricing">查看價格</a>
+  </nav>
+</body>
 </html>
