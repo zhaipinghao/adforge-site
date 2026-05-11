@@ -8,7 +8,7 @@
 2. 進入 `Project Settings > API`。
 3. 複製：
    - Project URL
-   - anon public key
+   - publishable key，或舊版 Legacy API Keys 裡的 anon public key
 
 目前專案：
 
@@ -17,7 +17,7 @@ Project URL:
 https://vcyuttzpbjfqzelcgurr.supabase.co
 ```
 
-還需要從 Supabase `Project Settings > API` 複製 `anon public` key，貼到 `assets/supabase-config.js`。不要貼 `service_role` key。
+還需要從 Supabase `Project Settings > API Keys` 複製 `publishable key`；如果你的介面顯示 Legacy API Keys，則複製 `anon public` key。貼到 `assets/supabase-config.js`。不要貼 `service_role` key。
 
 把資料填到：
 
@@ -25,11 +25,11 @@ https://vcyuttzpbjfqzelcgurr.supabase.co
 // assets/supabase-config.js
 export const SUPABASE_CONFIG = {
   url: "https://vcyuttzpbjfqzelcgurr.supabase.co",
-  anonKey: "你的 anon public key"
+  anonKey: "你的 publishable key 或 anon public key"
 };
 ```
 
-`anon public key` 可以放在前端，這是 Supabase 設計給瀏覽器使用的公開金鑰。資料安全靠 RLS policy 控制。
+`publishable key / anon public key` 可以放在前端，這是 Supabase 設計給瀏覽器使用的公開金鑰。資料安全靠 RLS policy 控制。
 
 ## 2. 建立資料表
 
