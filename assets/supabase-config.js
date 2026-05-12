@@ -3,5 +3,5 @@ export const SUPABASE_CONFIG = {
   url: "https://vcyuttzpbjfqzelcgurr.supabase.co",
   // Project Settings > API Keys > publishable key, or Legacy API Keys > anon public key.
   // This browser key is safe to expose when Row Level Security is enabled.
-  anonKey: "YOUR_SUPABASE_ANON_PUBLIC_KEY"
+  anonKey: "sb_publishable_fCEgr6qxXB8Lqmh90VRg6Q_Wp9IoYjK"
 };
