@@ -1638,3 +1638,184 @@ a {
     padding: 3px 5px;
   }
 }
+
+/* ================================================
+   暖心 AI 副產品線宣傳區塊 — warmheart-promo
+   ================================================ */
+
+.warmheart-promo {
+  padding: 56px 0;
+}
+
+.warmheart-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 40px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 48px 52px;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.warmheart-card::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(255, 160, 80, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.warmheart-body {
+  max-width: 580px;
+  position: relative;
+  z-index: 1;
+}
+
+.warmheart-body .kicker {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c07a30;
+  margin: 0 0 10px;
+}
+
+.warmheart-body h2 {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 900;
+  color: var(--ink);
+  margin: 0 0 16px;
+  line-height: 1.25;
+}
+
+.warmheart-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 0 0 28px;
+}
+
+.button-warmheart {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: #fff6ed;
+  border: 1.5px solid #e8b87a;
+  color: #a05a1a;
+  font-size: 15px;
+  font-weight: 800;
+  transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.14s;
+  white-space: nowrap;
+}
+
+.button-warmheart:hover {
+  background: #ff9c3a;
+  border-color: #ff9c3a;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.warmheart-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.wh-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  min-width: 200px;
+  transition: border-color 0.16s, box-shadow 0.16s;
+}
+
+.wh-tag:hover {
+  border-color: #e8b87a;
+  box-shadow: 0 4px 16px rgba(200, 120, 40, 0.08);
+}
+
+.wh-tag-icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.wh-tag-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  display: block;
+  line-height: 1.2;
+}
+
+.wh-tag-desc {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.nav-links a[href*="gensparkspace"] {
+  color: #a05a1a;
+  background: #fff8f0;
+}
+
+.nav-links a[href*="gensparkspace"]:hover {
+  color: #ffffff;
+  background: #ff9c3a;
+}
+
+@media (max-width: 860px) {
+  .warmheart-card {
+    grid-template-columns: 1fr;
+    padding: 36px 32px;
+    gap: 28px;
+  }
+
+  .warmheart-tags {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .wh-tag {
+    min-width: 0;
+    flex: 1 1 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .warmheart-card {
+    padding: 28px 20px;
+  }
+
+  .warmheart-tags {
+    flex-direction: column;
+  }
+
+  .wh-tag {
+    width: 100%;
+  }
+
+  .button-warmheart {
+    width: 100%;
+    justify-content: center;
+  }
+}
