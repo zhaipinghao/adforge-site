@@ -1095,7 +1095,8 @@ a {
   opacity: 0.55;
 }
 
-.setup-warning {
+.setup-warning,
+.browser-warning {
   margin-bottom: 18px;
   padding: 14px;
   border: 1px solid #f7c56d;
@@ -1104,15 +1105,22 @@ a {
   background: #fff7e6;
 }
 
-.setup-warning strong {
+.setup-warning strong,
+.browser-warning strong {
   display: block;
   margin-bottom: 6px;
   font-size: 16px;
   font-weight: 900;
 }
 
-.setup-warning p {
+.setup-warning p,
+.browser-warning p {
   margin: 0;
+}
+
+.browser-warning p {
+  line-height: 1.65;
+  margin-bottom: 12px;
 }
 
 .login-gate,

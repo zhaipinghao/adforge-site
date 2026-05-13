@@ -10,6 +10,8 @@ const configured =
 
 const elements = {
   setupWarning: document.querySelector("#setup-warning"),
+  browserWarning: document.querySelector("#browser-warning"),
+  copyAppUrlButton: document.querySelector("#copy-app-url-button"),
   signedOutView: document.querySelector("#signed-out-view"),
   signedInView: document.querySelector("#signed-in-view"),
   googleLoginButton: document.querySelector("#google-login-button"),
@@ -32,8 +34,10 @@ const elements = {
 
 let supabaseClient = null;
 let currentUser = null;
+const inBlockedInAppBrowser = isBlockedInAppBrowser();
 
 applyPackageFromUrl();
+showBrowserWarningIfNeeded();
 
 if (!configured) {
   elements.setupWarning.hidden = false;
@@ -74,6 +78,12 @@ async function boot() {
 elements.googleLoginButton.addEventListener("click", async () => {
   if (!supabaseClient) return;
 
+  if (inBlockedInAppBrowser) {
+    showBrowserWarningIfNeeded();
+    setStatus("目前是在 App 內建瀏覽器，Google 會封鎖登入。請複製網址後用 Safari 或 Chrome 開啟。", "error");
+    return;
+  }
+
   const redirectUrl = new URL(window.location.href);
   redirectUrl.hash = "";
   const { error } = await supabaseClient.auth.signInWithOAuth({
@@ -89,6 +99,18 @@ elements.googleLoginButton.addEventListener("click", async () => {
 elements.signOutButton.addEventListener("click", async () => {
   if (!supabaseClient) return;
   await supabaseClient.auth.signOut();
+});
+
+elements.copyAppUrlButton?.addEventListener("click", async () => {
+  const url = new URL(window.location.href);
+  url.hash = "";
+
+  try {
+    await navigator.clipboard.writeText(url.toString());
+    setStatus("已複製會員中心網址，請貼到 Safari 或 Chrome 開啟。", "success");
+  } catch (_error) {
+    setStatus(`請手動複製網址：${url.toString()}`, "muted");
+  }
 });
 
 elements.refreshOrdersButton.addEventListener("click", loadOrders);
@@ -185,6 +207,18 @@ function applyPackageFromUrl() {
   if (option) {
     elements.packageSelect.value = packageType;
   }
+}
+
+function isBlockedInAppBrowser() {
+  const ua = navigator.userAgent || "";
+  return /Line|FBAN|FBAV|Instagram|MicroMessenger|TikTok|Twitter|Threads|Messenger/i.test(ua);
+}
+
+function showBrowserWarningIfNeeded() {
+  if (!elements.browserWarning || !inBlockedInAppBrowser) return;
+
+  elements.browserWarning.hidden = false;
+  elements.googleLoginButton.textContent = "請用 Safari / Chrome 登入";
 }
 
 function setOrderFormAvailability(enabled) {
