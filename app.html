@@ -40,12 +40,45 @@
   <main class="app-main">
     <section class="app-hero">
       <div class="container app-hero-grid">
-        <div>
+        <div class="app-hero-copy">
           <p class="eyebrow">Member Center</p>
-          <h1>登入後建立商品圖訂單，我們用 LINE 人工接手。</h1>
-          <p class="lead">這一版先不做付款。客人可以用 Google 登入、留下商品需求、建立訂單，資料會寫入 Supabase，後續由設計師確認素材與報價。</p>
+          <h1><span class="app-title-line">建立第一組</span><span class="app-title-line">商品圖需求。</span></h1>
+          <p class="lead">登入後填商品資料，我們會用 LINE 確認照片、風格與報價，再安排設計師製作 9 張上架素材。</p>
+          <div class="app-hero-actions" aria-label="會員中心主要操作">
+            <a class="button button-primary" href="#order-form">開始建立訂單</a>
+            <a class="button button-secondary" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 免費試做</a>
+          </div>
+          <div class="app-process-strip" aria-label="下單流程">
+            <article>
+              <span>01</span>
+              <strong>Google 登入</strong>
+              <small>建立會員資料</small>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>填寫需求</strong>
+              <small>選方案與風格</small>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>LINE 傳圖</strong>
+              <small>補商品照片</small>
+            </article>
+            <article>
+              <span>04</span>
+              <strong>人工確認</strong>
+              <small>回覆報價與排程</small>
+            </article>
+          </div>
         </div>
         <div class="auth-card">
+          <div class="auth-card-head">
+            <span class="auth-mark">AF</span>
+            <div>
+              <strong>ADFORGE Account</strong>
+              <small>會員登入與訂單入口</small>
+            </div>
+          </div>
           <div class="setup-warning" id="setup-warning" hidden>
             <strong>會員中心設定中</strong>
             <p>目前線上訂單系統正在接資料庫。你仍可先用 LINE 聯絡，我們會人工協助建立需求。</p>
@@ -63,6 +96,11 @@
             <p>登入後會自動建立會員資料，接著可以送出第一筆商品圖需求。</p>
             <button class="button button-primary app-button" id="google-login-button" type="button">使用 Google 登入</button>
             <a class="button button-secondary app-button" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">先用 LINE 詢問</a>
+            <div class="auth-trust">
+              <span>會員資料保存</span>
+              <span>LINE 人工接手</span>
+              <span>報價確認後製作</span>
+            </div>
           </div>
 
           <div id="signed-in-view" hidden>
@@ -150,14 +188,14 @@
         </form>
 
         <aside class="app-panel">
-          <p class="kicker">MVP Scope</p>
-          <h2>這版先驗證三件事</h2>
+          <p class="kicker">Service Flow</p>
+          <h2>下單後我們會怎麼處理</h2>
           <div class="scope-list">
-            <article><strong>01</strong><span>客人能不能順利用 Google 登入。</span></article>
-            <article><strong>02</strong><span>客人是否願意留下商品需求資料。</span></article>
-            <article><strong>03</strong><span>我們能不能把 LINE 詢問轉成訂單紀錄。</span></article>
+            <article><strong>01</strong><span>確認照片是否適合做成 9 張上架素材。</span></article>
+            <article><strong>02</strong><span>整理主圖、賣點、情境、廣告與促銷方向。</span></article>
+            <article><strong>03</strong><span>回覆報價與製作排程，再由設計師接手。</span></article>
           </div>
-          <p class="panel-note">付款、點數扣款、AI 自動生成、後台審核，都先留到下一階段。現在先把登入、留資料、建立訂單跑通。</p>
+          <p class="panel-note">目前先人工確認素材與方案，避免客戶買錯方案或照片不適合製作。確認後再安排付款與製作。</p>
         </aside>
       </div>
     </section>
@@ -180,6 +218,11 @@
       </div>
     </section>
   </main>
+
+  <div class="app-mobile-bar" aria-label="會員中心快速操作">
+    <a href="#order-form">建立訂單</a>
+    <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 免費試做</a>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script type="module" src="assets/app.js"></script>
