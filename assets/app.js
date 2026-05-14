@@ -58,11 +58,20 @@ if (!configured) {
   setOrderFormAvailability(false);
   setStatus("Supabase SDK 載入失敗，暫時無法登入或建立訂單。", "error");
 } else {
-  supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+  supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey, {
+    auth: {
+      detectSessionInUrl: true,
+      flowType: "pkce",
+      persistSession: true,
+      autoRefreshToken: true
+    }
+  });
   boot();
 }
 
 async function boot() {
+  await exchangeOAuthCodeIfPresent();
+
   const { data, error } = await supabaseClient.auth.getSession();
   if (error) {
     setStatus(`讀取登入狀態失敗：${error.message}`, "error");
@@ -86,17 +95,54 @@ elements.googleLoginButton.addEventListener("click", async () => {
     return;
   }
 
-  const redirectUrl = new URL(window.location.href);
-  redirectUrl.hash = "";
+  const redirectUrl = new URL("app.html", window.location.origin);
+  const currentPackage = new URLSearchParams(window.location.search).get("package");
+  if (currentPackage) redirectUrl.searchParams.set("package", currentPackage);
   const { error } = await supabaseClient.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo: redirectUrl.toString() }
+    options: {
+      redirectTo: redirectUrl.toString(),
+      queryParams: {
+        access_type: "offline",
+        prompt: "select_account"
+      }
+    }
   });
 
   if (error) {
     setStatus(friendlyError(error, "Google 登入失敗，請改用 Safari 或 Chrome 再試一次。"), "error");
   }
 });
+
+async function exchangeOAuthCodeIfPresent() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const oauthError = params.get("error") || params.get("error_description");
+
+  if (oauthError) {
+    setStatus(`Google 登入沒有完成：${decodeURIComponent(oauthError)}`, "error");
+    clearOAuthParams(params);
+    return;
+  }
+
+  if (!code) return;
+
+  const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
+  if (error) {
+    setStatus(friendlyError(error, "Google 登入授權已返回，但會員資料交換失敗，請重新登入。"), "error");
+    return;
+  }
+
+  clearOAuthParams(params);
+}
+
+function clearOAuthParams(params) {
+  ["code", "error", "error_description", "state"].forEach((key) => params.delete(key));
+  const cleanUrl = new URL(window.location.href);
+  cleanUrl.search = params.toString();
+  cleanUrl.hash = "";
+  window.history.replaceState({}, document.title, cleanUrl.toString());
+}
 
 elements.signOutButton.addEventListener("click", async () => {
   if (!supabaseClient) return;
