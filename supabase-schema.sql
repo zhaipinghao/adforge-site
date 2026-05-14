@@ -10,6 +10,7 @@ create table if not exists public.profiles (
   name text,
   display_name text,
   line_id text,
+  role text not null default 'member',
   credits integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -53,8 +54,13 @@ create table if not exists public.orders (
 alter table public.profiles
   add column if not exists name text,
   add column if not exists line_id text,
+  add column if not exists role text not null default 'member',
   add column if not exists credits integer not null default 0,
   add column if not exists updated_at timestamptz not null default now();
+
+alter table public.profiles
+  drop constraint if exists profiles_role_check,
+  add constraint profiles_role_check check (role in ('member', 'admin'));
 
 alter table public.orders
   add column if not exists contact_name text,
