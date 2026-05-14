@@ -1,6 +1,9 @@
 -- ADFORGE AI minimal member/order schema.
 -- Run this in Supabase SQL Editor after creating the project and enabling Google provider.
 
+-- Admin allowlist used by RLS policies. Keep this in sync with assets/admin.js.
+-- Current owner/admin Google account: b989010@gmail.com
+
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text,
@@ -27,6 +30,7 @@ create table if not exists public.orders (
   deadline text,
   image_link text,
   notes text,
+  admin_notes text,
   payment_status text not null default 'not_required',
   status text not null default 'pending' check (
     status in ('pending', 'confirmed', 'making', 'done', 'new', 'reviewing', 'quoted', 'in_progress', 'delivered', 'cancelled')
@@ -48,6 +52,7 @@ alter table public.orders
   add column if not exists target_style text,
   add column if not exists deadline text,
   add column if not exists image_link text,
+  add column if not exists admin_notes text,
   add column if not exists payment_status text not null default 'not_required';
 
 alter table public.orders
@@ -99,6 +104,11 @@ create policy "Users can read own orders"
   on public.orders for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Admins can read all orders" on public.orders;
+create policy "Admins can read all orders"
+  on public.orders for select
+  using (lower(auth.jwt() ->> 'email') = 'b989010@gmail.com');
+
 drop policy if exists "Users can create own orders" on public.orders;
 create policy "Users can create own orders"
   on public.orders for insert
@@ -106,11 +116,18 @@ create policy "Users can create own orders"
 
 drop policy if exists "Users can update own draft orders" on public.orders;
 
+drop policy if exists "Admins can update order status" on public.orders;
+create policy "Admins can update order status"
+  on public.orders for update
+  using (lower(auth.jwt() ->> 'email') = 'b989010@gmail.com')
+  with check (lower(auth.jwt() ->> 'email') = 'b989010@gmail.com');
+
 revoke update on public.orders from authenticated;
 revoke update on public.profiles from authenticated;
 grant select, insert on public.profiles to authenticated;
 grant select, insert on public.orders to authenticated;
 grant update (id, email, name, display_name, line_id, updated_at) on public.profiles to authenticated;
+grant update (status, admin_notes, updated_at) on public.orders to authenticated;
 
 create or replace function public.package_amount(package text)
 returns integer

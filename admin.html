@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>訂單後台｜ADFORGE AI</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="assets/adforge-logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .admin-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .admin-toolbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-status {
+      color: var(--muted);
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .admin-status[data-type="error"] {
+      color: #b42318;
+    }
+
+    .admin-status[data-type="success"] {
+      color: #0f8a4b;
+    }
+
+    .admin-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .admin-table th {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--surface-soft);
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .admin-order-no {
+      display: block;
+      color: var(--primary);
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .admin-muted {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .admin-table select,
+    .admin-table textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+      font-weight: 700;
+      padding: 10px 12px;
+    }
+
+    .admin-table textarea {
+      min-height: 76px;
+      resize: vertical;
+      font-weight: 600;
+    }
+
+    .admin-save-button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      padding: 0 18px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .admin-save-button:disabled {
+      cursor: progress;
+      opacity: 0.55;
+    }
+
+    @media (max-width: 720px) {
+      .admin-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body class="app-body">
+  <header class="site-header platform-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="回到 ADFORGE AI 首頁">
+        <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
+        <span>
+          <strong>ADFORGE</strong>
+          <small>訂單後台</small>
+        </span>
+      </a>
+
+      <nav class="nav-links platform-nav" aria-label="後台導覽">
+        <a href="index.html">首頁</a>
+        <a href="app.html">會員中心</a>
+        <a href="tools.html">模板庫</a>
+        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="header-button" id="admin-sign-out" type="button" hidden>登出</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="app-hero">
+      <div class="container app-hero-grid">
+        <div class="app-hero-copy">
+          <p class="eyebrow">Admin Console</p>
+          <h1><span class="app-title-line">ADFORGE</span><span class="app-title-line">訂單管理。</span></h1>
+          <p class="lead">查看會員送出的商品圖需求，更新製作狀態與內部備註。這頁只開放指定管理員 Google 帳號使用。</p>
+        </div>
+
+        <div class="auth-card" id="admin-login-card">
+          <div class="auth-card-head">
+            <span class="auth-mark">AF</span>
+            <div>
+              <strong>管理員登入</strong>
+              <small>Google 帳號驗證</small>
+            </div>
+          </div>
+          <p>請用授權的管理員 Email 登入，才能讀取全部訂單。</p>
+          <button class="button button-primary app-button" id="admin-login" type="button">使用 Google 登入後台</button>
+          <p class="form-status" id="admin-login-status" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section app-section" id="admin-orders" hidden>
+      <div class="container">
+        <div class="admin-toolbar">
+          <div>
+            <p class="kicker">Orders</p>
+            <h2>全部訂單</h2>
+            <p class="admin-status" id="admin-status" role="status">尚未載入。</p>
+          </div>
+          <div class="admin-toolbar-actions">
+            <button class="button button-secondary" id="admin-refresh" type="button">重新整理</button>
+            <a class="button button-primary" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">前往 LINE</a>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>時間 / 編號</th>
+                <th>客戶</th>
+                <th>商品 / 方案</th>
+                <th>平台</th>
+                <th>狀態</th>
+                <th>內部備註</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="admin-order-list">
+              <tr>
+                <td colspan="7">載入中...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="assets/admin.js"></script>
+</body>
+</html>
