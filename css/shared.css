@@ -1,0 +1,5 @@
+/* Shared stylesheet entrypoint for ADFORGE static pages.
+   The existing page styles are kept behind one stable URL while the site
+   migrates from separate page CSS files into a single design system. */
+@import url("../styles.css");
+@import url("../tools-styles.css");

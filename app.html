@@ -10,10 +10,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/shared.css">
 </head>
 <body class="app-body">
-  <header class="site-header">
+  <header class="site-header platform-header">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="回到 ADFORGE AI 首頁">
         <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
@@ -23,16 +23,44 @@
         </span>
       </a>
 
-      <nav class="nav-links" aria-label="會員中心導覽">
-        <a href="index.html">官網首頁</a>
+      <nav class="nav-links platform-nav" aria-label="會員中心導覽">
+        <details class="mega-menu">
+          <summary>所有功能 <span aria-hidden="true">⌄</span></summary>
+          <div class="mega-panel">
+            <div class="mega-grid">
+              <a class="mega-link" href="index.html#product-tools"><strong>AI 商品圖</strong><span>一張照片生成 9 張上架素材</span></a>
+              <a class="mega-link" href="index.html#product-tools"><strong>九宮格商品頁</strong><span>主圖、賣點、情境、促銷</span></a>
+              <a class="mega-link" href="index.html#ad-tools"><strong>Banner / 廣告圖</strong><span>FB、IG、Threads 測試素材</span></a>
+              <a class="mega-link" href="index.html#social-tools"><strong>社群封面</strong><span>小紅書、TikTok、Reels 封面</span></a>
+              <a class="mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
+              <a class="mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
+            </div>
+            <a class="mega-feature" href="index.html#tools">回到服務工具 →</a>
+          </div>
+        </details>
+        <a href="index.html">首頁</a>
+        <a href="index.html#about">關於我們</a>
+        <a href="tools.html">電商學院</a>
         <a href="#order-form">建立訂單</a>
         <a href="#orders">我的訂單</a>
-        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 客服</a>
       </nav>
 
       <div class="header-actions">
         <button class="header-button" id="sign-out-button" type="button" hidden>登出</button>
         <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
+        <details class="mobile-menu">
+          <summary aria-label="開啟功能選單">☰</summary>
+          <div class="mobile-drawer">
+            <div class="drawer-title">ADFORGE 工具箱</div>
+            <a href="index.html#product-tools"><strong>AI 商品圖</strong><span>9 張上架素材</span></a>
+            <a href="index.html#product-tools"><strong>九宮格</strong><span>商品頁標準圖組</span></a>
+            <a href="index.html#ad-tools"><strong>Banner</strong><span>廣告與活動素材</span></a>
+            <a href="index.html#social-tools"><strong>Threads / 小紅書</strong><span>社群封面與貼文</span></a>
+            <a href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡</span></a>
+            <a href="tools.html"><strong>模板庫</strong><span>台灣爆款方向</span></a>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer"><strong>LINE 接單</strong><span>傳照片免費診斷</span></a>
+          </div>
+        </details>
       </div>
     </div>
   </header>
