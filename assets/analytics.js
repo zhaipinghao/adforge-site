@@ -1,10 +1,34 @@
 window.adforgeTrack = function adforgeTrack(eventName, params = {}) {
-  if (typeof window.gtag !== "function") return;
-  window.gtag("event", eventName, {
+  const payload = {
     page_path: window.location.pathname,
     ...params
-  });
+  };
+
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, payload);
+  }
+
+  trackMetaEvent(eventName, payload);
 };
+
+function trackMetaEvent(eventName, params = {}) {
+  if (typeof window.fbq !== "function") return;
+
+  if (eventName === "payment_initiated") {
+    window.fbq("track", "InitiateCheckout", {
+      value: Number(params.value || 0),
+      currency: params.currency || "TWD",
+      content_name: params.package_type || "ADFORGE order"
+    });
+  }
+
+  if (eventName === "payment_success") {
+    window.fbq("track", "Purchase", {
+      value: Number(params.value || 0),
+      currency: params.currency || "TWD"
+    });
+  }
+}
 
 document.addEventListener("click", (event) => {
   const lineLink = event.target.closest('a[href*="page.line.me/ndb3949k"], a[href*="line.me"], a[href^="line://"]');

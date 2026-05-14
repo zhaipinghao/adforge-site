@@ -54,11 +54,4 @@ function trackPaymentInitiated(packageType, amount) {
     });
   }
 
-  if (typeof window.fbq === "function") {
-    window.fbq("track", "InitiateCheckout", {
-      value: Number(amount || 0),
-      currency: "TWD",
-      content_name: packageType || "ADFORGE order"
-    });
-  }
 }
