@@ -4,6 +4,7 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text,
+  name text,
   display_name text,
   line_id text,
   credits integer not null default 0,
@@ -27,14 +28,15 @@ create table if not exists public.orders (
   image_link text,
   notes text,
   payment_status text not null default 'not_required',
-  status text not null default 'new' check (
-    status in ('new', 'reviewing', 'quoted', 'in_progress', 'delivered', 'cancelled')
+  status text not null default 'pending' check (
+    status in ('pending', 'confirmed', 'making', 'done', 'new', 'reviewing', 'quoted', 'in_progress', 'delivered', 'cancelled')
   ),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.profiles
+  add column if not exists name text,
   add column if not exists line_id text,
   add column if not exists credits integer not null default 0,
   add column if not exists updated_at timestamptz not null default now();
@@ -47,6 +49,15 @@ alter table public.orders
   add column if not exists deadline text,
   add column if not exists image_link text,
   add column if not exists payment_status text not null default 'not_required';
+
+alter table public.orders
+  alter column status set default 'pending';
+
+alter table public.orders
+  drop constraint if exists orders_status_check,
+  add constraint orders_status_check check (
+    status in ('pending', 'confirmed', 'making', 'done', 'new', 'reviewing', 'quoted', 'in_progress', 'delivered', 'cancelled')
+  );
 
 alter table public.orders
   drop constraint if exists orders_package_type_check,
@@ -99,7 +110,7 @@ revoke update on public.orders from authenticated;
 revoke update on public.profiles from authenticated;
 grant select, insert on public.profiles to authenticated;
 grant select, insert on public.orders to authenticated;
-grant update (id, email, display_name, line_id, updated_at) on public.profiles to authenticated;
+grant update (id, email, name, display_name, line_id, updated_at) on public.profiles to authenticated;
 
 create or replace function public.package_amount(package text)
 returns integer
@@ -124,7 +135,7 @@ begin
 
   if tg_op = 'INSERT' then
     new.payment_status = 'not_required';
-    new.status = 'new';
+    new.status = 'pending';
   end if;
 
   return new;
@@ -163,14 +174,16 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, display_name)
+  insert into public.profiles (id, email, name, display_name)
   values (
     new.id,
     new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', ''),
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', '')
   )
   on conflict (id) do update
     set email = excluded.email,
+        name = excluded.name,
         display_name = excluded.display_name,
         updated_at = now();
 

@@ -1,6 +1,7 @@
 import { SUPABASE_CONFIG } from "./supabase-config.js";
 
 const LINE_URL = "https://page.line.me/ndb3949k";
+const PROFILE_FALLBACK_COLUMNS = "id,email,display_name,line_id,credits";
 const configured =
   SUPABASE_CONFIG.url.startsWith("https://") &&
   SUPABASE_CONFIG.url.endsWith(".supabase.co") &&
@@ -92,7 +93,7 @@ elements.googleLoginButton.addEventListener("click", async () => {
   });
 
   if (error) {
-    setStatus(`Google 登入失敗：${error.message}`, "error");
+    setStatus(friendlyError(error, "Google 登入失敗，請改用 Safari 或 Chrome 再試一次。"), "error");
   }
 });
 
@@ -146,7 +147,7 @@ elements.orderForm.addEventListener("submit", async (event) => {
     image_link: String(formData.get("image_link") || "").trim(),
     notes: String(formData.get("notes") || "").trim(),
     payment_status: "not_required",
-    status: "new"
+    status: "pending"
   };
 
   if (!payload.product_name || !payload.package_type) {
@@ -156,20 +157,34 @@ elements.orderForm.addEventListener("submit", async (event) => {
 
   elements.submitOrderButton.disabled = true;
   setStatus("正在建立訂單...", "muted");
+  trackEvent("start_order", {
+    package_type: payload.package_type,
+    platform: payload.platform || "未填"
+  });
 
-  const { error } = await supabaseClient.from("orders").insert(payload);
+  const { data: createdOrder, error } = await supabaseClient
+    .from("orders")
+    .insert(payload)
+    .select("id,order_no")
+    .single();
   elements.submitOrderButton.disabled = false;
 
   if (error) {
-    setStatus(`建立訂單失敗：${error.message}。請確認已在 Supabase 執行 supabase-schema.sql。`, "error");
+    setStatus(friendlyError(error, "建立訂單失敗，請確認商品名稱、方案已填寫，或稍後改用 LINE 傳資料。"), "error");
     return;
   }
 
   await updateProfileFromOrder(payload);
   elements.orderForm.reset();
   applyPackageFromUrl();
-  setStatus(`已建立訂單 ${payload.order_no}，請到 LINE 傳商品照片。`, "success");
-  showLineHandoff(payload.order_no);
+  const orderNo = createdOrder?.order_no || payload.order_no;
+  setStatus(`已建立訂單 ${orderNo}，請到 LINE 傳商品照片。`, "success");
+  showLineHandoff(orderNo);
+  trackEvent("submit_order_success", {
+    order_no: orderNo,
+    package_type: payload.package_type,
+    platform: payload.platform || "未填"
+  });
   await loadOrders();
 });
 
@@ -240,22 +255,37 @@ function hideLineHandoff() {
 }
 
 async function ensureProfile(user) {
-  const displayName = user.user_metadata?.full_name || user.user_metadata?.name || "";
-  await supabaseClient.from("profiles").upsert(
-    {
-      id: user.id,
-      email: user.email,
-      display_name: displayName,
-      updated_at: new Date().toISOString()
-    },
-    { onConflict: "id" }
-  );
+  const name = user.user_metadata?.full_name || user.user_metadata?.name || "";
+  const profile = {
+    id: user.id,
+    email: user.email,
+    name,
+    display_name: name,
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = await supabaseClient.from("profiles").upsert(profile, { onConflict: "id" });
+  if (!error) return;
+
+  if (isMissingColumnError(error, "name")) {
+    const { name: _name, ...fallbackProfile } = profile;
+    const { error: fallbackError } = await supabaseClient
+      .from("profiles")
+      .upsert(fallbackProfile, { onConflict: "id" });
+
+    if (!fallbackError) return;
+    setStatus(friendlyError(fallbackError, "會員資料建立失敗，請稍後再試。"), "error");
+    return;
+  }
+
+  setStatus(friendlyError(error, "會員資料建立失敗，請稍後再試。"), "error");
 }
 
 async function updateProfileFromOrder(order) {
   const patch = {
     id: currentUser.id,
     email: currentUser.email,
+    name: order.contact_name || currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || "",
     updated_at: new Date().toISOString()
   };
 
@@ -263,20 +293,31 @@ async function updateProfileFromOrder(order) {
   if (order.line_id) patch.line_id = order.line_id;
 
   const { error } = await supabaseClient.from("profiles").upsert(patch, { onConflict: "id" });
-  if (error) {
-    setStatus(`訂單已建立，但會員資料更新失敗：${error.message}`, "error");
+  if (!error) return;
+
+  if (isMissingColumnError(error, "name")) {
+    const { name: _name, ...fallbackPatch } = patch;
+    const { error: fallbackError } = await supabaseClient
+      .from("profiles")
+      .upsert(fallbackPatch, { onConflict: "id" });
+
+    if (!fallbackError) return;
+    setStatus(friendlyError(fallbackError, "訂單已建立，但會員資料暫時無法更新。"), "error");
+    return;
   }
+
+  setStatus(friendlyError(error, "訂單已建立，但會員資料暫時無法更新。"), "error");
 }
 
 async function loadProfile(userId) {
   const { data, error } = await supabaseClient
     .from("profiles")
-    .select("id,email,display_name,line_id,credits")
+    .select(PROFILE_FALLBACK_COLUMNS)
     .eq("id", userId)
     .maybeSingle();
 
   if (error) {
-    setStatus(`讀取會員資料失敗：${error.message}`, "error");
+    setStatus(friendlyError(error, "讀取會員資料失敗，請重新整理頁面。"), "error");
     return null;
   }
 
@@ -295,7 +336,7 @@ async function loadOrders() {
   if (error) {
     elements.ordersList.innerHTML = "";
     elements.ordersEmpty.hidden = false;
-    elements.ordersEmpty.textContent = `讀取訂單失敗：${error.message}`;
+    elements.ordersEmpty.textContent = friendlyError(error, "讀取訂單失敗，請稍後重新整理。");
     return;
   }
 
@@ -367,6 +408,10 @@ function formatAmount(value) {
 
 function labelStatus(value) {
   return {
+    pending: "待確認",
+    confirmed: "已確認",
+    making: "製作中",
+    done: "已完成",
     new: "新需求",
     reviewing: "確認素材",
     quoted: "已報價",
@@ -379,6 +424,48 @@ function labelStatus(value) {
 function setStatus(message, type = "muted") {
   elements.formStatus.textContent = message;
   elements.formStatus.dataset.type = type;
+}
+
+function friendlyError(error, fallback) {
+  const message = String(error?.message || "");
+
+  if (/violates row-level security|row-level security/i.test(message)) {
+    return "目前帳號權限還沒開通，請確認已登入同一個 Google 帳號，或先用 LINE 傳資料。";
+  }
+
+  if (/duplicate key|already exists/i.test(message)) {
+    return "這筆訂單編號已存在，請再送出一次。";
+  }
+
+  if (/network|fetch|failed to fetch/i.test(message)) {
+    return "網路連線不穩，請重新整理後再試一次。";
+  }
+
+  if (/column .* does not exist|schema cache/i.test(message)) {
+    return "資料庫欄位尚未同步，請先重新執行 Supabase SQL 設定檔。";
+  }
+
+  if (/check constraint|violates check/i.test(message)) {
+    return "訂單欄位格式與資料庫設定不一致，請先確認方案或狀態欄位設定。";
+  }
+
+  return fallback;
+}
+
+function isMissingColumnError(error, columnName) {
+  const message = String(error?.message || "");
+  return message.includes(`'${columnName}'`) || message.includes(`"${columnName}"`) || message.includes(`column ${columnName}`);
+}
+
+function trackEvent(name, params = {}) {
+  if (typeof window.adforgeTrack === "function") {
+    window.adforgeTrack(name, params);
+    return;
+  }
+
+  if (typeof window.gtag === "function") {
+    window.gtag("event", name, params);
+  }
 }
 
 function escapeHtml(value) {
