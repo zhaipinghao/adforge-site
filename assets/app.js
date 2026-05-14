@@ -129,6 +129,12 @@ async function exchangeOAuthCodeIfPresent() {
 
   const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
   if (error) {
+    const { data } = await supabaseClient.auth.getSession();
+    if (data?.session?.user) {
+      clearOAuthParams(params);
+      return;
+    }
+
     setStatus(friendlyError(error, "Google 登入授權已返回，但會員資料交換失敗，請重新登入。"), "error");
     return;
   }
