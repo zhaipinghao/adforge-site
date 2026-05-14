@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>付款完成｜ADFORGE AI</title>
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" href="../../assets/adforge-logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <link rel="stylesheet" href="../../css/shared.css">
+</head>
+<body class="app-body">
+  <main class="app-main">
+    <section class="app-hero">
+      <div class="container">
+        <div class="auth-card" style="max-width: 720px; margin: 0 auto;">
+          <div class="auth-card-head">
+            <span class="auth-mark">AF</span>
+            <div>
+              <strong>ADFORGE AI</strong>
+              <small>付款結果</small>
+            </div>
+          </div>
+          <p class="auth-label">Payment Received</p>
+          <h1 style="font-size:clamp(32px,5vw,56px);line-height:1.05;margin:0 0 18px;">已收到付款結果</h1>
+          <p id="payment-message" style="color:var(--muted);font-size:18px;line-height:1.8;">綠界正在通知系統更新訂單狀態。若你已完成付款，下一步請到 LINE 傳商品照片。</p>
+          <div class="next-step-card" style="display:block;">
+            <strong id="order-no">訂單編號確認中</strong>
+            <p>請到 LINE 傳商品原圖、商品名稱、價格與想強調的賣點，我們會人工確認素材並開始排程。</p>
+            <a class="button button-primary app-button" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">前往 LINE 傳照片</a>
+            <a class="button button-secondary app-button" href="../../app.html">回會員中心</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../../assets/analytics.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const orderNo = params.get("order_no") || params.get("MerchantTradeNo") || "";
+    const amount = Number(params.get("amount") || params.get("TradeAmt") || 0);
+    if (orderNo) document.querySelector("#order-no").textContent = `訂單 ${orderNo}`;
+    if (typeof window.adforgeTrack === "function") {
+      window.adforgeTrack("payment_success", {
+        order_no: orderNo || "unknown",
+        value: amount,
+        currency: "TWD"
+      });
+    }
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "Purchase", {
+        value: amount,
+        currency: "TWD"
+      });
+    }
+  </script>
+</body>
+</html>

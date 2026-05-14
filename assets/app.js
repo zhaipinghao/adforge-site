@@ -1,3 +1,4 @@
+import { startEcpayCheckout } from "./ecpay.js";
 import { SUPABASE_CONFIG } from "./supabase-config.js";
 
 const LINE_URL = "https://page.line.me/ndb3949k";
@@ -146,7 +147,6 @@ elements.orderForm.addEventListener("submit", async (event) => {
     deadline: String(formData.get("deadline") || "").trim(),
     image_link: String(formData.get("image_link") || "").trim(),
     notes: String(formData.get("notes") || "").trim(),
-    payment_status: "not_required",
     status: "pending"
   };
 
@@ -165,7 +165,7 @@ elements.orderForm.addEventListener("submit", async (event) => {
   const { data: createdOrder, error } = await supabaseClient
     .from("orders")
     .insert(payload)
-    .select("id,order_no")
+    .select("id,order_no,package_type,amount_ntd,payment_status")
     .single();
   elements.submitOrderButton.disabled = false;
 
@@ -178,14 +178,34 @@ elements.orderForm.addEventListener("submit", async (event) => {
   elements.orderForm.reset();
   applyPackageFromUrl();
   const orderNo = createdOrder?.order_no || payload.order_no;
-  setStatus(`已建立訂單 ${orderNo}，請到 LINE 傳商品照片。`, "success");
-  showLineHandoff(orderNo);
   trackEvent("submit_order_success", {
     order_no: orderNo,
     package_type: payload.package_type,
     platform: payload.platform || "未填"
   });
   await loadOrders();
+
+  const amount = Number(createdOrder?.amount_ntd ?? payload.amount_ntd ?? 0);
+  if (amount > 0) {
+    setStatus(`已建立訂單 ${orderNo}，正在前往綠界付款...`, "success");
+
+    try {
+      await startEcpayCheckout({
+        supabaseClient,
+        orderId: createdOrder.id,
+        orderNo,
+        packageType: payload.package_type,
+        amount
+      });
+    } catch (checkoutError) {
+      setStatus(friendlyError(checkoutError, "付款頁建立失敗。訂單已保留，請稍後重試或直接到 LINE 傳照片讓我們協助。"), "error");
+      showLineHandoff(orderNo, "付款尚未完成，訂單");
+    }
+    return;
+  }
+
+  setStatus(`已建立訂單 ${orderNo}，請到 LINE 傳商品照片。`, "success");
+  showLineHandoff(orderNo);
 });
 
 async function renderAuthState() {
@@ -245,9 +265,9 @@ function setOrderFormAvailability(enabled) {
     });
 }
 
-function showLineHandoff(orderNo) {
+function showLineHandoff(orderNo, titlePrefix = "訂單") {
   elements.lineHandoff.hidden = false;
-  elements.lineHandoffTitle.textContent = `訂單 ${orderNo} 已建立`;
+  elements.lineHandoffTitle.textContent = `${titlePrefix} ${orderNo} 已建立`;
 }
 
 function hideLineHandoff() {
@@ -329,7 +349,7 @@ async function loadOrders() {
 
   const { data, error } = await supabaseClient
     .from("orders")
-    .select("id,order_no,product_name,package_type,platform,status,amount_ntd,payment_status,created_at")
+    .select("id,order_no,product_name,package_type,platform,status,amount_ntd,payment_status,created_at,paid_at")
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false });
 
@@ -363,7 +383,7 @@ function renderOrder(order) {
       </div>
       <div>
         <span>${escapeHtml(order.platform || "未填平台")}</span>
-        <small>${date}・${formatAmount(order.amount_ntd)}</small>
+        <small>${date}・${formatAmount(order.amount_ntd)}・${escapeHtml(labelPaymentStatus(order.payment_status))}</small>
       </div>
       <mark>${escapeHtml(labelStatus(order.status))}</mark>
     </article>
@@ -419,6 +439,18 @@ function labelStatus(value) {
     delivered: "已交付",
     cancelled: "已取消"
   }[value] || value;
+}
+
+function labelPaymentStatus(value) {
+  return {
+    not_required: "免付款",
+    pending: "待付款",
+    checkout_created: "付款中",
+    paid: "已付款",
+    failed: "付款失敗",
+    expired: "付款逾期",
+    refunded: "已退款"
+  }[value] || value || "待確認";
 }
 
 function setStatus(message, type = "muted") {
