@@ -10,10 +10,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <!-- GA4 tracking -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HX5JWFTK45"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HX5JWFTK45');
+  </script>
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+    (window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '452503793580179');
+    fbq('track', 'PageView');
+  </script>
+  <link rel="stylesheet" href="css/shared.css">
 </head>
 <body class="app-body">
-  <header class="site-header">
+  <header class="site-header platform-header">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="回到 ADFORGE AI 首頁">
         <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
@@ -23,16 +41,44 @@
         </span>
       </a>
 
-      <nav class="nav-links" aria-label="會員中心導覽">
-        <a href="index.html">官網首頁</a>
+      <nav class="nav-links platform-nav" aria-label="會員中心導覽">
+        <details class="mega-menu">
+          <summary>所有功能 <span aria-hidden="true">⌄</span></summary>
+          <div class="mega-panel">
+            <div class="mega-grid">
+              <a class="mega-link" href="index.html#product-tools"><strong>AI 商品圖</strong><span>一張照片生成 9 張上架素材</span></a>
+              <a class="mega-link" href="index.html#product-tools"><strong>九宮格商品頁</strong><span>主圖、賣點、情境、促銷</span></a>
+              <a class="mega-link" href="index.html#ad-tools"><strong>Banner / 廣告圖</strong><span>FB、IG、Threads 測試素材</span></a>
+              <a class="mega-link" href="index.html#social-tools"><strong>社群封面</strong><span>小紅書、TikTok、Reels 封面</span></a>
+              <a class="mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
+              <a class="mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
+            </div>
+            <a class="mega-feature" href="index.html#tools">回到服務工具 →</a>
+          </div>
+        </details>
+        <a href="index.html">首頁</a>
+        <a href="index.html#about">關於我們</a>
+        <a href="tools.html">電商學院</a>
         <a href="#order-form">建立訂單</a>
         <a href="#orders">我的訂單</a>
-        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 客服</a>
       </nav>
 
       <div class="header-actions">
         <button class="header-button" id="sign-out-button" type="button" hidden>登出</button>
         <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
+        <details class="mobile-menu">
+          <summary aria-label="開啟功能選單">☰</summary>
+          <div class="mobile-drawer">
+            <div class="drawer-title">ADFORGE 工具箱</div>
+            <a href="index.html#product-tools"><strong>AI 商品圖</strong><span>9 張上架素材</span></a>
+            <a href="index.html#product-tools"><strong>九宮格</strong><span>商品頁標準圖組</span></a>
+            <a href="index.html#ad-tools"><strong>Banner</strong><span>廣告與活動素材</span></a>
+            <a href="index.html#social-tools"><strong>Threads / 小紅書</strong><span>社群封面與貼文</span></a>
+            <a href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡</span></a>
+            <a href="tools.html"><strong>模板庫</strong><span>台灣爆款方向</span></a>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer"><strong>LINE 接單</strong><span>傳照片免費診斷</span></a>
+          </div>
+        </details>
       </div>
     </div>
   </header>
@@ -43,7 +89,7 @@
         <div class="app-hero-copy">
           <p class="eyebrow">Member Center</p>
           <h1><span class="app-title-line">建立第一組</span><span class="app-title-line">商品圖需求。</span></h1>
-          <p class="lead">登入後填商品資料，我們會用 LINE 確認照片、風格與報價，再安排設計師製作 9 張上架素材。</p>
+          <p class="lead">登入後填商品資料，免費診斷可直接送出；付費方案會先建立訂單，再前往綠界付款，最後到 LINE 傳商品照片。</p>
           <div class="app-hero-actions" aria-label="會員中心主要操作">
             <a class="button button-primary" href="#order-form">開始建立訂單</a>
             <a class="button button-secondary" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 免費試做</a>
@@ -67,7 +113,7 @@
             <article>
               <span>04</span>
               <strong>人工確認</strong>
-              <small>回覆報價與排程</small>
+              <small>付款或人工確認</small>
             </article>
           </div>
         </div>
@@ -127,7 +173,7 @@
         <form class="app-panel order-panel" id="order-form">
           <p class="kicker">Create Order</p>
           <h2>建立商品圖需求</h2>
-          <p class="panel-note">先留下需求，不收款。送出後會建立訂單編號，我們再到 LINE 或 Email 人工確認素材是否適合製作。</p>
+          <p class="panel-note">免費診斷不收款；付費方案會建立訂單編號後前往綠界付款。付款或送出後，請到 LINE 傳商品照片讓我們確認素材。</p>
           <div class="login-gate" id="login-gate">
             <strong>請先使用 Google 登入</strong>
             <span>登入後就能建立訂單，避免資料只留在 LINE 對話裡。</span>
@@ -195,7 +241,7 @@
             <article><strong>02</strong><span>整理主圖、賣點、情境、廣告與促銷方向。</span></article>
             <article><strong>03</strong><span>回覆報價與製作排程，再由設計師接手。</span></article>
           </div>
-          <p class="panel-note">目前先人工確認素材與方案，避免客戶買錯方案或照片不適合製作。確認後再安排付款與製作。</p>
+          <p class="panel-note">免費診斷先人工確認素材；付費方案付款後仍會檢查照片品質，避免文字亂碼、比例錯誤或賣點不清楚。</p>
         </aside>
       </div>
     </section>
@@ -225,6 +271,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/analytics.js" defer></script>
   <script type="module" src="assets/app.js"></script>
 </body>
 </html>
