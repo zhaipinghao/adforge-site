@@ -175,6 +175,7 @@ elements.orderForm.addEventListener("submit", async (event) => {
   }
 
   await updateProfileFromOrder(payload);
+  notifyNewOrder(createdOrder?.id);
   elements.orderForm.reset();
   applyPackageFromUrl();
   const orderNo = createdOrder?.order_no || payload.order_no;
@@ -364,6 +365,18 @@ async function loadOrders() {
   elements.ordersEmpty.hidden = data.length > 0;
   elements.ordersEmpty.textContent = "目前還沒有訂單。登入後送出第一筆商品需求，這裡就會出現紀錄。";
   elements.ordersList.innerHTML = data.map(renderOrder).join("");
+}
+
+async function notifyNewOrder(orderId) {
+  if (!orderId || !supabaseClient) return;
+
+  try {
+    await supabaseClient.functions.invoke("notify-order", {
+      body: { order_id: orderId }
+    });
+  } catch (_error) {
+    // Notification failure should not block order creation or payment.
+  }
 }
 
 function renderOrder(order) {
