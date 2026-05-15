@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ADFORGE AI 商品素材工廠</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">AF</span>
+          <div>
+            <strong>ADFORGE</strong>
+            <small>台灣電商 AI 商品素材工廠</small>
+          </div>
+        </div>
+        <div class="top-actions">
+          <a href="https://page.line.me/ndb3949k" target="_blank" rel="noreferrer">LINE 接單</a>
+          <a href="mailto:hello@adforge.ai">Email</a>
+        </div>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Prompt Pack {{ prompt_system_version }}</p>
+        <h1>一張商品照，生成 10 張可接單素材</h1>
+        <p class="hero-copy">
+          固定模板、固定風格、可回溯 Prompt。先從 AI 接案服務跑通，未來再升級成會員、點數、金流與 API 的 SaaS 平台。
+        </p>
+        <div class="status-row">
+          <span class="status-pill">{{ "AI 模式已可用" if has_api_key else "目前是 Demo / 內部接單模式" }}</span>
+          <span class="status-pill muted">輸出 ZIP + prompts-used.txt + Prompt 紀錄</span>
+        </div>
+      </section>
+
+      {% if error %}
+        <div class="alert error">{{ error }}</div>
+      {% endif %}
+
+      {% if not has_api_key %}
+        <div class="alert warning">
+          目前尚未設定 OpenAI API key，所以只會產出 Demo 排版預覽與 ZIP。正式 AI 生圖請在 `.env` 設定
+          `OPENAI_API_KEY` 後選「AI 生成」。
+        </div>
+      {% endif %}
+
+      {% if result and result.errors %}
+        <div class="alert warning">
+          有部分 AI 圖片呼叫失敗，已自動用 Demo 預覽補上。
+          <details>
+            <summary>查看錯誤內容</summary>
+            {% for item in result.errors %}
+              <pre>{{ item }}</pre>
+            {% endfor %}
+          </details>
+        </div>
+      {% endif %}
+
+      <section class="workflow" aria-label="接單流程">
+        <article>
+          <span>01</span>
+          <strong>接單資料</strong>
+          <small>LINE / Email / 訂單編號</small>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>商品 Brief</strong>
+          <small>平台、賣點、禁用事項</small>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>AI 生成</strong>
+          <small>10 張固定模板</small>
+        </article>
+        <article>
+          <span>04</span>
+          <strong>人工 QC</strong>
+          <small>變形、文案、宣稱風險</small>
+        </article>
+        <article>
+          <span>05</span>
+          <strong>交付 ZIP</strong>
+          <small>圖片 + Prompt 紀錄</small>
+        </article>
+      </section>
+
+      <section class="tool-panel" aria-label="商品素材生成器">
+        <form class="generator-form" action="{{ url_for('generate') }}" method="post" enctype="multipart/form-data">
+          <aside class="upload-card">
+            <label class="drop-zone" for="product_image">
+              <input id="product_image" name="product_image" type="file" accept="image/png,image/jpeg,image/webp" required />
+              <img id="preview" alt="" />
+              <span class="drop-copy">
+                <strong>上傳商品照片</strong>
+                <small>JPG / PNG / WebP，單張先測</small>
+              </span>
+            </label>
+            <div class="output-list">
+              <strong>固定輸出 10 張</strong>
+              <ol>
+                <li>首圖</li>
+                <li>使用情境</li>
+                <li>材質細節</li>
+                <li>賣點圖</li>
+                <li>尺寸圖</li>
+                <li>對比圖</li>
+                <li>禮物感</li>
+                <li>品牌感</li>
+                <li>廣告感</li>
+                <li>Threads風格圖</li>
+              </ol>
+            </div>
+          </aside>
+
+          <div class="form-stack">
+            <fieldset>
+              <legend>接單資料</legend>
+              <div class="field-grid">
+                <label>
+                  <span>訂單編號</span>
+                  <input name="order_id" placeholder="留空會自動建立 ADG-..." />
+                </label>
+                <label>
+                  <span>客戶名稱</span>
+                  <input name="customer_name" placeholder="王小明 / 品牌名稱" />
+                </label>
+                <label>
+                  <span>LINE ID</span>
+                  <input name="customer_line" placeholder="@ndb3949k / 客戶 LINE" />
+                </label>
+                <label>
+                  <span>Email</span>
+                  <input name="contact_email" type="email" placeholder="client@email.com" />
+                </label>
+                <label>
+                  <span>主要平台</span>
+                  <input name="platform" value="蝦皮 / IG / Threads" />
+                </label>
+                <label>
+                  <span>方案</span>
+                  <select name="package_name">
+                    <option>免費試做 10 位</option>
+                    <option selected>NT$399 體驗包</option>
+                    <option>NT$999 小批量包</option>
+                    <option>NT$2,999 商品頁素材包</option>
+                    <option>NT$6,900+ 品牌月包</option>
+                  </select>
+                </label>
+                <label class="span-2">
+                  <span>訂單狀態</span>
+                  <select name="order_status">
+                    <option selected>新詢問</option>
+                    <option>已收素材</option>
+                    <option>資料不足</option>
+                    <option>可製作</option>
+                    <option>製作中</option>
+                    <option>待審核</option>
+                    <option>待修改</option>
+                    <option>已交付</option>
+                    <option>不適合製作</option>
+                    <option>已付款</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>商品 Brief</legend>
+              <div class="field-grid">
+                <label>
+                  <span>商品名稱</span>
+                  <input name="product_name" value="灰藍短版拉鍊衫" />
+                </label>
+                <label>
+                  <span>商品類型</span>
+                  <input name="category" value="服飾 / 生活用品" />
+                </label>
+                <label>
+                  <span>目標客群</span>
+                  <input name="audience" value="蝦皮賣家、IG品牌、小電商" />
+                </label>
+                <label>
+                  <span>風格模板</span>
+                  <select name="style_preset">
+                    {% for preset in style_presets %}
+                      <option value="{{ preset.key }}" {% if preset.key == "apple" %}selected{% endif %}>
+                        {{ preset.name }}｜{{ preset.description }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </label>
+                <label class="span-2">
+                  <span>底部主標</span>
+                  <input name="bottom_slogan" value="一張圖，整理成一套可上架素材" />
+                </label>
+                <label>
+                  <span>尺寸資訊</span>
+                  <input name="dimensions" value="尺寸、版型與比例清楚呈現" />
+                </label>
+                <label>
+                  <span>材質 / 細節</span>
+                  <input name="material" value="材質紋理、細節與質感清楚看見" />
+                </label>
+                <label class="span-2">
+                  <span>對比方向</span>
+                  <input name="comparison" value="升級前後差異、使用前後或情境對比" />
+                </label>
+                <label class="span-2">
+                  <span>主要賣點</span>
+                  <textarea name="features" rows="4">商品主體清楚
+材質細節
+使用情境
+尺寸比例
+品牌質感
+促銷亮點
+社群封面
+可直接上架</textarea>
+                </label>
+                <label class="span-2">
+                  <span>整體風格補充</span>
+                  <input name="tone" value="極簡、高級、乾淨、台灣電商可上架" />
+                </label>
+                <label class="span-2">
+                  <span>不可出現 / 禁用事項</span>
+                  <textarea name="forbidden" rows="3">不可改變商品外觀
+不可加入不存在功能
+不可生成假 Logo、假認證或誇大療效</textarea>
+                </label>
+                <label class="span-2">
+                  <span>購買提醒 / 備註</span>
+                  <textarea name="notes" rows="3">請以實際商品為主
+不誇大功效
+文案可後續人工校稿</textarea>
+                </label>
+                <label class="span-2">
+                  <span>交付備註</span>
+                  <textarea name="delivery_note" rows="2" placeholder="例如：先給 LINE 預覽圖，再給 ZIP 下載連結"></textarea>
+                </label>
+              </div>
+            </fieldset>
+
+            <details class="advanced">
+              <summary>進階生成設定</summary>
+              <div class="settings-row">
+                <label>
+                  <span>生成模式</span>
+                  <select name="mode" id="modeSelect">
+                    <option value="auto" {% if has_api_key %}selected{% endif %}>自動</option>
+                    <option value="ai">AI 生成</option>
+                    <option value="demo" {% if not has_api_key %}selected{% endif %}>Demo 排版預覽</option>
+                  </select>
+                </label>
+                <label>
+                  <span>模型</span>
+                  <input name="model" value="{{ default_model }}" />
+                </label>
+                <label>
+                  <span>品質</span>
+                  <select name="quality">
+                    <option value="low" selected>low</option>
+                    <option value="medium">medium</option>
+                    <option value="high">high</option>
+                    <option value="auto">auto</option>
+                  </select>
+                </label>
+                <label>
+                  <span>併發</span>
+                  <select name="concurrency">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </label>
+                <input type="hidden" name="size" value="1024x1024" />
+              </div>
+            </details>
+
+            <button class="submit-button" type="submit">
+              <span id="submitTitle">生成 10 張素材</span>
+              <small id="submitHint">完成後自動打包 ZIP，並保存 Prompt 紀錄</small>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {% if result %}
+        <section class="result-panel" aria-label="生成結果">
+          <div class="result-head">
+            <div>
+              <p class="eyebrow">{{ result.mode }} / {{ result.model }} / {{ result.style }}</p>
+              <h2>已完成 10 張圖片</h2>
+              <p>訂單：{{ result.order_id }}｜批次：{{ result.run_id }}</p>
+            </div>
+            <a class="download-button" href="{{ result.zip_url }}">下載 ZIP</a>
+          </div>
+          <div class="asset-grid">
+            {% for asset in result.assets %}
+              <article class="asset-card">
+                <img src="{{ asset.url }}" alt="{{ asset.title }}" />
+                <div>
+                  <strong>{{ asset.title }}</strong>
+                  <a href="{{ asset.url }}" target="_blank" rel="noreferrer">開啟圖片</a>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    </main>
+
+    <div class="sticky-submit">
+      <button type="button" id="stickyButton">生成 10 張素材</button>
+    </div>
+
+    <div class="loading-mask" id="loadingMask" aria-live="polite">
+      <div>
+        <span class="spinner"></span>
+        <strong id="loadingTitle">正在生成 10 張圖</strong>
+        <small id="loadingHint">請保持此頁開著。</small>
+      </div>
+    </div>
+
+    <script>
+      const hasApiKey = {{ "true" if has_api_key else "false" }};
+      const fileInput = document.querySelector("#product_image");
+      const preview = document.querySelector("#preview");
+      const dropCopy = document.querySelector(".drop-copy");
+      const form = document.querySelector(".generator-form");
+      const loadingMask = document.querySelector("#loadingMask");
+      const modeSelect = document.querySelector("#modeSelect");
+      const submitTitle = document.querySelector("#submitTitle");
+      const submitHint = document.querySelector("#submitHint");
+      const loadingTitle = document.querySelector("#loadingTitle");
+      const loadingHint = document.querySelector("#loadingHint");
+      const stickyButton = document.querySelector("#stickyButton");
+
+      function selectedMode() {
+        const mode = modeSelect?.value || "auto";
+        if (mode === "auto") return hasApiKey ? "ai" : "demo";
+        return mode;
+      }
+
+      function syncModeCopy() {
+        const mode = selectedMode();
+        if (mode === "ai") {
+          submitTitle.textContent = "AI 正式生成 10 張素材";
+          submitHint.textContent = "會呼叫 API，完成後保存 Prompt 紀錄與 ZIP";
+          loadingTitle.textContent = "正在 AI 生成 10 張素材";
+          loadingHint.textContent = "正式生圖可能需要幾分鐘，請保持此頁開著。";
+        } else {
+          submitTitle.textContent = "產出 Demo 排版預覽";
+          submitHint.textContent = "不花 API 額度，會保存 Prompt 紀錄與 ZIP";
+          loadingTitle.textContent = "正在產出 Demo 排版";
+          loadingHint.textContent = "這次只會產出版型預覽，不會重新生成商品情境照。";
+        }
+        stickyButton.textContent = submitTitle.textContent;
+      }
+
+      modeSelect?.addEventListener("change", syncModeCopy);
+      syncModeCopy();
+
+      fileInput?.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+        dropCopy?.classList.add("has-file");
+      });
+
+      stickyButton?.addEventListener("click", () => form?.requestSubmit());
+
+      form?.addEventListener("submit", (event) => {
+        if (!hasApiKey && selectedMode() === "ai") {
+          event.preventDefault();
+          alert("目前還沒有設定 OpenAI API key，所以不能跑 AI 正式生成。請先選 Demo 排版預覽，或設定 .env 裡的 OPENAI_API_KEY。");
+          return;
+        }
+        syncModeCopy();
+        loadingMask.classList.add("is-visible");
+      });
+    </script>
+  </body>
+</html>

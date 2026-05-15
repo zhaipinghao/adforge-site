@@ -21,14 +21,14 @@ const TEMPLATE_DB = {
   ───────────────────────────────────────────── */
   tags: {
     image:  ["電商首圖","社群封面","廣告素材","品牌視覺","情境場景","白底商品","Banner","節慶促銷"],
-    prompt: ["商品文案","SEO標題","社群貼文","創意發想","賣點拆解","短影音腳本","品牌定調","競品分析"],
+    prompt: ["商品文案","SEO標題","社群貼文","創意發想","賣點拆解","短影音腳本","品牌定調","競品分析","台灣爆款","Threads靈感","人物寫真","AI繪圖"],
     video:  ["開箱短片","痛點引入","Before/After","產品展示","教學型","限時優惠","UGC風格","Reels封面"],
   },
 
   /* ─────────────────────────────────────────────
      平台標籤
   ───────────────────────────────────────────── */
-  platforms: ["全平台","蝦皮","小紅書","TikTok","Instagram","Facebook","YouTube Shorts","MOMO","LINE"],
+  platforms: ["全平台","蝦皮","小紅書","TikTok","Instagram","Facebook","Threads","YouTube Shorts","MOMO","LINE"],
 
   /* ─────────────────────────────────────────────
      模板資料
@@ -463,7 +463,7 @@ const TEMPLATE_DB = {
    統計資料（用於 Hero 區塊展示）
 ────────────────────────────────────────────── */
 const STATS = [
-  { value: "60+",   label: "爆款模板",    icon: "◈" },
+  { value: "28",    label: "爆款模板",    icon: "◈" },
   { value: "3",     label: "資料庫類型",  icon: "⊞" },
   { value: "每週",  label: "持續更新",    icon: "↻" },
   { value: "免費",  label: "複製使用",    icon: "✦" },
@@ -473,8 +473,385 @@ const STATS = [
    Hero 標語候選（JS 隨機輪換）
 ────────────────────────────────────────────── */
 const HERO_HIGHLIGHTS = [
-  "Prompt 模板",
-  "AI 圖片模板",
-  "短影音腳本",
-  "爆款素材庫",
+  "Prompt 庫",
+  "AI 圖片",
+  "短影音",
+  "爆款庫",
+  "Threads 爆款",
 ];
+
+/* ──────────────────────────────────────────────
+   Google Sheet 靈感整理：Threads / 小紅書 / AI 圖片 prompt
+   注意：已改寫成 ADFORGE 可公開使用的模板，未直接照搬來源原文。
+────────────────────────────────────────────── */
+TEMPLATE_DB.templates.push(
+  {
+    id: "prompt-threads-001",
+    category: "prompt",
+    badge: "NEW",
+    title: "醜萌塗鴉迷因風",
+    subtitle: "Messy Doodle Meme",
+    desc: "把照片改成蠟筆手繪、比例笨拙、帶童趣的迷因感圖，適合親子梗、Threads 日常梗圖。",
+    tags: ["AI繪圖","Threads靈感","社群貼文","台灣爆款"],
+    platforms: ["Threads","Instagram","小紅書"],
+    ratio: "1:1 / 4:5",
+    level: "基礎",
+    uses: 326,
+    preview_gradient: "linear-gradient(135deg,#eef5ff 0%,#d9e9ff 100%)",
+    preview_icon: "✎",
+    preview_color: "#2f66f4",
+    prompt_template: `請把上傳照片改造成一張「醜萌塗鴉迷因風」圖片。
+
+保留主體身份與主要輪廓，但讓畫面像用便宜彩色筆、蠟筆快速畫出的草圖。
+風格要凌亂、粗糙、童趣、比例略微尷尬，線條可以不完美，表情可稍微誇張。
+
+畫面要求：
+- 加入簡單卡通背景，例如街道、房間、樹木、招牌或日常小物。
+- 上色不均勻，保留明顯筆觸。
+- 加入少量隨手線條、手繪小符號、笨拙但可愛的細節。
+
+避免：
+- 不要太寫實。
+- 不要精緻插畫感。
+- 不要變成高級商業海報。
+
+輸出比例：1:1 或 4:5。
+適合用途：Threads 梗圖、親子社群、日常互動貼文。`,
+  },
+  {
+    id: "prompt-threads-002",
+    category: "prompt",
+    badge: "HOT",
+    title: "賽車直播女友鏡頭",
+    subtitle: "Racing Broadcast Paddock",
+    desc: "方程式賽車直播截圖感，適合人物寫真、社群爆款劇情圖；車隊、名字、排名都可替換。",
+    tags: ["AI繪圖","人物寫真","Threads靈感","台灣爆款"],
+    platforms: ["Threads","Instagram","小紅書"],
+    ratio: "16:9",
+    level: "進階",
+    uses: 412,
+    preview_gradient: "linear-gradient(135deg,#edf4ff 0%,#cfe0ff 100%)",
+    preview_icon: "▣",
+    preview_color: "#5b8af0",
+    prompt_template: `使用上傳照片作為人物參考，生成一張「方程式賽車直播畫面截圖」。
+
+場景：
+人物坐在賽車隊車庫或 VIP 圍場中，戴著車隊無線電耳機，正在看最後一圈直播監視器。
+表情要緊張、自豪、專注，像官方轉播鏡頭意外捕捉到的名場面。
+
+人物：
+- 保留上傳照片的臉部特徵、髮型、膚色與氣質。
+- 穿著乾淨俐落的背心或外套，可搭配車隊風格夾克、金屬飾品、窄版通行證。
+- 不要自拍角度，不要假大型證件。
+
+畫面元素：
+- 加入直播介面：FINAL LAP、LIVE、車手排名塔、底部姓名條。
+- 車庫技師、螢幕、設備做背景虛化。
+- 長焦直播鏡頭、數位噪點、壓縮痕跡、明亮棚燈、自然膚質。
+
+可替換欄位：
+車隊名稱：{{車隊}}
+人物姓名：{{名字}}
+排名資訊：{{排名}}
+
+輸出比例：16:9。
+適合用途：Threads 爆款圖、人物寫真、社群故事圖。`,
+  },
+  {
+    id: "prompt-threads-003",
+    category: "prompt",
+    badge: "HOT",
+    title: "K-pop 結尾妖精鏡頭",
+    subtitle: "K-pop Ending Fairy",
+    desc: "把人物照片變成韓國音樂節目結尾鏡頭，適合個人形象、偶像感短影音封面。",
+    tags: ["AI繪圖","人物寫真","Threads靈感","社群貼文"],
+    platforms: ["Threads","Instagram","小紅書","TikTok"],
+    ratio: "9:16 / 4:5",
+    level: "進階",
+    uses: 538,
+    preview_gradient: "linear-gradient(135deg,#f4f7ff 0%,#dce8ff 100%)",
+    preview_icon: "✦",
+    preview_color: "#6d7df6",
+    prompt_template: `使用上傳照片作為人物參考，生成寫實的 K-pop 音樂節目「結尾妖精」畫面。
+
+畫面設定：
+人物在表演剛結束後，以近距離直播鏡頭直視攝影機。
+表情自然、溫柔、自信，帶有表演後微微喘息的真實感。
+
+動作：
+- 只使用 1 到 2 個自然小手勢，例如手指愛心、輕揮手、V 字手、整理頭髮或輕碰臉頰。
+- 不要同時塞滿所有手勢。
+- 頭髮可被舞台微風吹動。
+
+舞台：
+- 背景是紫色、粉色、藍色 LED 燈光散景。
+- 高品質音樂節目轉播感、臉部焦點銳利、舞台妝容有光澤。
+
+限制：
+- 保留人物臉型、五官、髮型、妝容與身份。
+- 不添加額外人物。
+- 不扭曲手指、眼睛、嘴巴。
+
+適合用途：TikTok 封面、小紅書人物圖、Threads 互動圖。`,
+  },
+  {
+    id: "prompt-threads-004",
+    category: "prompt",
+    badge: "NEW",
+    title: "手寫註解日記塗鴉",
+    subtitle: "Handwritten Story Notes",
+    desc: "在照片上加手繪線條、箭頭與生活感短句，做成 IG 限動或小紅書日記感素材。",
+    tags: ["AI繪圖","社群貼文","Threads靈感","小紅書"],
+    platforms: ["Instagram","小紅書","Threads"],
+    ratio: "4:5 / 9:16",
+    level: "基礎",
+    uses: 641,
+    preview_gradient: "linear-gradient(135deg,#f7fbff 0%,#e2eeff 100%)",
+    preview_icon: "✍",
+    preview_color: "#2f66f4",
+    prompt_template: `請分析上傳照片中的物件與場景，加入自然的手寫註解與手繪裝飾。
+
+風格：
+- 像 IG 限時動態的白色手寫筆。
+- 線條要自然、略有粗細變化，不要像向量圖太整齊。
+- 保留照片本身的真實感，只做輕量裝飾。
+
+註解規則：
+- 飲料：描述味道、溫度、喝下去的感覺。
+- 食物：描述口感、美味程度與當下心情。
+- 空間：描述光線、氛圍、放鬆感。
+- 整體：最後加一句日記感短句。
+
+可加入：
+箭頭、虛線、愛心、閃光、蒸氣、小表情，但不要太多。
+
+文字語氣：
+短句、自然、像自言自語。
+例如：今天剛剛好、這口很舒服、好想停在這一刻。
+
+適合用途：IG 限動、小紅書生活筆記、Threads 日常圖。`,
+  },
+  {
+    id: "prompt-threads-005",
+    category: "prompt",
+    badge: "PRO",
+    title: "電影級人像拼貼",
+    subtitle: "Cinematic Collage Portrait",
+    desc: "把人物照做成雜誌級拼貼藝術：紙張、雙重曝光、手寫痕跡、低飽和電影色。",
+    tags: ["AI繪圖","人物寫真","品牌定調","Threads靈感"],
+    platforms: ["Instagram","小紅書","Threads"],
+    ratio: "4:5",
+    level: "品牌級",
+    uses: 489,
+    preview_gradient: "linear-gradient(135deg,#eef4ff 0%,#d6e5ff 100%)",
+    preview_icon: "◫",
+    preview_color: "#5b8af0",
+    prompt_template: `使用上傳照片作為主體人物，生成一張電影級人像拼貼藝術作品。
+
+主體：
+- 保留人物原本臉部特徵、五官、姿勢與氣質。
+- 不改變身份，不變成其他人。
+- 保留真實皮膚紋理與寫實攝影感。
+
+視覺風格：
+藝術攝影、拼貼混合媒材、復古紙張、時尚雜誌、雙重曝光。
+
+構圖：
+- 人物與背景自然融合。
+- 加入不規則拼貼、破碎幾何、半透明圖層、撕裂紙邊。
+- 畫面要有秩序中的藝術混亂感。
+
+材質：
+舊紙張、手寫字跡、筆記殘影、水彩暈染、顏料刷痕、灰塵、刮痕、底片顆粒。
+
+光線與色調：
+自然側光或逆光、金色時刻、柔和高光、低飽和復古色、米色、灰藍、淡橘、暖棕。
+
+避免：
+卡通、動漫、3D 渲染、塑膠皮膚、過度磨皮、假 HDR、過度乾淨。`,
+  },
+  {
+    id: "prompt-threads-006",
+    category: "prompt",
+    badge: "NEW",
+    title: "照片互動手繪小畫",
+    subtitle: "Interactive Doodle Overlay",
+    desc: "讓手繪圖案跟照片主體互動，例如跟著姿勢、延伸動作、放大情緒。",
+    tags: ["AI繪圖","社群貼文","創意發想","Threads靈感"],
+    platforms: ["Threads","Instagram","小紅書"],
+    ratio: "1:1 / 4:5",
+    level: "基礎",
+    uses: 377,
+    preview_gradient: "linear-gradient(135deg,#f4f8ff 0%,#dceaff 100%)",
+    preview_icon: "✐",
+    preview_color: "#4a77e8",
+    prompt_template: `分析上傳圖片，保留原始主體、構圖與光線，不改變主體身份或結構。
+
+請加入有趣的手繪小圖案，並讓這些圖案直接與主體互動。
+
+互動方式可以包含：
+- 沿著人物或商品姿勢加動作線。
+- 模仿主體的表情或動作。
+- 誇張延伸手勢、肢體、物品輪廓。
+- 加入想像中的小角色、小符號、小箭頭或情緒氣泡。
+
+視覺要求：
+- 手繪元素要像直接畫在照片上。
+- 不要使用固定口號。
+- 依照片內容自動生成背景意識與小笑點。
+- 保留照片質感，不要讓塗鴉喧賓奪主。
+
+適合用途：Threads 互動圖、IG 限動、小紅書生活趣味圖。`,
+  },
+  {
+    id: "prompt-threads-007",
+    category: "prompt",
+    badge: "HOT",
+    title: "美式獨立電影角色海報",
+    subtitle: "Indie Film Character Poster",
+    desc: "做出像獨立電影角色海報的社群圖，有復古底片、街頭時尚與人物故事。",
+    tags: ["AI繪圖","人物寫真","品牌定調","台灣爆款"],
+    platforms: ["Instagram","Threads","小紅書"],
+    ratio: "4:5",
+    level: "進階",
+    uses: 563,
+    preview_gradient: "linear-gradient(135deg,#eef5ff 0%,#d7e5ff 100%)",
+    preview_icon: "▤",
+    preview_color: "#2f66f4",
+    prompt_template: `使用上傳照片建立一張「美式獨立電影角色海報」。
+
+主角設定：
+請依照片人物氣質設定角色身份。人物要自然、自信、不過度擺拍。
+
+場景：
+都市街景、復古咖啡館、黃昏路口、霓虹反光或清晨街道。
+
+視覺：
+- 現代生活風格肖像。
+- 美式獨立電影感。
+- 大膽雜誌式構圖。
+- 復古 Kodak 底片顆粒。
+- 深橘、褪色藍、奶油白配色。
+- 撕裂紙張拼貼與手寫麥克筆點綴。
+
+文字排版：
+名字：{{人物名稱}}
+海報標題：{{一句角色標語}}
+簡介：{{兩行角色故事}}
+標籤：#視覺敘事 #城市氛圍 #獨立電影 #慢節奏瞬間
+
+輸出比例：4:5。
+適合用途：人物品牌、Threads 爆款圖、社群封面。`,
+  },
+  {
+    id: "prompt-threads-008",
+    category: "prompt",
+    badge: "PRO",
+    title: "黑色和服 Quiet Luxury 寫真",
+    subtitle: "Quiet Luxury Night Portrait",
+    desc: "低調奢華、黑色和服、夜間豪華車與時尚雜誌感，適合高級人像劇情圖。",
+    tags: ["AI繪圖","人物寫真","品牌定調","Threads靈感"],
+    platforms: ["Instagram","Threads","小紅書"],
+    ratio: "4:5 / 9:16",
+    level: "品牌級",
+    uses: 291,
+    preview_gradient: "linear-gradient(135deg,#eaf2ff 0%,#d0e0ff 100%)",
+    preview_icon: "◆",
+    preview_color: "#5b8af0",
+    prompt_template: `依照上傳照片保留人物五官、輪廓、臉型與氣質，生成一張低調奢華夜間寫真。
+
+角色：
+人物穿著精緻黑色花紋和服，盤髮，瀏海自然垂下，表情冷靜、優雅、克制。
+
+場景：
+夜晚高級商務車旁或車內下車瞬間，背景是都市上流夜生活氛圍。
+
+視覺風格：
+- Quiet Luxury 低調奢華。
+- 高級時尚雜誌大片。
+- 電影級寫實攝影。
+- 柔和夜間光線、底片顆粒、真實皮膚細節。
+- 黑色、深灰、暖金作為主色。
+
+可加入：
+黑色西裝助理、雨傘、車門、街燈反光，但人物必須是主角。
+
+避免：
+過度修圖、過度暴露、廉價黑幫符號、誇張武器或血腥元素。`,
+  },
+  {
+    id: "prompt-threads-009",
+    category: "prompt",
+    badge: "NEW",
+    title: "情感合成迷你小我",
+    subtitle: "Mini Self Emotional Composite",
+    desc: "把人物照片變成中心主角，周圍圍繞多個迷你版自己，適合情緒故事與品牌人設。",
+    tags: ["AI繪圖","人物寫真","社群貼文","Threads靈感"],
+    platforms: ["Instagram","Threads","小紅書"],
+    ratio: "4:5",
+    level: "進階",
+    uses: 335,
+    preview_gradient: "linear-gradient(135deg,#f2f7ff 0%,#dae8ff 100%)",
+    preview_icon: "●",
+    preview_color: "#4f7df0",
+    prompt_template: `基於上傳照片，以人物為中心，創作一張「日常生活中的小自我」情感合成圖。
+
+主人物：
+- 使用原圖人物作為中心主角。
+- 保留臉部、姿勢、服裝與身份。
+- 加入自然陰影與細白邊貼紙感輪廓。
+
+迷你角色：
+- 根據本人建立 3 到 7 個迷你版人物。
+- 風格可愛、立體、社群感，但不要幼稚。
+- 迷你人物要還原髮型、服裝特徵與表情。
+
+動作：
+每個迷你角色都必須有動作，例如揮手、坐在包包上、爬到肩膀、模仿本人、抱著小物、互相對話。
+
+構圖：
+前後錯落，有空間感，像一張有故事的 Instagram 視覺圖。
+
+適合用途：個人品牌、情緒內容、Threads 人設圖。`,
+  },
+  {
+    id: "prompt-threads-010",
+    category: "prompt",
+    badge: "HOT",
+    title: "3D Pop-out 社群人像海報",
+    subtitle: "3D Pop-out Social Poster",
+    desc: "人物從手機社群頁面衝出來的 3D 立體海報，適合社群封面與爆款貼文。",
+    tags: ["AI繪圖","人物寫真","社群貼文","台灣爆款"],
+    platforms: ["Instagram","Threads","小紅書","TikTok"],
+    ratio: "4:5 / 9:16",
+    level: "進階",
+    uses: 604,
+    preview_gradient: "linear-gradient(135deg,#edf4ff 0%,#d4e3ff 100%)",
+    preview_icon: "▧",
+    preview_color: "#2f66f4",
+    prompt_template: `使用上傳照片作為人物主體，生成一張 3D Pop-out 社群人像海報。
+
+核心畫面：
+人物坐在巨大的智慧型手機畫面裡，像社群平台個人頁面。
+人物一隻手或腳突破螢幕邊框，朝鏡頭延伸，形成強烈近大遠小的立體衝擊。
+
+人物：
+- 嚴格保留原始人物五官、比例、造型與氣質。
+- 穿搭可改成潮流風、甜酷風、Y2K、韓系時尚。
+
+手機介面：
+- 做成原創社群 UI，不要完整複製真實平台。
+- 可加入帳號名稱、頭像、追蹤數、按鈕、貼文元素。
+
+背景：
+可設定為 K-pop 少女房間、潮流工作室、品牌拍攝間、社群創作者房間。
+加入氣球、拍立得、閃光粒子、水鑽、玻璃碎裂特效，但不要過度混亂。
+
+可替換欄位：
+帳號名稱：{{帳號}}
+主色系：{{色系}}
+角色風格：{{甜酷 / 韓系 / 潮流 / 品牌感}}
+
+適合用途：社群封面、TikTok 封面、Threads 爆款圖、小紅書筆記首圖。`,
+  }
+);

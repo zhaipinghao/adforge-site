@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: adforge-image-generator
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers ${WEB_CONCURRENCY:-2} --timeout ${WEB_TIMEOUT:-300} app:app
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: WEB_CONCURRENCY
+        value: 2
+      - key: WEB_TIMEOUT
+        value: 300
+      - key: OPENAI_IMAGE_MODEL
+        value: gpt-image-2
+      - key: OPENAI_IMAGE_SIZE
+        value: 1024x1024
+      - key: OPENAI_IMAGE_QUALITY
+        value: medium
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: APP_PASSWORD
+        sync: false

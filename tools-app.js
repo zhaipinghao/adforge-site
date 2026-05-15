@@ -447,12 +447,14 @@ function openModal(id) {
 
   const overlay = $("modal-overlay");
   overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 }
 
 function closeModal() {
   const overlay = $("modal-overlay");
   overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
   State.modalId = null;
 }

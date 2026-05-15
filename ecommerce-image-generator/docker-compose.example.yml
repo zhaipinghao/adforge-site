@@ -1,0 +1,32 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: adforge/ecommerce-image-generator:local
+    ports:
+      - "${APP_PORT:-7860}:7860"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "7860"
+      WEB_CONCURRENCY: "${WEB_CONCURRENCY:-2}"
+      WEB_TIMEOUT: "${WEB_TIMEOUT:-180}"
+
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      OPENAI_IMAGE_MODEL: "${OPENAI_IMAGE_MODEL:-gpt-image-2}"
+      OPENAI_IMAGE_SIZE: "${OPENAI_IMAGE_SIZE:-1024x1024}"
+      OPENAI_IMAGE_QUALITY: "${OPENAI_IMAGE_QUALITY:-low}"
+
+      # Future SaaS/Supabase placeholders. The current Flask app does not read
+      # these yet; keep secrets in the runtime environment, not in the image.
+      SUPABASE_URL: "${SUPABASE_URL:-}"
+      SUPABASE_ANON_KEY: "${SUPABASE_ANON_KEY:-}"
+      SUPABASE_SERVICE_ROLE_KEY: "${SUPABASE_SERVICE_ROLE_KEY:-}"
+      SUPABASE_STORAGE_BUCKET: "${SUPABASE_STORAGE_BUCKET:-adforge-renders}"
+      DATABASE_URL: "${DATABASE_URL:-}"
+    volumes:
+      - adforge_outputs:/app/outputs
+    restart: unless-stopped
+
+volumes:
+  adforge_outputs:

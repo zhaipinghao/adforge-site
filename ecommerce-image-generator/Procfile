@@ -1,0 +1,1 @@
+web: gunicorn --bind 0.0.0.0:${PORT:-7860} --workers ${WEB_CONCURRENCY:-2} --timeout ${WEB_TIMEOUT:-300} app:app

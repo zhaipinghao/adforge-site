@@ -9,7 +9,6 @@ login-workbench.html
 
 # Other local experiments in this workspace
 adforge-line-bot/
-ecommerce-image-generator/
 
 # Secrets and environment files
 .env
