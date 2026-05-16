@@ -363,8 +363,8 @@ function createCard(tpl, idx) {
   card.className = "t-card";
   card.style.setProperty("--delay", `${idx * 40}ms`);
   card.setAttribute("tabindex", "0");
-  card.setAttribute("role", "button");
-  card.setAttribute("aria-label", `開啟 ${tpl.title} 模板`);
+  card.setAttribute("role", tpl.href ? "link" : "button");
+  card.setAttribute("aria-label", tpl.href ? `前往 ${tpl.title}` : `開啟 ${tpl.title} 模板`);
 
   const badgeHTML = tpl.badge
     ? `<span class="t-card-badge badge-${tpl.badge.toLowerCase()}">${tpl.badge}</span>`
@@ -396,7 +396,9 @@ function createCard(tpl, idx) {
         </span>
         <span class="t-card-uses"><span>${tpl.uses.toLocaleString()}</span> 次使用</span>
         <div class="t-card-actions">
-          <button class="t-action-btn primary" data-id="${tpl.id}" data-action="open">查看模板</button>
+          ${tpl.href
+            ? `<a class="t-action-btn primary" href="${tpl.href}">${tpl.button_label || "前往工具"}</a>`
+            : `<button class="t-action-btn primary" data-id="${tpl.id}" data-action="open">查看模板</button>`}
         </div>
       </div>
     </div>
@@ -404,11 +406,19 @@ function createCard(tpl, idx) {
 
   // Click anywhere on card → open modal
   card.addEventListener("click", e => {
+    if (tpl.href) {
+      if (!e.target.closest("a")) window.location.href = tpl.href;
+      return;
+    }
     openModal(tpl.id);
   });
   card.addEventListener("keydown", e => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
+      if (tpl.href) {
+        window.location.href = tpl.href;
+        return;
+      }
       openModal(tpl.id);
     }
   });

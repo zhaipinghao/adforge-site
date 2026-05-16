@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>服飾 AI 模特｜ADFORGE Fashion</title>
+  <meta name="description" content="ADFORGE Fashion 把服飾平拍照片轉成 AI 模特實穿圖，適合服飾賣家快速製作商品頁、社群封面與廣告素材。">
+  <meta property="og:title" content="服飾 AI 模特｜ADFORGE Fashion">
+  <meta property="og:description" content="上傳服飾平拍照，整理成模特實穿情境圖、商品頁素材與社群視覺。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="../assets/showcase/blue-shirt-grid.jpg">
+  <link rel="canonical" href="https://adforgetw.com/fashion/">
+  <link rel="icon" href="../assets/adforge-logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HX5JWFTK45"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HX5JWFTK45');
+  </script>
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+    (window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '452503793580179');
+    fbq('track', 'PageView');
+  </script>
+  <link rel="stylesheet" href="../css/shared.css">
+  <style>
+    body.fashion-page {
+      margin: 0;
+      color: var(--v-ink);
+      background:
+        linear-gradient(rgba(91, 138, 240, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91, 138, 240, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 78% 8%, rgba(91, 138, 240, 0.2), transparent 30%),
+        #f5f8ff;
+      background-size: 72px 72px, 72px 72px, auto, auto;
+      font-family: Inter, "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .fashion-main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .fashion-hero {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 92px 24px 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .fashion-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid #bfd2ff;
+      background: #eef4ff;
+      color: var(--v-blue);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .fashion-hero h1 {
+      margin: 22px 0 20px;
+      font-size: clamp(44px, 7.2vw, 92px);
+      line-height: 0.96;
+      letter-spacing: -0.045em;
+    }
+
+    .fashion-hero h1 span {
+      color: var(--v-blue);
+    }
+
+    .fashion-lead {
+      max-width: 720px;
+      color: var(--v-muted);
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 700;
+      line-height: 1.75;
+    }
+
+    .fashion-actions {
+      margin-top: 34px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .fashion-btn {
+      min-height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      border-radius: 999px;
+      font-weight: 900;
+      border: 1px solid #c8d6ef;
+      background: #fff;
+      color: #22283a;
+    }
+
+    .fashion-btn.primary {
+      background: #10162b;
+      color: #fff;
+      border-color: #10162b;
+      box-shadow: 0 18px 44px rgba(16, 22, 43, 0.16);
+    }
+
+    .fashion-visual {
+      padding: 16px;
+      border: 1px solid var(--v-line);
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: var(--v-shadow);
+    }
+
+    .fashion-before-after {
+      display: grid;
+      grid-template-columns: 0.82fr 1fr;
+      gap: 12px;
+    }
+
+    .fashion-shot {
+      min-height: 360px;
+      overflow: hidden;
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid var(--v-line);
+      position: relative;
+    }
+
+    .fashion-shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fashion-shot.source img {
+      object-fit: contain;
+      padding: 18px;
+      background: #f3f1ec;
+    }
+
+    .fashion-label {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+      color: #263044;
+      font-size: 12px;
+      font-weight: 900;
+      backdrop-filter: blur(10px);
+    }
+
+    .fashion-section {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 52px 24px;
+    }
+
+    .fashion-section h2 {
+      margin: 0 0 18px;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+
+    .fashion-section > p {
+      max-width: 780px;
+      margin: 0;
+      color: var(--v-muted);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    .fashion-grid {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .fashion-card {
+      padding: 26px;
+      border: 1px solid var(--v-line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 16px 45px rgba(64, 98, 160, 0.1);
+    }
+
+    .fashion-card span {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: #eef4ff;
+      color: var(--v-blue);
+      font-weight: 900;
+    }
+
+    .fashion-card h3 {
+      margin: 18px 0 10px;
+      font-size: 22px;
+    }
+
+    .fashion-card p {
+      margin: 0;
+      color: var(--v-muted);
+      line-height: 1.7;
+      font-weight: 700;
+    }
+
+    .fashion-cta {
+      max-width: 1180px;
+      margin: 48px auto 80px;
+      padding: 48px 24px;
+      text-align: center;
+      border-top: 1px solid var(--v-line);
+    }
+
+    .fashion-cta h2 {
+      margin: 0 0 14px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .fashion-cta p {
+      margin: 0 auto 26px;
+      max-width: 680px;
+      color: var(--v-muted);
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      .fashion-hero,
+      .fashion-before-after {
+        grid-template-columns: 1fr;
+      }
+
+      .fashion-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .fashion-shot {
+        min-height: 280px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .fashion-hero {
+        padding-top: 54px;
+      }
+
+      .fashion-actions,
+      .fashion-btn {
+        width: 100%;
+      }
+
+      .fashion-visual {
+        padding: 10px;
+        border-radius: 24px;
+      }
+    }
+  </style>
+</head>
+<body class="fashion-page">
+  <header class="site-header platform-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html" aria-label="ADFORGE AI 首頁">
+        <img src="../assets/adforge-logo-header.png" alt="ADFORGE logo">
+        <span>
+          <strong>ADFORGE</strong>
+          <small>Fashion AI Model</small>
+        </span>
+      </a>
+
+      <nav class="nav-links platform-nav" aria-label="主要導覽">
+        <a href="../index.html">首頁</a>
+        <a href="../tools.html">模板庫</a>
+        <a href="../app.html">登入下單</a>
+        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="../app.html?package=trial_399">建立訂單</a>
+        <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">免費診斷</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="fashion-main">
+    <section class="fashion-hero">
+      <div>
+        <p class="fashion-eyebrow">ADFORGE Fashion</p>
+        <h1>服飾平拍照<br><span>變 AI 模特實穿圖</span></h1>
+        <p class="fashion-lead">
+          專為服飾賣家、選物店、IG 品牌與小型電商設計。把上衣、外套、洋裝等商品照整理成更有穿搭感的商品頁與社群素材。
+        </p>
+        <div class="fashion-actions">
+          <a class="fashion-btn primary" href="../app.html?package=trial_399">建立服飾圖訂單</a>
+          <a class="fashion-btn" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE 傳照片評估</a>
+        </div>
+      </div>
+
+      <div class="fashion-visual" aria-label="服飾 AI 模特示意">
+        <div class="fashion-before-after">
+          <figure class="fashion-shot source">
+            <span class="fashion-label">客戶平拍原圖</span>
+            <img src="../assets/showcase/blue-shirt-source.jpg" alt="藍色短袖上衣平拍原圖">
+          </figure>
+          <figure class="fashion-shot">
+            <span class="fashion-label">ADFORGE 實穿素材</span>
+            <img src="../assets/showcase/blue-shirt-grid.jpg" alt="藍色短袖上衣商品圖套組">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="fashion-section">
+      <h2>適合需要快速補齊服飾視覺的賣家</h2>
+      <p>不一定要棚拍，也不一定要先找模特。你先提供服飾平拍照、品牌風格與想呈現的客群，我們協助整理成商品頁與社群可以使用的視覺方向。</p>
+
+      <div class="fashion-grid">
+        <article class="fashion-card">
+          <span>01</span>
+          <h3>平拍轉穿搭感</h3>
+          <p>把地板、桌面或白底服飾照，延伸成更有型錄感的實穿情境。</p>
+        </article>
+        <article class="fashion-card">
+          <span>02</span>
+          <h3>商品頁補素材</h3>
+          <p>主圖、細節、版型、情境與社群封面可以一起規劃，降低單品上架阻力。</p>
+        </article>
+        <article class="fashion-card">
+          <span>03</span>
+          <h3>先測市場反應</h3>
+          <p>適合新品測款、少量 SKU、IG 品牌與服飾選物店先快速確認視覺方向。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="fashion-cta">
+      <h2>先傳一張服飾照，我們幫你判斷能不能做</h2>
+      <p>目前以人工審核與 AI 輔助製作為主。若照片角度、材質與版型資訊足夠，就可以進一步製作服飾 AI 模特素材。</p>
+      <div class="fashion-actions" style="justify-content:center">
+        <a class="fashion-btn primary" href="../app.html?package=trial_399">登入建立訂單</a>
+        <a class="fashion-btn" href="../tools.html">回模板庫</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/analytics.js" defer></script>
+</body>
+</html>
