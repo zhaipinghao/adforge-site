@@ -1985,6 +1985,10 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .template-strip-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .warmheart-page .hero-grid {
     display: block;
   }
@@ -2117,6 +2121,10 @@ a {
     left: 4px;
     bottom: 4px;
     padding: 3px 5px;
+  }
+
+  .template-strip-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2558,6 +2566,12 @@ a {
   overflow: hidden;
   position: relative;
   box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+  text-decoration: none;
+  transition: transform 0.16s ease;
+}
+
+.template-strip-card:hover {
+  transform: translateY(-2px);
 }
 
 .template-strip-card::after {
