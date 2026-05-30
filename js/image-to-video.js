@@ -55,6 +55,8 @@ const VIDEO_API_CONFIG = {
   // API 回傳需符合：
   // POST create -> { taskId?: string, status?: string, progress?: number, videoUrl?: string }
   // GET/POST status -> { taskId, status, progress, videoUrl, message }
+  // [NEEDS_REPLACEMENT] createEndpoint: 上線前請改為你實際的影片任務建立 API
+  // [NEEDS_REPLACEMENT] pollEndpoint: 上線前請改為你實際的影片狀態查詢 API
   createEndpoint: '/api/adforge/image-to-video/create',
   pollEndpoint: '/api/adforge/image-to-video/status',
   timeoutMs: 120000,
@@ -66,6 +68,27 @@ Object.assign(
   VIDEO_API_CONFIG,
   typeof window !== 'undefined' && window.ADFORGE_IMAGE_TO_VIDEO_API ? window.ADFORGE_IMAGE_TO_VIDEO_API : {}
 );
+
+const FORCE_MOCK_FLOW = (() => {
+  const params = new URLSearchParams(location?.search || '');
+  return Boolean(
+    params.get('embed') === '1' ||
+    params.get('mode') === 'mock' ||
+    window.ADFORGE_IMAGE_TO_VIDEO_EMBED
+  );
+})();
+
+function isApiReady(endpoint) {
+  if (FORCE_MOCK_FLOW) return false;
+  if (!endpoint || typeof endpoint !== 'string') return false;
+  if (endpoint.includes('/api/')) {
+    return true;
+  }
+  if (!endpoint.includes('TODO')) {
+    return true;
+  }
+  return false;
+}
 
 const DEMO_VIDEO_URL = 'assets/adforge-hero-demo.mp4';
 const DEMO_TASK_PREFIX = 'demo_';
@@ -466,7 +489,7 @@ async function submitImageToVideoMock(payload){
 async function createVideoTask(payload) {
   const formData = buildFormData(payload);
   const endpoint = VIDEO_API_CONFIG.createEndpoint;
-  if(!endpoint || endpoint.includes('sandbox') || endpoint.includes('/mock') || endpoint.startsWith('mock')){
+  if(!isApiReady(endpoint) || endpoint.includes('sandbox') || endpoint.includes('/mock') || endpoint.startsWith('mock')){
     return submitImageToVideoMock(payload);
   }
 
@@ -491,7 +514,7 @@ async function createVideoTask(payload) {
 
 async function pollVideoTask(taskId, onUpdate) {
   const endpoint = VIDEO_API_CONFIG.pollEndpoint;
-  if(!endpoint || endpoint.includes('sandbox') || endpoint.includes('/mock') || endpoint.startsWith('mock')){
+  if(!isApiReady(endpoint) || endpoint.includes('sandbox') || endpoint.includes('/mock') || endpoint.startsWith('mock')){
     return submitImageToVideoMock({taskId});
   }
 
