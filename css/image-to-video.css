@@ -1,5 +1,5 @@
 /* ── RESET & VARS ── */
-/* [NEEDS_REPLACEMENT] 這套版型為複刻展示主題，JS 還是 mock 流程；如需接 API，請沿用此視覺並接外部輸入資料。 */
+/* 圖片轉影片頁面樣式（支持 mock + API 兩種模式） */
 :root {
       --bg0:#0d0b14; --bg1:#13101e; --bg2:#1a1627; --bg3:#211d30;
       --pu:#8d1bff; --pk:#e455d4; --teal:#a2edfc;

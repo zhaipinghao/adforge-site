@@ -1,5 +1,5 @@
 // 目前為「create + poll」流程 + mock fallback：
-// 有連上 API 時走後端任務模式，否則自動回退到 demo 構面展示。
+// 有連上 API 時走後端任務模式，否則回退到 demo 流程。
 
 // ===== DATA =====
 const GALLERY = [
@@ -43,16 +43,16 @@ const EFFECTS = [
 ];
 
 const FAQ = [
-  {q:'1. 支援哪些圖片格式？',a:'目前示意頁支援 JPG、JPEG、PNG、BMP，建議不超過 5MB。正式專案接單流程將依你提供檔案規格規劃。'},
-  {q:'2. 從圖片生成影片需要多久？',a:'展示頁為模擬流程，時間以載入體感為主；實際正式交付依素材複雜度、排程與規格而定。'},
-  {q:'3. 上傳的圖片有大小限制嗎？',a:'為了體驗流暢，示意頁限制 5MB。正式交付建議提供清晰原始圖，並可改用較大解析度版本。'},
-  {q:'4. 原始圖片與結果如何保存？',a:'目前展示頁不做永久存檔。完成測試後請直接透過訂單提交原圖與素材需求，讓服務團隊做正式交付。'},
+  {q:'1. 支援哪些圖片格式？',a:'目前流程頁支援 JPG、JPEG、PNG、BMP，建議不超過 5MB。正式專案接單流程將依你提供檔案規格規劃。'},
+  {q:'2. 從圖片生成影片需要多久？',a:'流程頁為模擬參考，時間以載入體感為主；實際正式交付依素材複雜度、排程與規格而定。'},
+  {q:'3. 上傳的圖片有大小限制嗎？',a:'為了體驗流暢，流程頁限制 5MB。正式交付建議提供清晰原始圖，並可改用較大解析度版本。'},
+  {q:'4. 原始圖片與結果如何保存？',a:'目前頁面不做永久存檔。完成測試後請直接透過訂單提交原圖與素材需求，讓服務團隊做正式交付。'},
   {q:'5. 是否能拿去商用？',a:'正式 ADFORGE 交付素材可依你選購方案作商用用途。建議用「建立訂單」完成合約確認。'},
-  {q:'6. 這是免費試用嗎？',a:'這個頁面為展示版，流程參考用。若要實際製作，請到 ADFORGE 登入下單。'},
+  {q:'6. 這是免費試用嗎？',a:'本頁為流程體驗頁，滿意後可透過 ADFORGE 登入下單，啟動正式製作服務。'},
 ];
 
 const VIDEO_API_CONFIG = {
-  // [NEEDS_REPLACEMENT] 這兩支 API 需接上你自己的後端：
+  // API 回傳需符合：
   // POST create -> { taskId?: string, status?: string, progress?: number, videoUrl?: string }
   // GET/POST status -> { taskId, status, progress, videoUrl, message }
   createEndpoint: '/api/adforge/image-to-video/create',
@@ -406,7 +406,7 @@ async function doGen(){
     presentResult(finalResult.videoUrl);
   } catch (error) {
     console.error('[image-to-video] API flow error:', error);
-    showToast('後端串接尚未就緒，已改為展示片段結果','info');
+    showToast('後端 API 尚未啟用，已切到本地展示結果','info');
     await useMockResult();
   } finally {
     const elapsed = Date.now() - start;
@@ -426,7 +426,7 @@ async function useMockResult() {
     const result = normalizeStatus(fallbackPoll);
     presentResult(result.videoUrl || DEMO_VIDEO_URL);
   }catch(e){
-    presentResult(DEMO_VIDEO_URL, {message:'展示結果'});
+    presentResult(DEMO_VIDEO_URL, {message:'使用展示結果'});
   }
 }
 
@@ -448,7 +448,6 @@ function presentResult(videoUrl, options = {}) {
 }
 
 async function submitImageToVideoMock(payload){
-  // [NEEDS_REPLACEMENT] 目前保留 mock，未來可接測試用 worker 返回任務 ID。
   return new Promise((resolve)=>{
     const taskId = `${DEMO_TASK_PREFIX}${Date.now()}`;
     resolve({ taskId, status: 'done', payload });
@@ -458,7 +457,7 @@ async function submitImageToVideoMock(payload){
 async function createVideoTask(payload) {
   const formData = buildFormData(payload);
   const endpoint = VIDEO_API_CONFIG.createEndpoint;
-  if(!endpoint || endpoint.includes('sandbox')){
+  if(!endpoint || endpoint.includes('sandbox') || endpoint.includes('/mock') || endpoint.startsWith('mock')){
     return submitImageToVideoMock(payload);
   }
 
@@ -483,7 +482,7 @@ async function createVideoTask(payload) {
 
 async function pollVideoTask(taskId, onUpdate) {
   const endpoint = VIDEO_API_CONFIG.pollEndpoint;
-  if(!endpoint || endpoint.includes('sandbox')){
+  if(!endpoint || endpoint.includes('sandbox') || endpoint.includes('/mock') || endpoint.startsWith('mock')){
     return submitImageToVideoMock({taskId});
   }
 
