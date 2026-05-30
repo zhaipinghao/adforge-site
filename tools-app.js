@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSearch();
   bindSort();
   bindModal();
+  initFromUrlParams();
   renderCards();
   animateHeroHighlight();
   animateStatCounters();
@@ -203,7 +204,8 @@ function setCategoryFilter(cat, triggerEl) {
   $$(".t-cat-btn").forEach(b => {
     b.classList.remove("active-all","active-image","active-prompt","active-video");
   });
-  triggerEl.classList.add(`active-${cat}`);
+  const activeBtn = triggerEl || document.querySelector(`.t-cat-btn[data-cat="${cat}"]`);
+  if (activeBtn) activeBtn.classList.add(`active-${cat}`);
 
   // Update sidebar links
   $$(".t-sidebar-link[data-cat]").forEach(l => {
@@ -213,6 +215,49 @@ function setCategoryFilter(cat, triggerEl) {
   // Update tag pills for current category
   updateTagPillsForCategory(cat);
 
+  renderCards();
+}
+
+/* ═══════════════════════════════════════════
+   URL Query Init
+═══════════════════════════════════════════ */
+function initFromUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const catParam = params.get("cat");
+  const allowedCat = ["all", "image", "prompt", "video"];
+  if (catParam && allowedCat.includes(catParam) && catParam !== State.category) {
+    setCategoryFilter(catParam);
+  }
+
+  const tagParam = params.get("tag");
+  if (tagParam) {
+    State.tag = decodeURIComponent(tagParam);
+    $$(".t-tag-pill").forEach(pill => {
+      pill.classList.toggle("active", pill.dataset.tag === tagParam);
+    });
+  }
+
+  const platformParam = params.get("platform");
+  if (platformParam) {
+    const target = platformParam.trim();
+    State.platform = target === "全部" || target === "全平台" ? null : target;
+    $$(".t-platform-chip").forEach(c => c.classList.remove("active"));
+    $$(".t-platform-chip").forEach(c => {
+      if (c.textContent === target || (State.platform === null && c.textContent === "全平台")) {
+        c.classList.add("active");
+      }
+    });
+  }
+
+  const q = params.get("q");
+  if (q) {
+    const query = q.trim().toLowerCase();
+    State.query = query;
+    const input = $("search-input");
+    if (input) input.value = q.trim();
+  }
+
+  // Re-render after sync URL state
   renderCards();
 }
 

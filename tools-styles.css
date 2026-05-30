@@ -39,6 +39,7 @@
   --shadow-card:    0 10px 32px rgba(16,24,40,0.07);
   --shadow-hover:   0 16px 42px rgba(16,24,40,0.12);
   --shadow-glow:    0 0 0 1px var(--c-accent), 0 8px 32px var(--c-accent-glow);
+  --shadow-soft:    0 14px 36px rgba(16,24,40,0.08);
 
   /* Radii */
   --r-sm:   6px;
@@ -532,6 +533,89 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   font-size: 13px;
   color: var(--c-muted);
   font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════
+   5b. Quick Entry
+═══════════════════════════════════════════ */
+.t-quick-entry {
+  padding: 0 0 24px;
+}
+
+.t-quick-kicker {
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 10px 0;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface-2);
+  color: var(--c-accent-2);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.t-quick-title {
+  margin: 0 0 20px;
+  text-align: left;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900;
+  line-height: 1.15;
+  color: var(--c-ink);
+}
+
+.t-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.t-quick-card {
+  min-height: 120px;
+  padding: 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: center;
+  gap: 0 12px;
+  align-items: center;
+}
+
+.t-quick-card:nth-child(2n) {
+  background:
+    linear-gradient(135deg, #ffffff 0%, #f6f9ff 100%);
+}
+
+.t-quick-icon {
+  grid-row: 1 / span 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface-2);
+  color: var(--c-accent-2);
+  font-size: 18px;
+}
+
+.t-quick-card strong {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.t-quick-card small {
+  grid-column: 2;
+  color: var(--c-muted);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 /* ═══════════════════════════════════════════
@@ -1456,6 +1540,30 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .t-stat span {
     margin-top: 4px;
     font-size: 11px;
+  }
+
+  .t-quick-entry {
+    padding-bottom: 12px;
+  }
+
+  .t-quick-title {
+    font-size: 26px;
+  }
+
+  .t-quick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .t-quick-card {
+    min-height: 98px;
+  }
+
+  .t-quick-card strong {
+    font-size: 16px;
+  }
+
+  .t-quick-card small {
+    font-size: 12px;
   }
 
   .t-filter-bar {
