@@ -48,6 +48,11 @@
       }
       window.ADFORGE_IMAGE_TO_VIDEO_EMBED = params.get('embed') === '1';
     })();
+
+    // 需要接 PixMotion 正式 API 時可直接加上：
+    // ?apiProfile=pixmotion&api=1
+    // 如果要走同域代理（避免 CORS / token 外掛），加 proxy=1：
+    // ?apiProfile=pixmotion&api=1&proxy=1
   </script>
   <canvas id="bgc" aria-hidden="true"></canvas>
 
@@ -127,6 +132,24 @@
       上傳圖片 → 選擇模型與參數 → 看看影片方向。  
       滿意後可直接建立訂單，由 ADFORGE 團隊接手正式製作。
     </p>
+    <p class="api-status" id="apiStatus">初始化 API 連線…</p>
+    <div class="api-auth-panel" id="apiAuthPanel">
+      <div class="api-auth-head">
+        <strong>PixMotion API 連線設定</strong>
+        <div class="api-auth-head-links">
+          <a href="https://pixmotion.adforgetw.com/admin/dashboard" target="_blank" rel="noopener noreferrer">前往管理後台</a>
+          <a href="https://pixmotion.adforgetw.com" target="_blank" rel="noopener noreferrer">官方 API：pixmotion.adforgetw.com</a>
+          <a href="https://2b01be66.pixmotion-ai.pages.dev" target="_blank" rel="noopener noreferrer">備援 API：2b01be66.pixmotion-ai.pages.dev</a>
+        </div>
+      </div>
+      <label class="api-auth-label" for="pixmotionToken">請貼入 PixMotion Token（不儲存到公開伺服器）</label>
+      <div class="api-auth-row">
+        <input id="pixmotionToken" type="text" autocomplete="off" placeholder="eyJhbGciOi..." spellcheck="false" />
+        <button type="button" class="btn-token-save" id="saveTokenBtn">儲存</button>
+        <button type="button" class="btn-token-clear" id="clearTokenBtn">清除</button>
+      </div>
+      <div class="api-auth-state" id="apiAuthState">尚未設定 token，將先以展示模式提供結果。</div>
+    </div>
 
     <!-- Model Tabs -->
     <div class="mtabs-wrap">

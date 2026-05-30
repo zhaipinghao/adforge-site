@@ -227,13 +227,23 @@
               <span>我已閱讀並同意 <a href="terms.html">服務條款</a> 與 <a href="privacy.html">隱私政策</a></span>
             </label>
 
-            <div class="form-actions">
-              <button class="button button-primary" type="submit">送出需求資料</button>
-              <button class="button button-secondary" type="button" id="copyBriefButton">複製需求單</button>
-              <a class="button button-secondary line-button" id="lineBriefLink" href="https://line.me/R/oaMessage/%40ndb3949k/?%E6%88%91%E8%A6%81%E5%85%8D%E8%B2%BB%E8%A9%A6%E5%81%9A%20ADFORGE%20%E5%95%86%E5%93%81%E5%9C%96" target="_blank" rel="noopener noreferrer">LINE 傳需求</a>
-            </div>
-            <p class="form-note" id="builderStatus" aria-live="polite">填寫後會自動整理成可交付給設計師的需求單。</p>
-          </form>
+      <div class="form-actions">
+          <button class="button button-primary" type="submit">送出需求資料</button>
+          <button class="button button-primary" type="button" id="directGenerateBtn">直接打開內部產圖工具</button>
+          <button class="button button-secondary" type="button" id="copyBriefButton">複製需求單</button>
+          <a class="button button-secondary line-button" id="lineBriefLink" href="https://line.me/R/oaMessage/%40ndb3949k/?%E6%88%91%E8%A6%81%E5%85%8D%E8%B2%BB%E8%A9%A6%E5%81%9A%20ADFORGE%20%E5%95%86%E5%93%81%E5%9C%96" target="_blank" rel="noopener noreferrer">LINE 傳需求</a>
+        </div>
+        <p class="form-note" id="builderStatus" aria-live="polite">填寫後會自動整理成可交付給設計師的需求單。</p>
+        <div class="api-host-note">
+          內部生圖端點：
+          <input
+            id="apiEndpointInput"
+            type="url"
+            value="http://127.0.0.1:7860/generate"
+            placeholder="http://127.0.0.1:7860/generate"
+          />
+        </div>
+      </form>
 
           <aside class="brief-panel" aria-labelledby="brief-title">
             <div class="studio-topbar">
@@ -280,6 +290,7 @@
     <script>
       const fields = {
         productName: document.querySelector("#productName"),
+        productPhoto: document.querySelector("#productPhoto"),
         productPrice: document.querySelector("#productPrice"),
         brandName: document.querySelector("#brandName"),
         platform: document.querySelector("#platform"),
@@ -297,9 +308,164 @@
       };
 
       const restrictedTypes = new Set(["管制類商品"]);
+      const directGenerateBtn = document.querySelector("#directGenerateBtn");
+      const requestForm = document.querySelector(".request-form");
+      const apiEndpointInput = document.querySelector("#apiEndpointInput");
+      const API_STYLE_MAP = {
+        "高級電商感": "luxury",
+        "小紅書爆款感": "xiaohongshu",
+        "蝦皮高轉化": "luxury",
+        "日系乾淨": "muji",
+        "韓系生活感": "korean",
+        "中性型錄": "threads"
+      };
+
+      function getStylePreset() {
+        const key = fields.visualStyle.value || "";
+        return API_STYLE_MAP[key] || "korean";
+      }
 
       function getOutputMode() {
         return document.querySelector('input[name="output_mode"]:checked')?.value || "高轉化電商圖";
+      }
+
+      function removeManagedHidden(form, name) {
+        const selector = `input[name="${CSS.escape(name)}"]`;
+        form.querySelectorAll(selector).forEach((el) => {
+          if (el.type === "hidden" && el.dataset.apiManaged === "1") {
+            el.remove();
+          }
+        });
+      }
+
+      function applyManagedHidden(form, name, value) {
+        let input = form.querySelector(`input[name="${CSS.escape(name)}"]`);
+        if (!input) {
+          input = document.createElement("input");
+          input.type = "hidden";
+          input.name = name;
+          input.dataset.apiManaged = "1";
+          form.appendChild(input);
+        }
+        input.value = value || "";
+      }
+
+      function initApiEndpointDefault() {
+        if (apiEndpointInput.value.trim()) {
+          return;
+        }
+
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+          apiEndpointInput.value = "http://127.0.0.1:7860/generate";
+          return;
+        }
+
+        // 你只要保有 7860 在本機環境時才建議保留預設值，
+        // 上線環境預設不自動帶入已失效的 onrender 端點
+        apiEndpointInput.value = "";
+      }
+
+      function submitToInternalApi() {
+        const endpoint = (apiEndpointInput.value || "").trim();
+        const fileInput = fields.productPhoto;
+        if (!endpoint) {
+          fields.builderStatus.textContent = "請先填寫內部產圖 API 位址。";
+          return;
+        }
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+          fields.builderStatus.textContent = "請先上傳商品照片才能直接生圖。";
+          return;
+        }
+
+        if (!fields.productName.value.trim()) {
+          fields.builderStatus.textContent = "請先填寫商品名稱。";
+          return;
+        }
+
+        updateBrief();
+        const previousState = {
+          action: requestForm.action,
+          target: requestForm.target || "",
+          method: requestForm.method || "POST",
+          enctype: requestForm.enctype || "",
+          productPhotoName: fields.productPhoto.name,
+          netlifyEnabled: requestForm.hasAttribute("data-netlify"),
+          honeypotName: requestForm.getAttribute("netlify-honeypot"),
+        };
+
+        const dynamicInputs = [
+          "order_id",
+          "category",
+          "audience",
+          "dimensions",
+          "material",
+          "comparison",
+          "forbidden",
+          "tone",
+          "style_preset",
+          "features",
+          "notes",
+          "bottom_slogan",
+          "mode",
+          "size",
+          "quality",
+          "model",
+          "concurrency",
+        ];
+
+        requestForm.setAttribute("action", endpoint);
+        requestForm.setAttribute("method", "POST");
+        requestForm.setAttribute("enctype", "multipart/form-data");
+        requestForm.target = "_blank";
+        requestForm.removeAttribute("data-netlify");
+        requestForm.removeAttribute("netlify-honeypot");
+        fields.productPhoto.name = "product_image";
+
+        applyManagedHidden(requestForm, "order_id", `ADG-${Date.now().toString(36).toUpperCase()}`);
+        applyManagedHidden(requestForm, "category", fields.productType.value || "一般商品");
+        applyManagedHidden(requestForm, "audience", "蝦皮、IG、MOMO、獨立站賣家");
+        applyManagedHidden(requestForm, "dimensions", "尺寸與版型明確可讀");
+        applyManagedHidden(requestForm, "material", fields.extraNotes.value || fields.sellingPoints.value || "材質與細節");
+        applyManagedHidden(requestForm, "comparison", "同類對比、場景對比、細節對比");
+        applyManagedHidden(requestForm, "forbidden", "禁止新增不存在功能或誇大功能");
+        applyManagedHidden(requestForm, "tone", fields.visualStyle.value || "高級、乾淨、台灣電商可上架");
+        applyManagedHidden(requestForm, "style_preset", getStylePreset());
+        applyManagedHidden(requestForm, "features", fields.sellingPoints.value || "清楚賣點拆解");
+        applyManagedHidden(requestForm, "notes", fields.extraNotes.value || "補充需求請優先同步到需求單");
+        applyManagedHidden(requestForm, "bottom_slogan", "高品質電商素材，適合立即上架");
+        applyManagedHidden(requestForm, "mode", "auto");
+        applyManagedHidden(requestForm, "size", "1024x1024");
+        applyManagedHidden(requestForm, "quality", "low");
+        applyManagedHidden(requestForm, "model", "gpt-image-2");
+        applyManagedHidden(requestForm, "concurrency", "2");
+
+        fields.builderStatus.textContent = "已送至內部生圖端點，將開啟新分頁顯示結果...";
+        requestForm.submit();
+
+        // 還原原表單設定
+        requestForm.action = previousState.action;
+        requestForm.target = previousState.target;
+        requestForm.method = previousState.method;
+        requestForm.enctype = previousState.enctype;
+        fields.productPhoto.name = previousState.productPhotoName;
+        dynamicInputs.forEach((name) => removeManagedHidden(requestForm, name));
+        const duplicatedImageInput = requestForm.querySelector('input[name="product_image"]');
+        if (duplicatedImageInput && duplicatedImageInput.type === "hidden" && duplicatedImageInput.dataset.apiManaged !== "1") {
+          duplicatedImageInput.remove();
+        }
+        if (previousState.netlifyEnabled) {
+          requestForm.setAttribute("data-netlify", "true");
+        } else {
+          requestForm.removeAttribute("data-netlify");
+        }
+        if (previousState.honeypotName) {
+          requestForm.setAttribute("netlify-honeypot", previousState.honeypotName);
+        } else {
+          requestForm.removeAttribute("netlify-honeypot");
+        }
+
+        fields.builderStatus.textContent = "若新分頁無法開啟，請允許彈窗後再試一次。";
       }
 
       function setOutputMode(value) {
@@ -407,6 +573,7 @@
       });
 
       document.querySelector(".request-form").addEventListener("submit", updateBrief);
+      directGenerateBtn.addEventListener("click", submitToInternalApi);
 
       document.querySelectorAll('a[href^="https://page.line.me/"], a[href^="https://line.me/"]').forEach((link) => {
         link.addEventListener("click", (event) => {
@@ -419,6 +586,7 @@
         });
       });
 
+      initApiEndpointDefault();
       updateBrief();
     </script>
   </body>
