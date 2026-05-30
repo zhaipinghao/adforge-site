@@ -205,6 +205,15 @@ function loadImg(e){
   r.readAsDataURL(f);
 }
 
+// TODO: 串接 API 時請先實作這兩個方法，保持頁面體驗不變即可。
+// createVideoTask(payload)  => 回傳 {taskId, status}
+// pollVideoTask(taskId)     => 回傳 {status, videoUrl}
+const VIDEO_API_TODO = {
+  createEndpoint: '/api/adforge/image-to-video/create', // <-- TODO: replace with your backend
+  pollEndpoint: '/api/adforge/image-to-video/status',   // <-- TODO: replace with your backend
+  method: 'POST'
+};
+
 // ===== GENERATE =====
 function doGen(){
   const dz=document.getElementById('dz');
@@ -241,12 +250,32 @@ function doGen(){
         document.getElementById('result').classList.add('vis');
         showToast('🎉 影片生成成功！','success');
         document.getElementById('result').scrollIntoView({behavior:'smooth',block:'center'});
+        // TODO: 實際 API 回傳成功時，請把播放來源改為 poll 結果中的 videoUrl
+        // ex: document.getElementById('rvideo').src = task.videoUrl;
       },600);
       return;
     }
     const s=steps[si++];
     fill.style.width=s.p+'%';stat.textContent=s.s;pct.textContent=s.p+'%';
   },700);
+}
+
+async function submitImageToVideoMock(payload){
+  // [NEEDS_REPLACEMENT] 目前保留 mock，未來接上 createVideoTask + pollVideoTask 即可。
+  return new Promise((resolve)=>{
+    const taskId = `demo_${Date.now()}`;
+    resolve({ taskId, status: 'done', payload });
+  });
+}
+
+async function createVideoTask(payload) {
+  return submitImageToVideoMock(payload);
+}
+
+async function pollVideoTask(taskId) {
+  return new Promise((resolve)=>{
+    resolve({taskId, status:'done', videoUrl:'assets/adforge-hero-demo.mp4'});
+  });
 }
 
 function doReset(){
