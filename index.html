@@ -50,7 +50,7 @@
               <a class="mega-link" href="#product-tools"><strong>AI 商品圖</strong><span>一張照片生成 9 張上架素材</span></a>
               <a class="mega-link" href="#line-tools"><strong>九宮格商品頁</strong><span>主圖、賣點、情境、促銷</span></a>
               <a class="mega-link" href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
-              <a class="mega-link" href="image-to-video.html"><strong>作圖工具</strong><span>上傳圖片，體驗影像素材流程</span></a>
+              <a class="mega-link" href="#video-tools"><strong>作圖工具</strong><span>上傳圖片，體驗影像素材流程</span></a>
               <a class="mega-link" href="#social-tools"><strong>社群封面</strong><span>小紅書、TikTok、Threads</span></a>
               <a class="mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
               <a class="mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
@@ -63,7 +63,7 @@
         <a href="#cases">成果展示</a>
         <a href="/fashion/">服飾 AI 模特</a>
         <a href="tools.html">模板庫</a>
-        <a href="image-to-video.html">作圖工具</a>
+        <a href="#video-tools">作圖工具</a>
         <a href="warmheart.html">暖心 AI</a>
         <a href="#pricing">收費方案</a>
         <a href="#faq">FAQ</a>
@@ -80,7 +80,7 @@
             <a href="#product-tools"><strong>AI 商品圖</strong><span>9 張上架素材</span></a>
             <a href="#line-tools"><strong>九宮格</strong><span>商品頁標準圖組</span></a>
             <a href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
-            <a href="image-to-video.html"><strong>作圖工具</strong><span>先體驗生成素材</span></a>
+            <a href="#video-tools"><strong>作圖工具</strong><span>先體驗生成素材</span></a>
             <a href="#social-tools"><strong>Threads / 小紅書</strong><span>社群封面與貼文</span></a>
             <a href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡</span></a>
             <a href="tools.html"><strong>模板庫</strong><span>台灣爆款方向</span></a>
@@ -156,7 +156,7 @@
           <a href="#tools"><span>04</span><strong>短影音封面</strong><small>TikTok、Reels、Shorts</small></a>
           <a href="#tools"><span>05</span><strong>品牌統一</strong><small>官網、社群、活動頁一致</small></a>
           <a href="tools.html"><span>06</span><strong>爆款模板庫</strong><small>先挑模板再接單</small></a>
-          <a href="image-to-video.html"><span>07</span><strong>作圖工具</strong><small>上傳圖片快速預覽流程</small></a>
+          <a href="#video-tools"><span>07</span><strong>作圖工具</strong><small>上傳圖片快速預覽流程</small></a>
         </div>
       </div>
     </section>
@@ -198,7 +198,7 @@
             <span>07</span>
             <strong>爆款模板庫</strong>
           </a>
-          <a href="image-to-video.html" role="listitem">
+          <a href="#video-tools" role="listitem">
             <span>08</span>
             <strong>作圖工具</strong>
           </a>
@@ -317,7 +317,7 @@
               <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">做社群封面</a>
             </article>
 
-            <article class="tool-card" id="video-tools">
+            <article class="tool-card" id="video-tools-card">
               <div class="tool-card-top">
                 <span class="tool-icon">04</span>
                 <small>Image-to-Video</small>
@@ -329,7 +329,7 @@
                 <li>先做預覽流程，先確認是否符合你賣場語言</li>
                 <li>可接在商品主素材後，延伸為短影音素材</li>
               </ul>
-              <a href="image-to-video.html">先體驗轉影片流程</a>
+              <a href="#video-tools">先體驗轉影片流程</a>
             </article>
 
             <article class="tool-card" id="fashion-tools">
@@ -394,6 +394,132 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="section video-tools-lab" id="video-tools" aria-labelledby="video-tools-title">
+      <div class="container">
+        <div class="section-head compact">
+          <p class="kicker">AI 圖片轉影片</p>
+          <h2 id="video-tools-title">先體驗影片轉換流程</h2>
+          <p>上傳一張商品照，先體驗提示詞、模型、輸出方向。滿意後可直接轉到正式下單。</p>
+        </div>
+
+        <div class="video-tool-shell">
+          <article class="generator-card">
+            <div class="card-head">
+              <small>A. 先上傳原圖</small>
+              <strong>影片轉換預覽</strong>
+            </div>
+
+            <div class="upload-zone">
+              <input id="imageInput" type="file" accept="image/*">
+              <div class="upload-empty" id="uploadEmpty">
+                <div class="upload-icon">⤵</div>
+                <strong>點擊上傳圖片</strong>
+                <small>JPG / PNG / WebP，建議清楚、構圖完整</small>
+              </div>
+              <img id="previewImg" alt="上傳預覽">
+            </div>
+
+            <div class="field">
+              <span>素材需求</span>
+              <textarea id="promptInput" rows="3" placeholder="請先輸入你想強調的主題、賣點或風格（非必填）"></textarea>
+            </div>
+
+            <div class="field-grid">
+              <div class="field">
+                <span>影片長度</span>
+                <select>
+                  <option>6 秒</option>
+                  <option>15 秒</option>
+                  <option>30 秒</option>
+                </select>
+              </div>
+              <div class="field">
+                <span>輸出比例</span>
+                <select>
+                  <option>9:16</option>
+                  <option>1:1</option>
+                  <option>16:9</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="template-tabs" role="tablist" aria-label="模板分類">
+              <button class="active" type="button" data-gallery="product">商品主畫面</button>
+              <button type="button" data-gallery="social">社群短片</button>
+              <button type="button" data-gallery="brand">品牌延展</button>
+            </div>
+
+            <div class="model-tabs" role="tablist" aria-label="模型分類">
+              <button class="active" type="button">Kling 3.0</button>
+              <button type="button">Veo Router</button>
+              <button type="button">Seedance</button>
+            </div>
+
+            <button class="btn btn-primary btn-wide" type="button" id="generateBtn">開始影片預覽</button>
+
+            <div class="progress-box" id="progressBox">
+              <div class="progress-row">
+                <small id="progressText">AI 分析中</small>
+                <span id="progressNum">0%</span>
+              </div>
+              <div class="progress-track"><span id="progressBar"></span></div>
+            </div>
+
+            <div class="result-box" id="resultBox">
+              <div class="mock-video">
+                <div class="play-dot">▶</div>
+                <span>預覽完成</span>
+              </div>
+              <div>
+                <strong>已產出示意影片</strong>
+                <p>這只是流程示意，正式版會接續 AI 生成並由團隊抽圖把關。</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="before-after-card">
+            <div class="ba-head">Before / After</div>
+            <div class="ba-stage">
+              <div class="ba-side before">原始商品圖</div>
+              <div class="ba-side after">轉影片前規劃畫面</div>
+              <input id="baRange" type="range" min="0" max="100" value="52" aria-label="前後對比">
+              <div class="ba-handle" id="baHandle"></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="template-grid" id="templateGrid" aria-label="影片模板示意"></div>
+
+        <div class="model-grid" id="modelGrid" aria-label="AI 模型列表"></div>
+
+        <div class="effects-grid" id="effectsGrid" aria-label="效果清單"></div>
+
+        <div class="check-list">
+          <ul class="check-list" id="resultChecklist">
+            <li>上傳原圖是否清楚，比例是否符合販售頁面。</li>
+            <li>若要導入短影音廣告，建議先測試 1:1 與 9:16。</li>
+            <li>滿意後直接點 LINE 建立接單流程。</li>
+          </ul>
+        </div>
+
+        <div class="faq-list" id="faqList"></div>
+      </div>
+
+      <div class="modal-overlay" id="demoModal" role="dialog" aria-hidden="true" aria-labelledby="modalTitle">
+        <div class="modal-card">
+          <button class="modal-close" id="closeModal" type="button" aria-label="關閉">×</button>
+          <h3 id="modalTitle">樣板參考</h3>
+          <p id="modalDesc"></p>
+          <div class="prompt-box">
+            <p id="modalPrompt"></p>
+          </div>
+          <button class="btn btn-primary" id="copyPrompt" type="button">複製提示詞</button>
+        </div>
+      </div>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
     </section>
 
     <section class="section cases-section" id="cases">
@@ -669,5 +795,6 @@
     <a href="#pricing">查看價格</a>
   </nav>
   <script src="assets/analytics.js" defer></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
