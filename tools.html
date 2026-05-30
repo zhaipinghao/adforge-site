@@ -31,36 +31,38 @@
     fbq('init', '452503793580179');
     fbq('track', 'PageView');
   </script>
-  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="tools-styles.css">
 </head>
 <body class="tools-page">
 
   <!-- ═══════════════════════════════════════
        HEADER
   ═══════════════════════════════════════ -->
-  <header class="site-header platform-header" role="banner">
-    <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="ADFORGE AI 首頁">
-        <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
-        <span>
+  <header class="t-header" role="banner">
+    <div class="t-header-inner">
+      <a class="t-brand" href="index.html" aria-label="ADFORGE AI 首頁">
+        <span class="t-brand-mark" aria-hidden="true">
+          <img src="assets/adforge-logo-header.png" alt="">
+        </span>
+        <span class="t-brand-text">
           <strong>ADFORGE</strong>
-          <small>AI 商品圖鍛造所</small>
+          <small>AI 內容工具平台</small>
         </span>
       </a>
 
-      <nav class="nav-links platform-nav" aria-label="主要導覽">
-        <details class="mega-menu">
-          <summary>所有功能 <span aria-hidden="true">⌄</span></summary>
-          <div class="mega-panel">
-            <div class="mega-grid">
-              <a class="mega-link" href="index.html#product-tools"><strong>AI 商品圖</strong><span>一張照片生成 9 張上架素材</span></a>
-              <a class="mega-link" href="index.html#product-tools"><strong>九宮格商品頁</strong><span>主圖、賣點、情境、促銷</span></a>
-              <a class="mega-link" href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉成模特實穿圖</span></a>
-              <a class="mega-link" href="index.html#social-tools"><strong>社群封面</strong><span>小紅書、TikTok、Reels 封面</span></a>
-              <a class="mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
-              <a class="mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
+      <nav class="t-nav" aria-label="主要導覽">
+        <details class="t-mega-menu">
+          <summary>所有功能</summary>
+          <div class="t-mega-panel">
+            <div class="t-mega-grid">
+              <a class="t-mega-link" href="index.html#product-tools"><strong>AI 商品圖</strong><span>一張照片生成 9 張上架素材</span></a>
+              <a class="t-mega-link" href="index.html#product-tools"><strong>九宮格商品頁</strong><span>主圖、賣點、情境、促銷</span></a>
+              <a class="t-mega-link" href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉成模特實穿圖</span></a>
+              <a class="t-mega-link" href="index.html#social-tools"><strong>社群封面</strong><span>小紅書、TikTok、Reels 封面</span></a>
+              <a class="t-mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
+              <a class="t-mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
             </div>
-            <a class="mega-feature" href="index.html#tools">回到服務工具 →</a>
+            <a class="t-mega-feature" href="index.html#tools">回到服務工具 →</a>
           </div>
         </details>
         <a href="index.html">首頁</a>
@@ -71,14 +73,13 @@
         <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">聯絡我們</a>
       </nav>
 
-      <!-- Actions -->
-      <div class="header-actions">
-        <a href="app.html">登入下單</a>
-        <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer" class="line-link">免費試做</a>
-        <details class="mobile-menu">
+      <div class="t-header-actions">
+        <a class="t-btn" href="app.html">登入下單</a>
+        <a class="t-btn t-btn-primary" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">免費試做</a>
+        <details class="t-mobile-menu">
           <summary aria-label="開啟功能選單">☰</summary>
-          <div class="mobile-drawer">
-            <div class="drawer-title">ADFORGE 工具箱</div>
+          <div class="t-mobile-drawer">
+            <div class="t-drawer-title">ADFORGE 工具箱</div>
             <a href="index.html#product-tools"><strong>AI 商品圖</strong><span>9 張上架素材</span></a>
             <a href="index.html#product-tools"><strong>九宮格</strong><span>商品頁標準圖組</span></a>
             <a href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
