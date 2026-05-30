@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Iterable
 
 import requests
-from flask import Flask, Response, abort, render_template, request, send_from_directory, url_for
+from flask import Flask, Response, abort, jsonify, render_template, request, send_from_directory, url_for
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 
@@ -149,8 +149,45 @@ app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def wants_json_response() -> bool:
+    if request.args.get("response_format", "").strip().lower() == "json":
+        return True
+    if request.args.get("fmt", "").strip().lower() == "json":
+        return True
+    if request.form.get("response_format", "").strip().lower() == "json":
+        return True
+    if request.form.get("fmt", "").strip().lower() == "json":
+        return True
+    return "application/json" in request.headers.get("Accept", "").lower()
+
+
+def add_cors_headers(response: Response) -> Response:
+    if request.path == "/generate" or request.path.startswith("/outputs/"):
+        response.headers.setdefault("Access-Control-Allow-Origin", "*")
+        response.headers.setdefault(
+            "Access-Control-Allow-Headers",
+            "Content-Type, Accept, Origin, Authorization, X-Requested-With",
+        )
+        response.headers.setdefault("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    return response
+
+
+@app.after_request
+def _apply_cors_headers(response: Response) -> Response:
+    return add_cors_headers(response)
+
+
+@app.route("/generate", methods=["OPTIONS"])
+def generate_options():
+    response = Response(status=204)
+    return add_cors_headers(response)
+
+
 @app.before_request
 def require_basic_auth():
+    if request.method == "OPTIONS":
+        return None
+
     password = os.getenv("APP_PASSWORD", "").strip()
     if not password:
         return None
@@ -917,6 +954,8 @@ def index():
 def generate():
     upload = request.files.get("product_image")
     if not upload or not upload.filename:
+        if wants_json_response():
+            return jsonify({"ok": False, "message": "請先上傳一張商品照片。"}), 400
         return render_index(error="請先上傳一張商品照片。"), 400
 
     created_at = datetime.now()
@@ -929,6 +968,8 @@ def generate():
     try:
         source_path = save_uploaded_file(upload, run_dir)
     except ValueError as exc:
+        if wants_json_response():
+            return jsonify({"ok": False, "message": str(exc)}), 400
         return render_index(error=str(exc)), 400
 
     templates = build_templates(request.form)
@@ -939,6 +980,11 @@ def generate():
     if mode == "demo":
         use_ai = False
     if use_ai and not api_key:
+        if wants_json_response():
+            return (
+                jsonify({"ok": False, "message": "AI 模式需要先在 .env 設定 OPENAI_API_KEY。", "has_api_key": False}),
+                400,
+            )
         return render_index(error="AI 模式需要先在 .env 設定 OPENAI_API_KEY。", has_api_key=False), 400
 
     model = (request.form.get("model") or os.getenv("OPENAI_IMAGE_MODEL") or DEFAULT_MODEL).strip()
@@ -986,18 +1032,35 @@ def generate():
         GeneratedAsset(
             file_path.name,
             f"{template.key} {template.name}",
-            url_for("output_file", run_id=run_id, filename=file_path.name),
+            url_for("output_file", run_id=run_id, filename=file_path.name, _external=True),
         )
         for file_path, template in zip(files, templates)
     ]
+    zip_url = url_for("output_file", run_id=run_id, filename=zip_path.name, _external=True)
+    mode_label = "AI 正式生成" if use_ai else "Demo 排版預覽（非 AI 圖）"
+    response_payload = {
+        "ok": True,
+        "run_id": run_id,
+        "order_id": order_id,
+        "assets": [asset.__dict__ for asset in assets],
+        "zip_url": zip_url,
+        "mode": mode_label,
+        "model": model,
+        "style": style.name,
+        "created_at": run_metadata["created_at"],
+        "errors": errors,
+    }
+
+    if wants_json_response():
+        return jsonify(response_payload)
 
     return render_index(
         result={
             "run_id": run_id,
             "order_id": order_id,
             "assets": assets,
-            "zip_url": url_for("output_file", run_id=run_id, filename=zip_path.name),
-            "mode": "AI 正式生成" if use_ai else "Demo 排版預覽（非 AI 圖）",
+            "zip_url": zip_url,
+            "mode": mode_label,
             "model": model,
             "style": style.name,
             "errors": errors,

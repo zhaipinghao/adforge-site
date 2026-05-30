@@ -3649,3 +3649,89 @@ a {
     border-radius: 20px;
   }
 }
+
+/* =========================
+   ADFORGE 產圖頁結果面板
+   ========================= */
+
+.generator-page .api-result-panel {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+}
+
+.generator-page .api-result-body {
+  margin-top: 8px;
+}
+
+.generator-page .api-result-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.generator-page #apiResultSummary {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.generator-page #apiResultErrors {
+  margin: 10px 0 14px;
+  border: 1px dashed #ffb4b4;
+  color: #a32626;
+  background: #fff5f5;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.generator-page .api-result-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.generator-page .result-card {
+  display: grid;
+  gap: 8px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 140px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.generator-page .result-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center;
+}
+
+.generator-page .result-card p {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 10px 10px;
+  margin: 0;
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  .generator-page .api-result-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 580px) {
+  .generator-page .api-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

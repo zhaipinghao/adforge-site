@@ -235,13 +235,15 @@
         </div>
         <p class="form-note" id="builderStatus" aria-live="polite">填寫後會自動整理成可交付給設計師的需求單。</p>
         <div class="api-host-note">
-          內部生圖端點：
+          內部作圖端點（優先建議）：
           <input
             id="apiEndpointInput"
             type="url"
-            value="http://127.0.0.1:7860/generate"
             placeholder="http://127.0.0.1:7860/generate"
+            list="generatorEndpointList"
           />
+          <span id="apiEndpointStatus" role="status" aria-live="polite">請先準備可用端點。</span>
+          <datalist id="generatorEndpointList"></datalist>
         </div>
       </form>
 
@@ -272,6 +274,23 @@
               </div>
               <textarea id="briefPreview" readonly></textarea>
               <button class="button button-secondary" type="button" id="downloadBriefButton">下載 TXT 需求單</button>
+            </div>
+          </aside>
+
+          <aside class="api-result-panel" id="apiResultPanel" hidden aria-labelledby="api-result-title">
+            <div class="studio-topbar">
+              <span></span>
+              <span></span>
+              <span></span>
+              <strong>內部生圖結果</strong>
+            </div>
+            <div class="api-result-body">
+              <p class="panel-label">GENERATED OUTPUT</p>
+              <h2 id="api-result-title">生成預覽與下載</h2>
+              <p id="apiResultSummary"></p>
+              <p id="apiResultErrors" class="result-errors" hidden></p>
+              <div id="apiResultGrid" class="api-result-grid"></div>
+              <a class="button button-primary" id="apiZipLink" href="#" target="_blank" rel="noopener noreferrer" hidden>下載 ZIP</a>
             </div>
           </aside>
         </div>
@@ -305,12 +324,21 @@
         lineBriefLink: document.querySelector("#lineBriefLink"),
         restrictedNotice: document.querySelector("#restrictedNotice"),
         builderStatus: document.querySelector("#builderStatus"),
+        endpointStatus: document.querySelector("#apiEndpointStatus"),
+        resultPanel: document.querySelector("#apiResultPanel"),
+        resultSummary: document.querySelector("#apiResultSummary"),
+        resultErrors: document.querySelector("#apiResultErrors"),
+        resultGrid: document.querySelector("#apiResultGrid"),
+        zipButton: document.querySelector("#apiZipLink"),
       };
 
       const restrictedTypes = new Set(["管制類商品"]);
       const directGenerateBtn = document.querySelector("#directGenerateBtn");
       const requestForm = document.querySelector(".request-form");
       const apiEndpointInput = document.querySelector("#apiEndpointInput");
+      const apiEndpointStatus = document.querySelector("#apiEndpointStatus");
+      const endpointDatalist = document.querySelector("#generatorEndpointList");
+      const apiEndpointStorageKey = "adforge-image-generator-endpoint";
       const API_STYLE_MAP = {
         "高級電商感": "luxury",
         "小紅書爆款感": "xiaohongshu",
@@ -319,6 +347,245 @@
         "韓系生活感": "korean",
         "中性型錄": "threads"
       };
+
+      const DEFAULT_GENERATOR_ENDPOINTS = [
+        "http://127.0.0.1:7860/generate",
+        "https://adforge-image-generator.onrender.com/generate",
+      ];
+
+      const INTERNAL_API_ENDPOINT_PRESETS = [
+        ...DEFAULT_GENERATOR_ENDPOINTS,
+        // 可選：你既有其他部署時可直接加到這裡，不用改流程邏輯
+        // ex: "https://你的新服務網域/generate"
+      ];
+
+      let cachedActiveEndpoint = "";
+
+      function isValidUrl(raw) {
+        if (!raw || typeof raw !== "string") return false;
+        try {
+          const url = new URL(raw);
+          return url.protocol === "http:" || url.protocol === "https:";
+        } catch {
+          return false;
+        }
+      }
+
+      function isLocalHost() {
+        return ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+      }
+
+      function dedupeArray(items) {
+        return [...new Set(items)];
+      }
+
+      function buildCandidateEndpoints() {
+        const endpoints = [...INTERNAL_API_ENDPOINT_PRESETS];
+
+        const saved = (() => {
+          try {
+            return localStorage.getItem(apiEndpointStorageKey) || "";
+          } catch {
+            return "";
+          }
+        })();
+
+        if (isValidUrl(saved)) {
+          endpoints.unshift(saved);
+        }
+
+        if (isLocalHost()) {
+          endpoints.unshift("http://127.0.0.1:7860/generate");
+        }
+
+        if (!isLocalHost() && isValidUrl(window.ADFORGE_GENERATOR_ENDPOINT)) {
+          endpoints.unshift(window.ADFORGE_GENERATOR_ENDPOINT);
+        }
+
+        return dedupeArray(
+          endpoints.filter((value) => isValidUrl(value))
+        );
+      }
+
+      function renderEndpointOptions(endpoints) {
+        if (!endpointDatalist) return;
+        endpointDatalist.innerHTML = "";
+        for (const item of endpoints) {
+          const option = document.createElement("option");
+          option.value = item;
+          endpointDatalist.appendChild(option);
+        }
+      }
+
+      function setEndpointStatus(message, type = "info") {
+        if (!fields.endpointStatus || !apiEndpointStatus) return;
+        fields.endpointStatus.textContent = message;
+        fields.endpointStatus.dataset.state = type;
+      }
+
+      async function probeEndpoint(endpoint, timeoutMs = 3500) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        const options = { method: "GET", mode: "no-cors", signal: controller.signal, cache: "no-store" };
+
+        try {
+          const response = await fetch(endpoint, options);
+          clearTimeout(timer);
+          // /generate 常見回傳為 405/404，但只要可連線即視為可用（避免 CORS/狀態碼干擾）
+          return (
+            Boolean(response) && (response.type === "opaque" || typeof response.status !== "number" || response.status < 600)
+          );
+        } catch (error) {
+          clearTimeout(timer);
+          return false;
+        }
+      }
+
+      async function findWorkingEndpoint(preferredEndpoint = "") {
+        const manualInput = isValidUrl((apiEndpointInput && apiEndpointInput.value || "").trim())
+          ? apiEndpointInput.value.trim()
+          : "";
+
+        const prioritized = dedupeArray(
+          [
+            ...(manualInput ? [manualInput] : []),
+            ...(preferredEndpoint ? [preferredEndpoint] : []),
+            ...buildCandidateEndpoints(),
+          ]
+        );
+
+        for (const endpoint of prioritized) {
+          setEndpointStatus(`檢測中：${endpoint}`);
+          const ok = await probeEndpoint(endpoint);
+          if (ok) {
+            try {
+              localStorage.setItem(apiEndpointStorageKey, endpoint);
+            } catch {
+              // ignore
+            }
+            return endpoint;
+          }
+        }
+
+        return "";
+      }
+
+      function clearApiResult() {
+        if (!fields.resultPanel) return;
+        fields.resultPanel.hidden = true;
+        if (fields.resultSummary) fields.resultSummary.textContent = "";
+        if (fields.resultErrors) {
+          fields.resultErrors.textContent = "";
+          fields.resultErrors.hidden = true;
+        }
+        if (fields.resultGrid) fields.resultGrid.innerHTML = "";
+        if (fields.zipButton) fields.zipButton.hidden = true;
+      }
+
+      function showApiError(message) {
+        if (!fields.resultPanel) return;
+        fields.resultPanel.hidden = false;
+        if (fields.resultSummary) fields.resultSummary.textContent = message;
+        if (fields.resultErrors) {
+          fields.resultErrors.textContent = message;
+          fields.resultErrors.hidden = false;
+        }
+      }
+
+      function safeAssetName(name) {
+        return String(name || "").replace(/[\\/?%*:|"<>]/g, "_");
+      }
+
+      function renderApiResult(payload) {
+        if (!fields.resultPanel) return;
+        const errors = Array.isArray(payload.errors) ? payload.errors : [];
+        const list = payload.assets || [];
+        if (fields.resultSummary) {
+          fields.resultSummary.textContent = `已完成 ${list.length} 張輸出 | 訂單：${payload.order_id || "-"} | Run：${payload.run_id || "-"}`;
+        }
+        if (fields.resultErrors) {
+          fields.resultErrors.textContent = errors.length ? `注意：${errors.join("；")}` : "";
+          fields.resultErrors.hidden = !errors.length;
+        }
+        if (fields.resultGrid) {
+          fields.resultGrid.innerHTML = list
+            .map((asset, index) => {
+              const safeName = safeAssetName(asset.filename || `image-${index + 1}`);
+              return `
+                <a class="result-card" href="${asset.url}" target="_blank" rel="noopener noreferrer" aria-label="${asset.title || safeName}">
+                  <img src="${asset.url}" alt="${asset.title || safeName}" loading="lazy" />
+                  <p>${asset.title || safeName}</p>
+                </a>
+              `;
+            })
+            .join("");
+        }
+        if (fields.zipButton) {
+          fields.zipButton.href = payload.zip_url || "#";
+          fields.zipButton.hidden = !payload.zip_url;
+        }
+        fields.resultPanel.hidden = false;
+      }
+
+      async function parseResponseJson(response) {
+        try {
+          return await response.json();
+        } catch {
+          const text = await response.text();
+          return { ok: false, message: text || `回傳格式不正確（HTTP ${response.status}）` };
+        }
+      }
+
+      function normalizeApiPayload(formData) {
+        formData.set("order_id", `ADG-${Date.now().toString(36).toUpperCase()}`);
+        formData.set("category", fields.productType.value || "一般商品");
+        formData.set("audience", "蝦皮、IG、MOMO、獨立站賣家");
+        formData.set("dimensions", "尺寸與版型明確可讀");
+        formData.set("material", fields.extraNotes.value || fields.sellingPoints.value || "材質與細節");
+        formData.set("comparison", "同類對比、場景對比、細節對比");
+        formData.set("forbidden", "禁止新增不存在功能或誇大功能");
+        formData.set("tone", fields.visualStyle.value || "高級、乾淨、台灣電商可上架");
+        formData.set("style_preset", getStylePreset());
+        formData.set("features", fields.sellingPoints.value || "清楚賣點拆解");
+        formData.set("notes", fields.extraNotes.value || "補充需求請優先同步到需求單");
+        formData.set("bottom_slogan", "高品質電商素材，適合立即上架");
+        formData.set("mode", "auto");
+        formData.set("size", "1024x1024");
+        formData.set("quality", "low");
+        formData.set("model", "gpt-image-2");
+        formData.set("concurrency", "2");
+        formData.set("response_format", "json");
+      }
+
+      function mapHiddenNetlifyFields(formData) {
+        formData.delete("form-name");
+        formData.delete("bot-field");
+        formData.delete("generated_brief");
+        if (formData.has("product_image")) {
+          return;
+        }
+        const file = fields.productPhoto.files[0];
+        if (file) {
+          formData.append("product_image", file);
+        }
+      }
+
+      function applyEndpointUI(endpoint) {
+        if (!endpoint) {
+          fields.endpointStatus.textContent = "未找到可用端點，請先啟動 7860 或填入可用公開端點。";
+          if (apiEndpointInput) {
+            apiEndpointInput.value = "";
+          }
+          return;
+        }
+
+        if (apiEndpointInput) {
+          apiEndpointInput.value = endpoint;
+        }
+
+        cachedActiveEndpoint = endpoint;
+        setEndpointStatus(`已選擇可用端點：${endpoint}`);
+      }
 
       function getStylePreset() {
         const key = fields.visualStyle.value || "";
@@ -350,40 +617,23 @@
         input.value = value || "";
       }
 
-      function initApiEndpointDefault() {
-        if (apiEndpointInput.value.trim()) {
+      async function initApiEndpointDefault() {
+        const candidates = buildCandidateEndpoints();
+        renderEndpointOptions(candidates);
+
+        if (apiEndpointInput && apiEndpointInput.value.trim()) {
           return;
         }
 
-        if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-          apiEndpointInput.value = "http://127.0.0.1:7860/generate";
-          return;
-        }
+        const preferred = isLocalHost()
+          ? "http://127.0.0.1:7860/generate"
+          : "https://adforge-image-generator.onrender.com/generate";
 
-        // 你只要保有 7860 在本機環境時才建議保留預設值，
-        // 上線環境預設不自動帶入已失效的 onrender 端點
-        apiEndpointInput.value = "";
+        const working = await findWorkingEndpoint(preferred);
+        applyEndpointUI(working);
       }
 
-      function submitToInternalApi() {
-        const endpoint = (apiEndpointInput.value || "").trim();
-        const fileInput = fields.productPhoto;
-        if (!endpoint) {
-          fields.builderStatus.textContent = "請先填寫內部產圖 API 位址。";
-          return;
-        }
-
-        if (!fileInput.files || fileInput.files.length === 0) {
-          fields.builderStatus.textContent = "請先上傳商品照片才能直接生圖。";
-          return;
-        }
-
-        if (!fields.productName.value.trim()) {
-          fields.builderStatus.textContent = "請先填寫商品名稱。";
-          return;
-        }
-
-        updateBrief();
+      function submitToInternalApiFallback(endpoint) {
         const previousState = {
           action: requestForm.action,
           target: requestForm.target || "",
@@ -412,6 +662,8 @@
           "quality",
           "model",
           "concurrency",
+          "response_format",
+          "product_image",
         ];
 
         requestForm.setAttribute("action", endpoint);
@@ -439,6 +691,7 @@
         applyManagedHidden(requestForm, "quality", "low");
         applyManagedHidden(requestForm, "model", "gpt-image-2");
         applyManagedHidden(requestForm, "concurrency", "2");
+        applyManagedHidden(requestForm, "response_format", "json");
 
         fields.builderStatus.textContent = "已送至內部生圖端點，將開啟新分頁顯示結果...";
         requestForm.submit();
@@ -464,8 +717,78 @@
         } else {
           requestForm.removeAttribute("netlify-honeypot");
         }
+      }
 
-        fields.builderStatus.textContent = "若新分頁無法開啟，請允許彈窗後再試一次。";
+      async function submitToInternalApi() {
+        let endpoint = (apiEndpointInput.value || "").trim();
+
+        if (!isValidUrl(endpoint)) {
+          setEndpointStatus("正在重選可用作圖端點...");
+          endpoint = await findWorkingEndpoint();
+          applyEndpointUI(endpoint);
+        }
+
+        const fileInput = fields.productPhoto;
+        if (!endpoint) {
+          fields.builderStatus.textContent = "未找到可用的作圖端點，請確認 7860 已啟動或填入公開端點。";
+          setEndpointStatus("找不到可用端點。");
+          return;
+        }
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+          fields.builderStatus.textContent = "請先上傳商品照片才能直接生圖。";
+          return;
+        }
+
+        if (!fields.productName.value.trim()) {
+          fields.builderStatus.textContent = "請先填寫商品名稱。";
+          return;
+        }
+
+        updateBrief();
+        clearApiResult();
+        fields.builderStatus.textContent = "正在送出到內部生圖端點（JSON）...";
+        const payload = new FormData(requestForm);
+        mapHiddenNetlifyFields(payload);
+        payload.set("product_image", fields.productPhoto.files[0]);
+        normalizeApiPayload(payload);
+        const url = endpoint.includes("?") ? `${endpoint}&response_format=json` : `${endpoint}?response_format=json`;
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            body: payload,
+            mode: "cors",
+            credentials: "omit",
+          });
+          const contentType = (response.headers.get("content-type") || "").toLowerCase();
+          if (!response.ok) {
+            const errorPayload = await parseResponseJson(response);
+            const message = errorPayload?.message || `送出失敗：HTTP ${response.status}`;
+            showApiError(message);
+            fields.builderStatus.textContent = message;
+            submitToInternalApiFallback(endpoint);
+            return;
+          }
+
+          if (!contentType.includes("application/json")) {
+            throw new Error("後端仍為 HTML 回應，已改為開新分頁。");
+          }
+
+          const data = await parseResponseJson(response);
+          if (!data?.ok) {
+            showApiError(data?.message || "後端回傳失敗。");
+            fields.builderStatus.textContent = data?.message || "後端回傳失敗。";
+            submitToInternalApiFallback(endpoint);
+            return;
+          }
+
+          renderApiResult(data);
+          fields.builderStatus.textContent = "生成完成，已在下方顯示預覽與下載連結。";
+        } catch (error) {
+          submitToInternalApiFallback(endpoint);
+          fields.builderStatus.textContent = "API 格式不一致，已改為新分頁 fallback。";
+        }
       }
 
       function setOutputMode(value) {
@@ -575,6 +898,20 @@
       document.querySelector(".request-form").addEventListener("submit", updateBrief);
       directGenerateBtn.addEventListener("click", submitToInternalApi);
 
+      if (apiEndpointInput) {
+        apiEndpointInput.addEventListener("change", () => {
+          const value = apiEndpointInput.value.trim();
+          if (isValidUrl(value)) {
+            try {
+              localStorage.setItem(apiEndpointStorageKey, value);
+            } catch {
+              // ignore
+            }
+          }
+          setEndpointStatus(value ? `使用手動端點：${value}` : "請先填寫作圖端點");
+        });
+      }
+
       document.querySelectorAll('a[href^="https://page.line.me/"], a[href^="https://line.me/"]').forEach((link) => {
         link.addEventListener("click", (event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button > 0) {
@@ -586,8 +923,10 @@
         });
       });
 
-      initApiEndpointDefault();
-      updateBrief();
+      (async () => {
+        await initApiEndpointDefault();
+        updateBrief();
+      })();
     </script>
   </body>
 </html>
