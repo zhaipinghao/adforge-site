@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADFORGE AI 圖片轉影片</title>
+  <meta name="description" content="ADFORGE AI 影片服務展示版：上傳商品照或人像照，快速體驗圖片轉影片流程與素材方向。">
+  <meta property="og:title" content="ADFORGE AI 圖片轉影片">
+  <meta property="og:description" content="上傳商品照 / 人像照，體驗 ADFORGE 圖片轉影片互動流程。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/adforge-logo-header.png">
+  <link rel="canonical" href="https://adforgetw.com/image-to-video.html">
+  <link rel="icon" href="assets/adforge-logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- GA4 tracking -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HX5JWFTK45"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HX5JWFTK45');
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+    (window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '452503793580179');
+    fbq('track', 'PageView');
+  </script>
+
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/image-to-video.css">
+</head>
+<body class="video-page">
+  <canvas id="bgc" aria-hidden="true"></canvas>
+
+  <header class="site-header platform-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="ADFORGE AI 首頁">
+        <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
+        <span>
+          <strong>ADFORGE</strong>
+          <small>AI 內容工具平台</small>
+        </span>
+      </a>
+
+      <nav class="nav-links platform-nav" aria-label="主要導覽">
+        <details class="mega-menu">
+          <summary>所有功能 <span aria-hidden="true">⌄</span></summary>
+          <div class="mega-panel">
+            <div class="mega-grid">
+              <a class="mega-link" href="index.html#studio"><strong>AI 圖片轉影片</strong><span>商品、人物、場景一鍵動起來</span></a>
+              <a class="mega-link" href="index.html#templates"><strong>九宮格商品圖</strong><span>主圖、賣點、情境、促銷</span></a>
+              <a class="mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
+              <a class="mega-link" href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
+              <a class="mega-link" href="/index.html#social-tools"><strong>社群封面</strong><span>Threads、小紅書、短影音腳本</span></a>
+              <a class="mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
+            </div>
+            <a class="mega-feature" href="index.html#tools">探索所有工具 →</a>
+          </div>
+        </details>
+        <a href="image-to-video.html">AI 影片</a>
+        <a href="index.html#tools">服務工具</a>
+        <a href="tools.html">模板庫</a>
+        <a href="/fashion/">服飾 AI 模特</a>
+        <a href="warmheart.html">暖心 AI</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="app.html">登入下單</a>
+        <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
+        <details class="mobile-menu">
+          <summary aria-label="開啟功能選單">☰</summary>
+          <div class="mobile-drawer">
+            <div class="drawer-title">ADFORGE 工具箱</div>
+            <a href="image-to-video.html"><strong>圖片轉影片</strong><span>上傳圖片，預覽生成流程</span></a>
+            <a href="index.html#tools"><strong>服務工具</strong><span>AI 商品圖、模板庫、服飾模特</span></a>
+            <a href="tools.html"><strong>模板庫</strong><span>Prompt 與短影音腳本</span></a>
+            <a href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
+            <a href="warmheart.html"><strong>暖心 AI</strong><span>長輩貼文素材</span></a>
+            <a href="app.html"><strong>登入下單</strong><span>建立商品素材訂單</span></a>
+          </div>
+        </details>
+      </div>
+    </div>
+  </header>
+
+<!-- [NEEDS_REPLACEMENT] 該頁為展示版，僅保留前端互動邏輯；正式上線時請接回 ADFORGE API 與訂單流程。 -->
+<div class="banner">
+  ADFORGE 圖片轉影片測試版（僅示意）
+  <a href="#order-now">了解正式流程 →</a>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="glow glow-c"></div>
+  <div class="hero-in" id="heroIn">
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      ADFORGE AI 圖片轉影片 · 商務素材測試頁
+    </div>
+
+    <h1 class="hero-title">
+      一站集結<span class="gt">AI 圖像轉影片</span><br>素材測試流程
+    </h1>
+    <p class="hero-sub">
+      這裡保留前端體驗流程：上傳圖片、選模型與參數、確認生成結果。  
+      正式產出將依訂單流程由 ADFORGE 團隊接手製作。
+    </p>
+
+    <!-- Model Tabs -->
+    <div class="mtabs-wrap">
+      <div class="mtabs-lbl">選擇 AI 模型</div>
+      <div class="mtabs" id="mtabs">
+        <div class="mt on" data-m="veo3" onclick="selModel(this)">Veo 3 <span class="nbadge">NEW</span></div>
+        <div class="mt" data-m="sora2" onclick="selModel(this)">Sora 2</div>
+        <div class="mt" data-m="litai" onclick="selModel(this)">LitAI 5</div>
+        <div class="mt" data-m="hailuo" onclick="selModel(this)">Hailuo</div>
+        <div class="mt" data-m="wan" onclick="selModel(this)">Wan</div>
+        <div class="mt" data-m="vidu" onclick="selModel(this)">Vidu</div>
+        <div class="mt" data-m="seedance" onclick="selModel(this)">Seedance</div>
+        <div class="mt" data-m="kling" onclick="selModel(this)">Kling</div>
+        <div class="mt" data-m="loveai" onclick="selModel(this)">Love AI 2.0</div>
+        <div class="mt" data-m="pixverse" onclick="selModel(this)">PixVerse</div>
+      </div>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="ucard">
+      <div class="dz" id="dz"
+           ondragover="ev(event,'over')" ondragleave="ev(event,'leave')" ondrop="ev(event,'drop')"
+           onclick="document.getElementById('fin').click()">
+        <div class="dz-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="dz-main">拖曳圖片至此，或點擊上傳</div>
+        <div class="dz-sub">支援 JPG · JPEG · PNG · BMP，最大 5MB</div>
+        <button class="dz-btn" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          選擇圖片
+        </button>
+      </div>
+      <input type="file" id="fin" accept="image/*" style="display:none" onchange="loadImg(event)">
+
+      <div class="pt-wrap">
+        <div class="pt-lbl">
+          <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          提示詞 <span class="pt-opt">選填</span>
+        </div>
+        <textarea class="pt-inp" id="ptinp" placeholder="描述您希望影片呈現的動態效果…&#10;例如：鏡頭緩緩推進，背景中的樹葉隨風搖曳，光線溫暖柔和，電影感構圖。"></textarea>
+      </div>
+
+      <div class="srow">
+        <div class="si"><div class="si-lbl">影片長度</div>
+          <select class="si-sel"><option>5 秒</option><option>10 秒</option><option>15 秒</option><option>20 秒</option></select></div>
+        <div class="si"><div class="si-lbl">畫面比例</div>
+          <select class="si-sel"><option>16:9 橫向</option><option>9:16 直向</option><option>1:1 正方</option><option>4:3 傳統</option></select></div>
+        <div class="si"><div class="si-lbl">影片品質</div>
+          <select class="si-sel"><option>標準 720p</option><option>高清 1080p</option><option>超清 4K</option></select></div>
+        <div class="si"><div class="si-lbl">運動強度</div>
+          <select class="si-sel"><option>輕微</option><option selected>中等</option><option>強烈</option></select></div>
+      </div>
+
+      <div class="grow">
+        <button class="btn-gen" id="genBtn" onclick="doGen()">
+          <div class="spin"></div>
+          <span class="btn-txt">✦ 立即生成影片</span>
+        </button>
+        <div class="credits"><span class="coin"></span>示意流程</div>
+      </div>
+
+      <div class="prog" id="prog">
+        <div class="prog-top"><span id="pstat">AI 正在分析圖像…</span><span id="ppct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="result-vid">
+          <!-- [NEEDS_REPLACEMENT] 這是示範影片（w3schools）示意，後端接 API 後請改為實際生成結果 URL。 -->
+          <video id="rvideo" controls loop autoplay muted playsinline
+                 src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
+        </div>
+        <div class="result-act">
+          <button class="rBtn pr" onclick="downloadDemo()">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下載影片
+          </button>
+          <button class="rBtn" onclick="doShare()">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            分享
+          </button>
+          <button class="rBtn" onclick="doReset()">
+            <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            重新生成
+          </button>
+        </div>
+      </div>
+    </div><!-- /ucard -->
+  </div>
+</section>
+
+<!-- ========== STATS ========== -->
+<div class="stats">
+  <div class="stats-in">
+    <div class="stat"><div class="stat-n gt" id="sU">12+</div><div class="stat-l">示意場景模板</div></div>
+    <div class="stat"><div class="stat-n gt" id="sV">3</div><div class="stat-l">轉片流程範圍</div></div>
+    <div class="stat"><div class="stat-n gt">10</div><div class="stat-l">可選模型參考</div></div>
+    <div class="stat"><div class="stat-n gt" id="sR">98%</div><div class="stat-l">用戶滿意度</div></div>
+  </div>
+</div>
+
+<!-- ========== GALLERY ========== -->
+<section class="gallery-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">看見流程示意：<br>圖片轉影片精選</h2>
+    <p class="sec-sub fu">每一張圖片都是故事的開始，讓 AI 為它注入靈魂與動態</p>
+
+    <!-- Before/After Slider -->
+    <div class="ba-wrap fu">
+      <div>
+        <div class="ba-slider" id="baSlider">
+          <!-- Before (right side = original) -->
+          <div class="ba-bg" style="background:linear-gradient(145deg,#1a0e2e,#2d1844,#1e0f36)">
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+              <div style="font-size:5rem;filter:drop-shadow(0 0 24px rgba(228,85,212,.6))">👩‍🎤</div>
+              <div style="font-size:.75rem;color:rgba(255,255,255,.5)">原始人像圖片</div>
+            </div>
+          </div>
+          <!-- After (left side = AI generated look) -->
+          <div class="ba-fg-wrap" id="baFgWrap" style="width:50%">
+            <div class="ba-fg" style="background:linear-gradient(145deg,#0d1830,#1a2044,#0e1534)">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+                <div style="font-size:5rem;filter:drop-shadow(0 0 24px rgba(141,27,255,.7))">🎬</div>
+                <div style="font-size:.75rem;color:rgba(255,255,255,.5)">AI 生成影片</div>
+              </div>
+              <!-- Animated particles overlay -->
+              <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(141,27,255,.08),rgba(228,85,212,.05));animation:shimmer 3s ease-in-out infinite"></div>
+            </div>
+          </div>
+          <div class="ba-div" id="baDiv"></div>
+          <div class="ba-handle" id="baHandle">
+            <svg viewBox="0 0 24 24"><path d="M8 3L3 8 8 13M16 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="ba-lbl l">原始圖片</span>
+          <span class="ba-lbl r">✨ AI 生成</span>
+        </div>
+        <div class="ba-hint">← 拖動滑桿比較效果 →</div>
+      </div>
+      <div>
+        <div class="ba-info-box">
+          <div class="ba-info-title">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            提示詞
+          </div>
+          <div class="ba-info-text">西方音樂錄影帶中女性主角的特寫鏡頭。MV 風格視覺效果，動態光影、創意氛圍與電影感。鏡頭緩緩推進，柔和的光暈在髮絲間流動，眼神充滿故事性。</div>
+        </div>
+        <div class="ba-meta">
+          <span>使用模型：</span><span class="chip">Veo 3</span>
+          <span class="ba-time">⏱ 生成時間：28秒</span>
+        </div>
+        <div class="ba-btns">
+          <button class="btn-pr" style="flex:1;padding:12px" onclick="toOrderFlow()">✦ 申請試作</button>
+          <button class="btn-ol" style="flex:1;padding:12px" onclick="doShare()">↗ 分享效果</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery Tabs -->
+    <div class="gtabs">
+      <div class="gtab on" onclick="filterG(this,'all')">全部</div>
+      <div class="gtab" onclick="filterG(this,'portrait')">人像</div>
+      <div class="gtab" onclick="filterG(this,'nature')">自然</div>
+      <div class="gtab" onclick="filterG(this,'city')">城市</div>
+      <div class="gtab" onclick="filterG(this,'art')">藝術</div>
+      <div class="gtab" onclick="filterG(this,'anime')">動漫</div>
+    </div>
+    <div class="ggrid" id="ggrid"></div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="feat-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">創作者為何首選 <span class="gt">ADFORGE</span></h2>
+    <p class="sec-sub fu">用 AI 圖像轉影片，對接商品廣告素材流程</p>
+    <div class="feat-grid">
+      <div class="fcard fu">
+        <div class="ficon pu">🤖</div>
+        <div class="ftitle">卓越模型</div>
+        <div class="fdesc">整合多樣模型參考，先做風格測試，協助你快速選出最適合商品的短影音方向。</div>
+      </div>
+      <div class="fcard fu">
+        <div class="ficon pk">✨</div>
+        <div class="ftitle">用戶友好</div>
+        <div class="fdesc">簡化上傳與參數操作，幫你快速判斷內容方向是否適合上架與廣告使用。</div>
+      </div>
+      <div class="fcard fu">
+        <div class="ficon bl">⚡</div>
+        <div class="ftitle">快速高品質</div>
+        <div class="fdesc">本頁僅為展示流程，正式輸出時程與品質等級將依訂單與素材難度安排。</div>
+      </div>
+      <div class="fcard fu">
+        <div class="ficon gr">🔒</div>
+        <div class="ftitle">安全隱私</div>
+        <div class="fdesc">示意頁不做商業存檔；正式專案將依既有商務流程保留與管理素材。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODELS ========== -->
+<section class="models-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">選擇您的 <span class="gt">AI 模型</span></h2>
+    <p class="sec-sub fu">每款模型各有特色，找到最適合您創作風格的那一個</p>
+    <div class="mgrid" id="mgrid"></div>
+  </div>
+</section>
+
+<!-- ========== STEPS ========== -->
+<section class="steps-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">如何在 ADFORGE 上<span class="gt">輕鬆</span>使用<br>圖片轉影片</h2>
+    <p class="sec-sub fu">三個簡單步驟，讓您的圖片動起來</p>
+    <div class="sgrid">
+      <div class="scard fu">
+        <div class="snum">1</div>
+        <div class="slbl">步驟 1</div>
+        <div class="stitle">上傳您的圖片</div>
+        <div class="sdesc">選擇您想要動畫化的圖片並上傳，支援 JPG、PNG 等格式，建議 5MB 以內。</div>
+      </div>
+      <div class="scard fu">
+        <div class="snum">2</div>
+        <div class="slbl">步驟 2</div>
+        <div class="stitle">輸入您的提示詞</div>
+        <div class="sdesc">在提示框中描述您的創意構想或動畫想法，以指導 AI 進行轉換。越詳細的描述，效果越符合您的期待。</div>
+      </div>
+      <div class="scard fu">
+        <div class="snum">3</div>
+        <div class="slbl">步驟 3</div>
+        <div class="stitle">生成並下載</div>
+        <div class="sdesc">點擊「立即生成」，先看展示結果。滿意後可按「建立訂單」啟動正式素材製作。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EFFECTS ========== -->
+<section class="eff-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">熱門影片<span class="gt">效果與濾鏡</span></h2>
+    <p class="sec-sub fu">一鍵套用熱門效果，讓創作更快速有趣</p>
+    <div class="eff-scroll" id="effScroll">
+      <div class="eff-row" id="effRow"></div>
+    </div>
+    <div class="eff-cta">
+      <button class="btn-eff" onclick="showToast('前往效果頁面…','info')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        立即試用熱門效果
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="faq-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">圖像轉視頻 <span class="gt">FAQ</span></h2>
+    <p class="sec-sub fu">常見問題，一次解答</p>
+    <div class="flist" id="flist"></div>
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta-sec">
+  <div class="cta-glow"></div>
+  <div class="cta-in">
+    <h2 class="cta-title">準備好讓您的圖片<br><span class="gt">轉成短影音素材嗎？</span></h2>
+    <p class="cta-sub" id="order-now">完成流程體驗後，請改用「建立訂單」走正式委託。</p>
+    <div class="cta-btns">
+      <button class="btn-cta" onclick="toOrderFlow()">🚀 直接建立訂單</button>
+      <button class="btn-cta-ol" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">▶ 觀看演示</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="ft-in">
+    <div class="ft-top">
+      <div>
+        <span class="ft-logo-text">ADFORGE</span>
+        <p class="ft-desc">圖片轉影片測試頁（展示）僅供流程體驗，實際素材交付請透過建立訂單轉接。</p>
+        <div class="ft-socials">
+          <div class="soc" title="Twitter">𝕏</div>
+          <div class="soc" title="Instagram">📸</div>
+          <div class="soc" title="YouTube">▶</div>
+          <div class="soc" title="TikTok">♪</div>
+          <div class="soc" title="Discord">💬</div>
+        </div>
+      </div>
+      <div class="fc">
+        <h4>產品</h4>
+        <ul>
+          <li><a href="image-to-video.html">圖片轉影片</a></li>
+          <li><a href="tools.html">爆款模板庫</a></li>
+          <li><a href="/fashion/">服飾 AI 模特</a></li>
+          <li><a href="warmheart.html">暖心 AI</a></li>
+          <li><a href="app.html">登入下單</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>AI 模型</h4>
+        <ul>
+          <li><a href="https://www.veo.com" target="_blank" rel="noopener noreferrer">Veo 3</a></li>
+          <li><a href="https://openai.com/research/sora" target="_blank" rel="noopener noreferrer">Sora 2</a></li>
+          <li><a href="https://www.kuaishou.com/en/kuaishou" target="_blank" rel="noopener noreferrer">Kling</a></li>
+          <li><a href="https://www.pixverse.ai" target="_blank" rel="noopener noreferrer">Hailuo</a></li>
+          <li><a href="https://www.pixverse.ai" target="_blank" rel="noopener noreferrer">PixVerse</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>支援</h4>
+        <ul>
+          <li><a href="#">常見問題</a></li>
+          <li><a href="#">使用教學</a></li>
+          <li><a href="#">聯絡我們</a></li>
+          <li><a href="#">隱私政策</a></li>
+          <li><a href="#">服務條款</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <p>© 2026 ADFORGE AI 內容工具平台</p>
+      <div class="ft-links">
+        <a href="#">隱私政策</a>
+        <a href="#">服務條款</a>
+        <a href="#">Cookie 設定</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+ 
+
+<!-- Toast -->
+<div class="toast-c" id="toastC"></div>
+
+
+  <script src="js/image-to-video.js" defer></script>
+</body>
+</html>
