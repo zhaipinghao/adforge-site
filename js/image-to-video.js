@@ -82,8 +82,8 @@ const VIDEO_API_PROFILES = {
 };
 
 const PIXMOTION_PROXY_ENDPOINTS = {
-  createEndpoint: '/functions/v1/video-create',
-  pollEndpoint: '/functions/v1/video-task-status/{taskId}',
+  createEndpoint: 'https://vcyuttzpbjfqzelcgurr.supabase.co/functions/v1/video-create',
+  pollEndpoint: 'https://vcyuttzpbjfqzelcgurr.supabase.co/functions/v1/video-task-status/{taskId}',
   createTokenFallback: true,
 };
 
@@ -396,10 +396,22 @@ function resolvePixmotionEndpoints(config) {
   if (!config || config.apiProfile !== 'pixmotion') {
     return config;
   }
+
+  const configuredBase = normalizeApiHost(PAGE_QUERY.get('supabaseHost'));
+  const activeHost = configuredBase && PAGE_QUERY.get('useProxy') === '1'
+    ? configuredBase
+    : null;
+
+  const finalProxyEndpoints = Object.assign({}, PIXMOTION_PROXY_ENDPOINTS);
+  if (activeHost) {
+    finalProxyEndpoints.createEndpoint = `${activeHost.replace(/\/$/, '')}/functions/v1/video-create`;
+    finalProxyEndpoints.pollEndpoint = `${activeHost.replace(/\/$/, '')}/functions/v1/video-task-status/{taskId}`;
+  }
+
   if (PIXMOTION_PROXY_PREFERRED && PAGE_QUERY.get('api') === '1') {
     return Object.assign({}, config, {
-      createEndpoint: PIXMOTION_PROXY_ENDPOINTS.createEndpoint,
-      pollEndpoint: PIXMOTION_PROXY_ENDPOINTS.pollEndpoint,
+      createEndpoint: finalProxyEndpoints.createEndpoint,
+      pollEndpoint: finalProxyEndpoints.pollEndpoint,
       requiresAuth: true,
       headers: { 'Content-Type': 'application/json' },
       bodyMode: 'json',
