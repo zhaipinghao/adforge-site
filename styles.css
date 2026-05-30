@@ -2521,6 +2521,26 @@ a {
   font-weight: 900;
 }
 
+.template-strip-head a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: var(--blue-2);
+  background: var(--blue-soft);
+  border: 1px solid #c7d6ff;
+  font-size: 14px;
+  font-weight: 900;
+  transition: transform 0.14s ease, background-color 0.16s ease;
+}
+
+.template-strip-head a:hover {
+  background: linear-gradient(135deg, var(--blue), var(--blue-2));
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .template-strip-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

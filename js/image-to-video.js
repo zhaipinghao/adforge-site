@@ -1,5 +1,5 @@
-// [NEEDS_REPLACEMENT] 目前為純前端 mock 版：無外部 API 呼叫，進度與結果僅做示意。
-// 待串接正式影像生成 API 時，可在 doGen() 內送出上傳檔案與參數，並用回傳 URL 取代 demo 視訊。
+// 目前為「create + poll」流程 + mock fallback：
+// 有連上 API 時走後端任務模式，否則自動回退到 demo 構面展示。
 
 // ===== DATA =====
 const GALLERY = [
@@ -50,6 +50,29 @@ const FAQ = [
   {q:'5. 是否能拿去商用？',a:'正式 ADFORGE 交付素材可依你選購方案作商用用途。建議用「建立訂單」完成合約確認。'},
   {q:'6. 這是免費試用嗎？',a:'這個頁面為展示版，流程參考用。若要實際製作，請到 ADFORGE 登入下單。'},
 ];
+
+const VIDEO_API_CONFIG = {
+  // [NEEDS_REPLACEMENT] 這兩支 API 需接上你自己的後端：
+  // POST create -> { taskId?: string, status?: string, progress?: number, videoUrl?: string }
+  // GET/POST status -> { taskId, status, progress, videoUrl, message }
+  createEndpoint: '/api/adforge/image-to-video/create',
+  pollEndpoint: '/api/adforge/image-to-video/status',
+  timeoutMs: 120000,
+  pollIntervalMs: 1500,
+  maxPollAttempts: 120,
+};
+
+Object.assign(
+  VIDEO_API_CONFIG,
+  typeof window !== 'undefined' && window.ADFORGE_IMAGE_TO_VIDEO_API ? window.ADFORGE_IMAGE_TO_VIDEO_API : {}
+);
+
+const DEMO_VIDEO_URL = 'assets/adforge-hero-demo.mp4';
+const DEMO_TASK_PREFIX = 'demo_';
+
+let selectedImageFile = null;
+let selectedImagePreview = null;
+let lastResultUrl = '';
 
 // ===== PARTICLE CANVAS =====
 (function(){
@@ -193,7 +216,15 @@ function ev(e,type){
 
 function loadImg(e){
   const f=e.target.files[0];if(!f)return;
+  if(!f.type.startsWith('image/')){
+    showToast('請上傳圖片格式（JPG、PNG、BMP）','error');
+    return;
+  }
   if(f.size>5*1024*1024){showToast('圖片大小不能超過 5MB','error');return}
+
+  selectedImageFile=f;
+  selectedImagePreview = f ? URL.createObjectURL(f) : '';
+
   const r=new FileReader();
   r.onload=function(ev){
     const dz=document.getElementById('dz');
@@ -205,17 +236,128 @@ function loadImg(e){
   r.readAsDataURL(f);
 }
 
-// TODO: 串接 API 時請先實作這兩個方法，保持頁面體驗不變即可。
-// createVideoTask(payload)  => 回傳 {taskId, status}
-// pollVideoTask(taskId)     => 回傳 {status, videoUrl}
-const VIDEO_API_TODO = {
-  createEndpoint: '/api/adforge/image-to-video/create', // <-- TODO: replace with your backend
-  pollEndpoint: '/api/adforge/image-to-video/status',   // <-- TODO: replace with your backend
-  method: 'POST'
-};
+function getSelectedModel(){
+  const selectedModel = document.querySelector('.mt.on');
+  if(selectedModel?.dataset.m) {
+    return selectedModel.dataset.m;
+  }
+  const selectedCard = document.querySelector('.mcard.on');
+  if(selectedCard) {
+    const txt = selectedCard.querySelector('.mc-name')?.textContent || 'Veo 3';
+    return txt.trim();
+  }
+  return 'Veo 3';
+}
+
+function parseDisplayToValue(text, fallback='') {
+  const raw = (text || '').trim();
+  if(!raw) return fallback;
+  const num = raw.match(/\d+(?:\.\d+)?/);
+  if(num && num[0]) {
+    return num[0];
+  }
+  return raw;
+}
+
+function formatTaskPayload(){
+  const prompt = document.getElementById('ptinp')?.value.trim() || '';
+  const duration = parseDisplayToValue(document.getElementById('durationSel')?.value, '5');
+  const ratio = (document.getElementById('ratioSel')?.value || '16:9').split(' ')[0];
+  const quality = parseDisplayToValue(document.getElementById('qualitySel')?.value, '720');
+  const motion = (document.getElementById('motionSel')?.value || '中等');
+  const model = getSelectedModel();
+  return {
+    prompt,
+    duration: Number(duration) || 5,
+    ratio: ratio || '16:9',
+    quality,
+    motion,
+    model,
+    imageFile: selectedImageFile
+  };
+}
+
+function setGeneratingState(start, percent=0) {
+  const prog=document.getElementById('prog');
+  const fill=document.getElementById('pfill');
+  const stat=document.getElementById('pstat');
+  const pct=document.getElementById('ppct');
+  const btn=document.getElementById('genBtn');
+  if(!prog||!fill||!stat||!pct||!btn)return;
+
+  if(start){
+    btn.classList.add('loading');
+    btn.disabled=true;
+    prog.classList.add('vis');
+    fill.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+    stat.textContent = '任務初始化…';
+    pct.textContent = `${Math.max(0, Math.min(100, percent))}%`;
+  } else {
+    btn.classList.remove('loading');
+    btn.disabled=false;
+    stat.textContent='AI 正在分析圖像…';
+    pct.textContent='0%';
+    fill.style.width='0%';
+    prog.classList.remove('vis');
+  }
+}
+
+function setProgress(percent, message=''){
+  const fill=document.getElementById('pfill');
+  const stat=document.getElementById('pstat');
+  const pct=document.getElementById('ppct');
+  if(fill) fill.style.width = `${Math.max(0, Math.min(100, Math.round(percent)))}%`;
+  if(pct) pct.textContent = `${Math.max(0, Math.min(100, Math.round(percent)))}%`;
+  if(stat && message) stat.textContent = message;
+}
+
+function normalizeStatus(raw){
+  const status = String(raw?.status || '').toLowerCase();
+  const progress = Number(raw?.progress ?? raw?.progressPercent ?? raw?.percent ?? 0);
+  const videoUrl = raw?.videoUrl || raw?.video_url || raw?.output_url || raw?.resultUrl || raw?.result_url;
+  return {
+    taskId: raw?.taskId || raw?.task_id || raw?.id,
+    status: status || 'pending',
+    progress: Number.isFinite(progress) ? progress : 0,
+    videoUrl,
+    message: raw?.message || raw?.statusMessage || raw?.msg || '',
+  };
+}
+
+function isDoneStatus(status){
+  return ['done', 'completed', 'success', 'succeeded', 'finished'].includes(status);
+}
+
+function isErrorStatus(status){
+  return ['failed', 'error', 'cancelled', 'canceled', 'timeout'].includes(status);
+}
+
+function safeJsonText(text){
+  try{
+    return JSON.parse(text);
+  } catch (e){
+    return null;
+  }
+}
+
+async function sleep(ms){
+  return new Promise((resolve)=>setTimeout(resolve, ms));
+}
+
+function buildFormData(payload){
+  const formData = new FormData();
+  if(payload.imageFile) formData.append('image', payload.imageFile);
+  formData.append('prompt', payload.prompt || '');
+  formData.append('duration', String(payload.duration || 5));
+  formData.append('ratio', payload.ratio || '16:9');
+  formData.append('quality', payload.quality || '720');
+  formData.append('motion', payload.motion || '中等');
+  formData.append('model', payload.model || 'Veo 3');
+  return formData;
+}
 
 // ===== GENERATE =====
-function doGen(){
+async function doGen(){
   const dz=document.getElementById('dz');
   if(!dz.classList.contains('loaded')){
     showToast('請先上傳一張圖片','error');
@@ -223,64 +365,167 @@ function doGen(){
     setTimeout(()=>dz.style.borderColor='',2000);
     return;
   }
+  if(!selectedImageFile){
+    showToast('讀取上傳圖片失敗，請重新上傳','error');
+    return;
+  }
+
+  setGeneratingState(true, 3);
   const btn=document.getElementById('genBtn');
-  btn.classList.add('loading');btn.disabled=true;
-  const prog=document.getElementById('prog');
-  const fill=document.getElementById('pfill');
-  const stat=document.getElementById('pstat');
-  const pct=document.getElementById('ppct');
-  prog.classList.add('vis');
-  const steps=[
-    {p:10,s:'AI 正在分析圖像結構…'},
-    {p:24,s:'識別主體與背景元素…'},
-    {p:42,s:'生成動態運動軌跡…'},
-    {p:58,s:'渲染影格序列…'},
-    {p:73,s:'套用視覺效果與色調…'},
-    {p:88,s:'最終畫質優化…'},
-    {p:100,s:'生成完成！🎉'},
-  ];
-  let si=0;
-  // [NEEDS_REPLACEMENT] 以下進度為假資料，接 API 後改為「輪詢任務狀態」並依回傳填值。
-  const iv=setInterval(()=>{
-    if(si>=steps.length){
-      clearInterval(iv);
-      setTimeout(()=>{
-        btn.classList.remove('loading');btn.disabled=false;
-        prog.classList.remove('vis');fill.style.width='0%';
-        document.getElementById('result').classList.add('vis');
-        showToast('🎉 影片生成成功！','success');
-        document.getElementById('result').scrollIntoView({behavior:'smooth',block:'center'});
-        // TODO: 實際 API 回傳成功時，請把播放來源改為 poll 結果中的 videoUrl
-        // ex: document.getElementById('rvideo').src = task.videoUrl;
-      },600);
+  const start = Date.now();
+
+  try{
+    const payload = formatTaskPayload();
+    const created = await createVideoTask(payload);
+    let finalResult = normalizeStatus(created);
+
+    setProgress(12, 'AI 任務已建立，準備產出…');
+    if(isDoneStatus(finalResult.status) && finalResult.videoUrl){
+      presentResult(finalResult.videoUrl);
       return;
     }
-    const s=steps[si++];
-    fill.style.width=s.p+'%';stat.textContent=s.s;pct.textContent=s.p+'%';
-  },700);
+
+    if(isErrorStatus(finalResult.status)){
+      throw new Error(`任務建立失敗：${finalResult.status}`);
+    }
+
+    const taskId = finalResult.taskId || `local_${Date.now()}`;
+    const polled = await pollVideoTask(taskId, (percent, message) => {
+      setProgress(percent, message || '影片生成中…');
+    });
+    finalResult = normalizeStatus(polled);
+
+    if(!isDoneStatus(finalResult.status)){
+      throw new Error(`任務未完成，狀態：${finalResult.status || 'unknown'}`);
+    }
+
+    if(!finalResult.videoUrl){
+      throw new Error('任務完成但未返回影片位址');
+    }
+
+    presentResult(finalResult.videoUrl);
+  } catch (error) {
+    console.error('[image-to-video] API flow error:', error);
+    showToast('後端串接尚未就緒，已改為展示片段結果','info');
+    await useMockResult();
+  } finally {
+    const elapsed = Date.now() - start;
+    if(!selectedImageFile || elapsed > VIDEO_API_CONFIG.timeoutMs){
+      showToast('請確認檔案與網路連線穩定，必要時再試一次','info');
+    }
+    btn.textContent = '✦ 立即生成影片';
+    setGeneratingState(false);
+    document.getElementById('result')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+async function useMockResult() {
+  try{
+    const fallback = await submitImageToVideoMock(formatTaskPayload());
+    const fallbackPoll = await pollVideoTask(fallback.taskId);
+    const result = normalizeStatus(fallbackPoll);
+    presentResult(result.videoUrl || DEMO_VIDEO_URL);
+  }catch(e){
+    presentResult(DEMO_VIDEO_URL, {message:'展示結果'});
+  }
+}
+
+function presentResult(videoUrl, options = {}) {
+  const video = document.getElementById('rvideo');
+  const resultBlock = document.getElementById('result');
+  const button = document.getElementById('genBtn');
+
+  lastResultUrl = videoUrl || DEMO_VIDEO_URL;
+  if(video){
+    video.src = lastResultUrl;
+    video.load();
+    video.play?.();
+  }
+  resultBlock?.classList.add('vis');
+  if(button) button.textContent='✦ 重新生成影片';
+  showToast(options.message || '🎉 影片生成成功！','success');
+  setProgress(100, options.message || '生成完成');
 }
 
 async function submitImageToVideoMock(payload){
-  // [NEEDS_REPLACEMENT] 目前保留 mock，未來接上 createVideoTask + pollVideoTask 即可。
+  // [NEEDS_REPLACEMENT] 目前保留 mock，未來可接測試用 worker 返回任務 ID。
   return new Promise((resolve)=>{
-    const taskId = `demo_${Date.now()}`;
+    const taskId = `${DEMO_TASK_PREFIX}${Date.now()}`;
     resolve({ taskId, status: 'done', payload });
   });
 }
 
 async function createVideoTask(payload) {
-  return submitImageToVideoMock(payload);
+  const formData = buildFormData(payload);
+  const endpoint = VIDEO_API_CONFIG.createEndpoint;
+  if(!endpoint || endpoint.includes('sandbox')){
+    return submitImageToVideoMock(payload);
+  }
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    body: formData
+  });
+
+  if(!response.ok){
+    const errText = await response.text();
+    const errObj = safeJsonText(errText);
+    throw new Error(errObj?.error || `建立任務失敗（${response.status}）`);
+  }
+
+  const data = await response.json().catch(()=>({}));
+  const result = normalizeStatus(data);
+  if(result.status === 'done' && !result.videoUrl) {
+    throw new Error('建立回傳完成但未提供影片位址');
+  }
+  return { ...result, ...data };
 }
 
-async function pollVideoTask(taskId) {
-  return new Promise((resolve)=>{
-    resolve({taskId, status:'done', videoUrl:'assets/adforge-hero-demo.mp4'});
-  });
+async function pollVideoTask(taskId, onUpdate) {
+  const endpoint = VIDEO_API_CONFIG.pollEndpoint;
+  if(!endpoint || endpoint.includes('sandbox')){
+    return submitImageToVideoMock({taskId});
+  }
+
+  for(let i=0;i<VIDEO_API_CONFIG.maxPollAttempts;i++){
+    const attemptStartedAt = Date.now();
+    const url = new URL(endpoint, location.origin);
+    url.searchParams.set('taskId', taskId);
+    const response = await fetch(url.toString(), { method: 'GET' });
+    if(!response.ok){
+      throw new Error(`查詢任務失敗（${response.status}）`);
+    }
+
+    const data = await response.json().catch(()=>({}));
+    const normalized = normalizeStatus(data);
+    const status = (normalized.status || '').toLowerCase();
+    const progress = Number.isFinite(normalized.progress) ? normalized.progress : Math.min(95, i* (95 / VIDEO_API_CONFIG.maxPollAttempts));
+    const msg = normalized.message || `任務進行中…（${status || 'processing'}）`;
+    if(onUpdate) onUpdate(progress, msg);
+
+    if(isDoneStatus(status) && normalized.videoUrl){
+      return normalized;
+    }
+    if(isErrorStatus(status)){
+      throw new Error(`任務失敗：${normalized.message || status}`);
+    }
+
+    const elapsed = Date.now() - attemptStartedAt;
+    await sleep(Math.max(VIDEO_API_CONFIG.pollIntervalMs - elapsed, 400));
+  }
+
+  return submitImageToVideoMock({taskId, status: 'done'});
 }
 
 function doReset(){
   const dz=document.getElementById('dz');
   dz.classList.remove('loaded');
+  if(selectedImagePreview) {
+    URL.revokeObjectURL(selectedImagePreview);
+  }
+  selectedImageFile = null;
+  selectedImagePreview = null;
+  lastResultUrl = '';
   dz.onclick=()=>document.getElementById('fin').click();
   dz.innerHTML=`
     <div class="dz-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
@@ -299,7 +544,17 @@ function doShare(){
 }
 
 function downloadDemo(){
-  showToast('此為展示片段，完整檔案請改由正式訂單下載','info');
+  if(!lastResultUrl){
+    showToast('尚未生成結果，先建立一次影片再下載','info');
+    return;
+  }
+  const a=document.createElement('a');
+  a.href=lastResultUrl;
+  a.download = `adforge-video-${Date.now()}.mp4`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast('影片下載已開始','success');
 }
 
 function toOrderFlow(){

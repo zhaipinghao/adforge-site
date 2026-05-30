@@ -47,7 +47,7 @@
         <img src="assets/adforge-logo-header.png" alt="ADFORGE logo">
         <span>
           <strong>ADFORGE</strong>
-          <small>AI 內容工具平台</small>
+          <small>AI 商品圖鍛造所</small>
         </span>
       </a>
 
@@ -56,14 +56,14 @@
           <summary>所有功能 <span aria-hidden="true">⌄</span></summary>
           <div class="mega-panel">
             <div class="mega-grid">
-              <a class="mega-link" href="index.html#studio"><strong>AI 圖片轉影片</strong><span>商品、人物、場景一鍵動起來</span></a>
-              <a class="mega-link" href="index.html#templates"><strong>九宮格商品圖</strong><span>主圖、賣點、情境、促銷</span></a>
+              <a class="mega-link" href="image-to-video.html"><strong>AI 圖片轉影片</strong><span>商品、人物、場景一鍵動起來</span></a>
+              <a class="mega-link" href="index.html#tools"><strong>九宮格商品圖</strong><span>主圖、賣點、情境、促銷</span></a>
               <a class="mega-link" href="tools.html"><strong>爆款模板庫</strong><span>Prompt、圖片模板、短影音腳本</span></a>
               <a class="mega-link" href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
               <a class="mega-link" href="/index.html#social-tools"><strong>社群封面</strong><span>Threads、小紅書、短影音腳本</span></a>
               <a class="mega-link" href="warmheart.html"><strong>暖心 AI</strong><span>早安圖、祝福卡、LINE 分享</span></a>
             </div>
-            <a class="mega-feature" href="index.html#tools">探索所有工具 →</a>
+            <a class="mega-feature" href="index.html#tools">回到服務工具 →</a>
           </div>
         </details>
         <a href="image-to-video.html">AI 影片</a>
@@ -74,7 +74,8 @@
       </nav>
 
       <div class="header-actions">
-        <a href="app.html">登入下單</a>
+        <a href="mailto:hello@adforge.ai">Email</a>
+        <a href="https://www.instagram.com/adforge.ai" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a class="line-link" href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer">LINE</a>
         <details class="mobile-menu">
           <summary aria-label="開啟功能選單">☰</summary>
@@ -85,7 +86,7 @@
             <a href="tools.html"><strong>模板庫</strong><span>Prompt 與短影音腳本</span></a>
             <a href="/fashion/"><strong>服飾 AI 模特</strong><span>平拍服飾轉模特實穿圖</span></a>
             <a href="warmheart.html"><strong>暖心 AI</strong><span>長輩貼文素材</span></a>
-            <a href="app.html"><strong>登入下單</strong><span>建立商品素材訂單</span></a>
+            <a href="https://page.line.me/ndb3949k" target="_blank" rel="noopener noreferrer"><strong>LINE 接單</strong><span>傳照片免費診斷</span></a>
           </div>
         </details>
       </div>
@@ -162,13 +163,13 @@
 
       <div class="srow">
         <div class="si"><div class="si-lbl">影片長度</div>
-          <select class="si-sel"><option>5 秒</option><option>10 秒</option><option>15 秒</option><option>20 秒</option></select></div>
+          <select class="si-sel" id="durationSel"><option>5 秒</option><option>10 秒</option><option>15 秒</option><option>20 秒</option></select></div>
         <div class="si"><div class="si-lbl">畫面比例</div>
-          <select class="si-sel"><option>16:9 橫向</option><option>9:16 直向</option><option>1:1 正方</option><option>4:3 傳統</option></select></div>
+          <select class="si-sel" id="ratioSel"><option>16:9 橫向</option><option>9:16 直向</option><option>1:1 正方</option><option>4:3 傳統</option></select></div>
         <div class="si"><div class="si-lbl">影片品質</div>
-          <select class="si-sel"><option>標準 720p</option><option>高清 1080p</option><option>超清 4K</option></select></div>
+          <select class="si-sel" id="qualitySel"><option>標準 720p</option><option>高清 1080p</option><option>超清 4K</option></select></div>
         <div class="si"><div class="si-lbl">運動強度</div>
-          <select class="si-sel"><option>輕微</option><option selected>中等</option><option>強烈</option></select></div>
+          <select class="si-sel" id="motionSel"><option>輕微</option><option selected>中等</option><option>強烈</option></select></div>
       </div>
 
       <div class="grow">
