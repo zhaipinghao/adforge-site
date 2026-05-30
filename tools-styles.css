@@ -1331,6 +1331,13 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   white-space: normal;
   text-align: center;
 }
+
+/* ═══════════════════════════════════════════
+   12b. Mobile Bottom Nav
+═══════════════════════════════════════════ */
+.t-mobile-bottom-nav {
+  display: none;
+}
 .t-toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
@@ -1372,6 +1379,60 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
    12. Responsive
 ═══════════════════════════════════════════ */
 @media (max-width: 960px) {
+  .t-mobile-bottom-nav {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 0;
+    z-index: 180;
+    height: 64px;
+    border-radius: 18px 18px 0 0;
+    border: 1px solid var(--c-line-strong);
+    border-bottom: none;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 4px;
+    padding: 6px 6px env(safe-area-inset-bottom, 8px);
+    box-shadow: 0 -10px 30px rgba(16, 24, 40, 0.12);
+  }
+
+  .t-mobile-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    min-height: 52px;
+    border-radius: 12px;
+    padding: 2px 2px 4px;
+    color: var(--c-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    transition: all var(--dur) var(--ease);
+    text-align: center;
+  }
+
+  .t-mobile-bottom-nav a:hover {
+    color: var(--c-ink);
+    background: var(--c-surface-2);
+  }
+
+  .t-mobile-bottom-nav a.is-active {
+    color: var(--c-accent);
+    background: var(--c-accent-soft);
+  }
+
+  .t-mobile-bottom-icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+
   .t-nav {
     display: none;
   }
@@ -1612,12 +1673,12 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
     font-size: 11px;
   }
 
-  .t-main {
-    padding: 24px 0 52px;
-  }
-
   .t-layout {
     gap: 20px;
+  }
+
+  .t-main {
+    padding-bottom: 140px;
   }
 
   .t-sidebar {
