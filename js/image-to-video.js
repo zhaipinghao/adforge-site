@@ -324,6 +324,15 @@ function normalizeStatus(raw){
   };
 }
 
+function navigateTo(url){
+  if(!url) return;
+  if(window.top !== window.self) {
+    window.top.location.href = url;
+    return;
+  }
+  window.location.href = url;
+}
+
 function isDoneStatus(status){
   return ['done', 'completed', 'success', 'succeeded', 'finished'].includes(status);
 }
@@ -557,7 +566,7 @@ function downloadDemo(){
 }
 
 function toOrderFlow(){
-  window.location.href='app.html?source=image-to-video';
+  navigateTo('app.html?source=image-to-video');
 }
 
 // ===== TOAST =====

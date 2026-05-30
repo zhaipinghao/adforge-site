@@ -38,7 +38,17 @@
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/image-to-video.css">
 </head>
-<body class="video-page">
+<body class="video-page" id="videoPageBody">
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('embed') === '1') {
+        document.documentElement.classList.add('embed-mode');
+        document.body.classList.add('embed-mode');
+      }
+      window.ADFORGE_IMAGE_TO_VIDEO_EMBED = params.get('embed') === '1';
+    })();
+  </script>
   <canvas id="bgc" aria-hidden="true"></canvas>
 
   <header class="site-header platform-header">

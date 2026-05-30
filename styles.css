@@ -2599,6 +2599,34 @@ a {
   position: relative;
 }
 
+.video-tools-embed {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+}
+
+#video-tools-frame {
+  width: 100%;
+  height: clamp(520px, 82vh, 900px);
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+.video-tools-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.video-tools-lab .section-head {
+  margin-bottom: 14px;
+}
+
 .video-tool-shell {
   display: grid;
   grid-template-columns: 1.22fr 0.78fr;
