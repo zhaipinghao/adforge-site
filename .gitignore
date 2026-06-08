@@ -9,6 +9,8 @@ login-workbench.html
 
 # Other local experiments in this workspace
 adforge-line-bot/
+adforge-kimi-site/
+references/
 
 # Secrets and environment files
 .env
