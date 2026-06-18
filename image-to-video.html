@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 圖片轉影片生成器 | LitVideo</title>
+  <style>
+    /* ── RESET & VARS ── */
+    :root {
+      --bg0:#0d0b14; --bg1:#13101e; --bg2:#1a1627; --bg3:#211d30;
+      --pu:#8d1bff; --pk:#e455d4; --teal:#a2edfc;
+      --t1:#fff; --t2:rgba(255,255,255,.62); --t3:rgba(255,255,255,.35);
+      --border:rgba(255,255,255,.08);
+      --g1:linear-gradient(90deg,#e455d4,#8d1bff);
+      --g3:linear-gradient(90deg,#8d1bff 26%,#e455d4 75%);
+      --g4:linear-gradient(106deg,#a2edfc 14%,#bcb7ff 76%);
+      --h:70px;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg0);color:var(--t1);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}ul{list-style:none}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg0)}
+    ::-webkit-scrollbar-thumb{background:rgba(141,27,255,.4);border-radius:3px}
+
+    /* ── UTILS ── */
+    .gt{background:var(--g3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .gt2{background:var(--g4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .sec{padding:80px 24px}
+    .sec-in{max-width:1320px;margin:0 auto}
+    .sec-title{font-size:clamp(1.8rem,4vw,2.9rem);font-weight:800;text-align:center;margin-bottom:14px;line-height:1.18}
+    .sec-sub{text-align:center;color:var(--t2);font-size:.95rem;max-width:520px;margin:0 auto 52px}
+    .btn-pr{padding:9px 22px;border-radius:40px;border:none;font-size:.875rem;font-weight:700;color:#fff;background:var(--g3);cursor:pointer;transition:opacity .2s,transform .15s}
+    .btn-pr:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-ol{padding:9px 20px;border-radius:40px;border:1px solid rgba(255,255,255,.2);font-size:.875rem;font-weight:500;color:var(--t1);background:transparent;cursor:pointer;transition:all .2s}
+    .btn-ol:hover{border-color:rgba(255,255,255,.38);background:rgba(255,255,255,.05)}
+
+    /* ── CANVAS BG ── */
+    #bgc{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+
+    /* ── BANNER ── */
+    .banner{background:var(--g3);text-align:center;padding:10px 16px;font-size:.82rem;font-weight:500;position:relative;z-index:100}
+    .banner a{text-decoration:underline;margin-left:6px;opacity:.9}.banner a:hover{opacity:1}
+
+    /* ── HEADER ── */
+    .hd{position:sticky;top:0;z-index:90;height:var(--h);background:rgba(13,11,20,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+    .hd-in{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .logo{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer}
+    .logo-box{width:36px;height:36px;border-radius:10px;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:17px}
+    .logo-text{font-size:1.2rem;font-weight:900;letter-spacing:-.5px}.logo-text span{color:var(--pu)}
+    .hd-nav{display:flex;align-items:center;gap:2px}
+    .ni{padding:7px 13px;border-radius:8px;font-size:.875rem;color:var(--t2);cursor:pointer;transition:all .2s;white-space:nowrap}
+    .ni:hover,.ni.on{color:var(--t1);background:rgba(255,255,255,.06)}
+    .hd-act{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .mbtn{display:none;background:none;border:none;color:var(--t1);font-size:1.3rem;cursor:pointer;padding:6px;line-height:1}
+
+    /* ── MOBILE NAV ── */
+    .mob{display:none;position:fixed;inset:0;z-index:85;background:rgba(5,3,14,.97);backdrop-filter:blur(20px);flex-direction:column;padding:calc(var(--h)+20px) 20px 36px;gap:6px}
+    .mob.open{display:flex}
+    .mob .ni{font-size:.95rem;padding:13px 16px;border:1px solid transparent}
+    .mob .ni:hover{border-color:var(--border)}
+    .mob-act{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+    .mob-act .btn-pr,.mob-act .btn-ol{padding:13px;font-size:.95rem;text-align:center;width:100%}
+
+    /* ── HERO ── */
+    .hero{position:relative;padding:88px 24px 56px;text-align:center;z-index:1;overflow:hidden}
+    .glow{position:absolute;border-radius:50%;pointer-events:none}
+    .glow-a{top:-180px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse,rgba(141,27,255,.18),transparent 68%)}
+    .glow-b{top:40px;left:-100px;width:380px;height:380px;background:radial-gradient(ellipse,rgba(228,85,212,.1),transparent 70%)}
+    .glow-c{top:60px;right:-80px;width:320px;height:320px;background:radial-gradient(ellipse,rgba(100,239,155,.07),transparent 70%)}
+    .hero-in{max-width:880px;margin:0 auto;position:relative;z-index:2}
+
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:40px;background:rgba(141,27,255,.12);border:1px solid rgba(141,27,255,.28);font-size:.78rem;font-weight:500;color:#c084fc;margin-bottom:24px}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--g1);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
+
+    .hero-title{font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:20px}
+    .hero-sub{font-size:clamp(.9rem,2vw,1.1rem);color:var(--t2);max-width:600px;margin:0 auto 44px;line-height:1.72}
+
+    /* ── MODEL TABS ── */
+    .mtabs-wrap{margin-bottom:32px}
+    .mtabs-lbl{font-size:.73rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:11px}
+    .mtabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+    .mt{padding:7px 16px;border-radius:40px;border:1px solid var(--border);font-size:.8rem;font-weight:500;color:var(--t2);background:rgba(255,255,255,.03);cursor:pointer;transition:all .2s;white-space:nowrap;user-select:none}
+    .mt:hover{border-color:rgba(141,27,255,.4);color:var(--t1);background:rgba(141,27,255,.07)}
+    .mt.on{border-color:var(--pu);color:#fff;background:rgba(141,27,255,.2);box-shadow:0 0 14px rgba(141,27,255,.3)}
+    .nbadge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:.6rem;font-weight:800;background:var(--g1);color:#fff;margin-left:4px;vertical-align:middle}
+
+    /* ── UPLOAD CARD ── */
+    .ucard{max-width:800px;margin:0 auto;border-radius:24px;padding:28px;position:relative;overflow:hidden;
+      background:var(--bg2) padding-box, linear-gradient(135deg,rgba(141,27,255,.35),rgba(228,85,212,.15) 50%,rgba(141,27,255,.1)) border-box;
+      border:1px solid transparent}
+    .ucard::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(141,27,255,.06),transparent 55%);pointer-events:none}
+
+    /* Drop zone */
+    .dz{border:2px dashed rgba(141,27,255,.38);border-radius:16px;padding:48px 20px;text-align:center;cursor:pointer;transition:all .3s;background:rgba(141,27,255,.03);position:relative}
+    .dz:hover,.dz.drag{border-color:var(--pu);background:rgba(141,27,255,.09);transform:scale(1.005)}
+    .dz.loaded{padding:0;border-style:solid;border-color:var(--pu)}
+    .dz.loaded img{width:100%;height:240px;object-fit:cover;border-radius:14px;display:block}
+    .dz-icon{width:62px;height:62px;margin:0 auto 14px;background:rgba(141,27,255,.14);border-radius:14px;display:flex;align-items:center;justify-content:center}
+    .dz-icon svg{width:28px;height:28px;fill:none;stroke:var(--pu);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dz-main{font-size:.97rem;font-weight:600;margin-bottom:6px}
+    .dz-sub{font-size:.78rem;color:var(--t3);margin-bottom:18px}
+    .dz-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 22px;border-radius:40px;background:var(--g3);font-size:.83rem;font-weight:700;color:#fff;cursor:pointer;border:none;transition:opacity .2s}
+    .dz-btn:hover{opacity:.84}
+    .dz-btn svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+    /* Loaded overlay badge */
+    .dz-loaded-badge{position:absolute;bottom:10px;right:10px;background:rgba(141,27,255,.85);padding:4px 12px;border-radius:20px;font-size:.73rem;font-weight:600;backdrop-filter:blur(8px)}
+
+    /* Prompt */
+    .pt-wrap{margin-top:18px}
+    .pt-lbl{font-size:.78rem;color:var(--t2);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+    .pt-lbl svg{width:14px;height:14px;fill:none;stroke:var(--pu);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .pt-opt{font-size:.68rem;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.07);color:var(--t3)}
+    .pt-inp{width:100%;min-height:88px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 15px;color:var(--t1);font-size:.875rem;font-family:inherit;resize:none;outline:none;transition:border-color .2s;line-height:1.6}
+    .pt-inp::placeholder{color:rgba(255,255,255,.28)}.pt-inp:focus{border-color:rgba(141,27,255,.5)}
+
+    /* Settings row */
+    .srow{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .si{flex:1;min-width:130px}
+    .si-lbl{font-size:.73rem;color:var(--t3);margin-bottom:5px}
+    .si-sel{width:100%;padding:9px 10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--t1);font-size:.82rem;font-family:inherit;outline:none;cursor:pointer;transition:border-color .2s}
+    .si-sel:hover,.si-sel:focus{border-color:rgba(141,27,255,.4)}
+    .si-sel option{background:#1a1627}
+
+    /* Generate button */
+    .grow{display:flex;align-items:center;gap:12px;margin-top:18px}
+    .btn-gen{flex:1;padding:14px 28px;border-radius:40px;border:none;font-size:.97rem;font-weight:800;color:#fff;background:var(--g3);cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden}
+    .btn-gen:hover{opacity:.91;transform:translateY(-2px);box-shadow:0 10px 30px rgba(141,27,255,.45)}
+    .btn-gen:active{transform:translateY(0)}
+    .btn-gen.loading .btn-txt{opacity:0}
+    .spin{display:none;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;position:absolute}
+    .btn-gen.loading .spin{display:block}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .credits{font-size:.74rem;color:var(--t3);display:flex;align-items:center;gap:4px;white-space:nowrap}
+    .coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);margin-right:2px}
+
+    /* Progress */
+    .prog{margin-top:18px;display:none}.prog.vis{display:block}
+    .prog-top{display:flex;justify-content:space-between;font-size:.74rem;color:var(--t3);margin-bottom:7px}
+    .prog-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden}
+    .prog-fill{height:100%;background:var(--g3);border-radius:2px;width:0%;transition:width .4s ease}
+
+    /* Result */
+    .result{margin-top:22px;display:none}.result.vis{display:block}
+    .result-vid{border-radius:14px;overflow:hidden;background:#000}
+    .result-vid video{width:100%;display:block}
+    .result-act{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .rBtn{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:40px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--t1)}
+    .rBtn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+    .rBtn.pr{background:var(--g3);border:none;font-weight:700}
+    .rBtn.pr:hover{opacity:.9}
+    .rBtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    /* ── STATS ── */
+    .stats{position:relative;z-index:1;padding:0 24px 64px}
+    .stats-in{max-width:880px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+    .stat{background:var(--bg2);padding:26px 20px;text-align:center}
+    .stat-n{font-size:1.9rem;font-weight:900;line-height:1;margin-bottom:6px}
+    .stat-l{font-size:.78rem;color:var(--t2)}
+
+    /* ── GALLERY ── */
+    .gallery-sec{background:var(--bg1)}
+
+    /* Before/After Slider */
+    .ba-wrap{max-width:1160px;margin:0 auto 56px;display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center}
+    .ba-slider{position:relative;border-radius:18px;overflow:hidden;user-select:none;cursor:col-resize;border:1px solid var(--border);aspect-ratio:16/9}
+    .ba-bg,.ba-fg-wrap{position:absolute;inset:0}
+    .ba-bg,.ba-fg{width:100%;height:100%;object-fit:cover;display:block}
+    .ba-bg{background:linear-gradient(135deg,#1a1030,#2a1040);display:flex;align-items:center;justify-content:center}
+    .ba-fg-wrap{overflow:hidden;width:50%}
+    .ba-fg{position:absolute;top:0;left:0;height:100%;width:100%;background:linear-gradient(135deg,#0d1830,#1a2040);display:flex;align-items:center;justify-content:center}
+    /* Image placeholders using CSS art */
+    .img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px}
+    .img-ph-icon{font-size:3rem}
+    .img-ph-text{font-size:.78rem;color:var(--t3);text-align:center}
+    .ba-div{position:absolute;top:0;bottom:0;width:2px;background:#fff;left:50%;transform:translateX(-50%);z-index:4}
+    .ba-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:#fff;z-index:5;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:col-resize}
+    .ba-handle svg{width:18px;height:18px;fill:var(--bg0)}
+    .ba-lbl{position:absolute;bottom:10px;padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:3;border:1px solid rgba(255,255,255,.1)}
+    .ba-lbl.l{left:10px}.ba-lbl.r{right:10px;background:rgba(141,27,255,.65)}
+
+    /* Real-looking image placeholders */
+    .img-portrait{background:linear-gradient(160deg,#1a0e2e 0%,#2d1a4a 40%,#1e0f3a 100%)}
+    .img-portrait::after{content:'👩‍🎤';position:absolute;font-size:5rem;top:50%;left:50%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 20px rgba(228,85,212,.5))}
+    .img-ai{background:linear-gradient(160deg,#0d1830 0%,#1a2040 40%,#0f1a35 100%)}
+    .img-ai::after{content:'🎬';position:absolute;font-size:5rem;top:50%;left:50%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 20px rgba(141,27,255,.5))}
+
+    .ba-info-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
+    .ba-info-title{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .ba-info-title svg{width:13px;height:13px;fill:none;stroke:var(--pu);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .ba-info-text{font-size:.88rem;color:var(--t2);line-height:1.65}
+    .ba-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+    .chip{padding:4px 12px;border-radius:40px;background:rgba(141,27,255,.14);border:1px solid rgba(141,27,255,.28);color:#c084fc;font-size:.76rem;font-weight:700}
+    .ba-time{font-size:.76rem;color:var(--t3);display:flex;align-items:center;gap:4px}
+    .ba-btns{display:flex;gap:10px;flex-wrap:wrap}
+    .ba-hint{text-align:center;margin-top:8px;font-size:.72rem;color:var(--t3)}
+
+    /* Gallery Tabs */
+    .gtabs{display:flex;gap:8px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
+    .gtab{padding:7px 18px;border-radius:40px;border:1px solid var(--border);font-size:.82rem;color:var(--t2);cursor:pointer;transition:all .2s}
+    .gtab:hover{border-color:rgba(255,255,255,.2);color:var(--t1)}
+    .gtab.on{background:rgba(141,27,255,.14);border-color:rgba(141,27,255,.38);color:#c084fc}
+
+    /* Gallery Grid */
+    .ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .gitem{border-radius:16px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s;position:relative}
+    .gitem:hover{transform:translateY(-5px);border-color:rgba(141,27,255,.4);box-shadow:0 16px 38px rgba(0,0,0,.45)}
+    .gthumb{width:100%;height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:transform .35s}
+    .gitem:hover .gthumb{transform:scale(1.06)}
+    .gthumb-emoji{font-size:3.5rem;transition:transform .3s}
+    .gitem:hover .gthumb-emoji{transform:scale(1.15)}
+    .ghover{position:absolute;inset:0;background:rgba(141,27,255,.18);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+    .gitem:hover .ghover{opacity:1}
+    .play-btn{width:50px;height:50px;border-radius:50%;background:rgba(141,27,255,.85);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.2);transition:transform .2s}
+    .play-btn svg{width:18px;height:18px;fill:#fff;margin-left:3px}
+    .gitem:hover .play-btn{transform:scale(1.1)}
+    .ginfo{padding:12px 14px}
+    .gprompt{font-size:.78rem;color:var(--t2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.5}
+    .gmodel{margin-top:7px;font-size:.7rem;color:var(--t3);display:flex;align-items:center;gap:4px}
+    .gmodel-dot{width:6px;height:6px;border-radius:50%;background:var(--pu)}
+
+    /* ── FEATURES ── */
+    .feat-sec{background:var(--bg0)}
+    .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .fcard{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:26px 22px;transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
+    .fcard::after{content:'';position:absolute;bottom:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:var(--g3);opacity:.05}
+    .fcard:hover{transform:translateY(-5px);border-color:rgba(141,27,255,.28)}
+    .ficon{width:50px;height:50px;border-radius:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+    .ficon.pu{background:rgba(141,27,255,.14)}.ficon.pk{background:rgba(228,85,212,.14)}.ficon.bl{background:rgba(56,189,248,.14)}.ficon.gr{background:rgba(100,239,155,.14)}
+    .ftitle{font-size:.98rem;font-weight:700;margin-bottom:9px}
+    .fdesc{font-size:.84rem;color:var(--t2);line-height:1.68}
+
+    /* ── MODELS ── */
+    .models-sec{background:var(--bg1)}
+    .mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+    .mcard{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+    .mcard:hover{border-color:rgba(141,27,255,.4);transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+    .mcard.on{border-color:var(--pu);background:rgba(141,27,255,.08)}
+    .mcard.on::after{content:'✓';position:absolute;top:9px;right:9px;width:20px;height:20px;border-radius:50%;background:var(--pu);font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:20px}
+    .mc-em{font-size:1.9rem;margin-bottom:10px;line-height:1}
+    .mc-name{font-size:.88rem;font-weight:700;margin-bottom:6px}
+    .mc-tag{display:inline-block;padding:3px 9px;border-radius:40px;font-size:.66rem;font-weight:700;border:1px solid;margin-bottom:7px}
+    .mc-tag.new{background:rgba(228,85,212,.12);border-color:rgba(228,85,212,.3);color:var(--pk)}
+    .mc-tag.hot{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:#fbbf24}
+    .mc-tag.fast{background:rgba(100,239,155,.12);border-color:rgba(100,239,155,.3);color:#64ef9b}
+    .mc-tag.std{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--t3)}
+    .mc-desc{font-size:.73rem;color:var(--t3);line-height:1.5;margin-top:6px}
+
+    /* ── STEPS ── */
+    .steps-sec{background:var(--bg0)}
+    .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;position:relative}
+    .sgrid::before{content:'';position:absolute;top:40px;left:calc(16.67% + 22px);right:calc(16.67% + 22px);height:1px;background:linear-gradient(90deg,var(--pu),var(--pk));opacity:.22}
+    .scard{text-align:center}
+    .snum{width:80px;height:80px;border-radius:50%;background:var(--bg2);border:1.5px solid rgba(141,27,255,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.6rem;font-weight:900;color:var(--pu);position:relative;z-index:1}
+    .snum::before{content:'';position:absolute;inset:-5px;border-radius:50%;background:var(--g3);opacity:.08}
+    .slbl{font-size:.69rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--pk);margin-bottom:8px;font-weight:700}
+    .stitle{font-size:1.05rem;font-weight:700;margin-bottom:9px}
+    .sdesc{font-size:.84rem;color:var(--t2);line-height:1.7}
+
+    /* ── EFFECTS ── */
+    .eff-sec{background:var(--bg1)}
+    .eff-scroll{overflow-x:auto;padding-bottom:12px;scrollbar-width:thin;cursor:grab}
+    .eff-row{display:flex;gap:14px;min-width:max-content}
+    .eitem{width:150px;border-radius:16px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:all .25s;flex-shrink:0}
+    .eitem:hover{border-color:rgba(141,27,255,.4);transform:translateY(-4px)}
+    .ethumb{width:100%;height:110px;display:flex;align-items:center;justify-content:center;font-size:2.3rem;transition:transform .25s}
+    .eitem:hover .ethumb{transform:scale(1.15)}
+    .ename{padding:9px 12px;font-size:.76rem;font-weight:500}
+    .eff-cta{text-align:center;margin-top:34px}
+    .btn-eff{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:40px;border:1px solid rgba(141,27,255,.38);background:rgba(141,27,255,.09);color:#c084fc;font-size:.87rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .btn-eff:hover{background:rgba(141,27,255,.18);border-color:var(--pu)}
+    .btn-eff svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    /* ── FAQ ── */
+    .faq-sec{background:var(--bg0)}
+    .flist{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+    .fitem{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .2s}
+    .fitem:hover{border-color:rgba(141,27,255,.28)}.fitem.open{border-color:rgba(141,27,255,.42)}
+    .fq{padding:18px 20px;font-size:.91rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;user-select:none}
+    .fic{width:26px;height:26px;border-radius:50%;background:rgba(141,27,255,.1);border:1px solid rgba(141,27,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s,background .2s;font-size:1rem;color:var(--pu)}
+    .fitem.open .fic{transform:rotate(45deg);background:rgba(141,27,255,.2)}
+    .fans{max-height:0;overflow:hidden;transition:max-height .4s ease}
+    .fitem.open .fans{max-height:200px}
+    .fans-in{padding:0 20px 18px;font-size:.84rem;color:var(--t2);line-height:1.72;border-top:1px solid var(--border);padding-top:14px}
+
+    /* ── CTA ── */
+    .cta-sec{padding:80px 24px;text-align:center;position:relative;overflow:hidden;z-index:1}
+    .cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(141,27,255,.2),transparent 70%);pointer-events:none}
+    .cta-in{position:relative;z-index:2}
+    .cta-title{font-size:clamp(2rem,4.5vw,3.1rem);font-weight:900;margin-bottom:16px;line-height:1.12}
+    .cta-sub{color:var(--t2);font-size:.97rem;margin:0 auto 34px;max-width:440px}
+    .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .btn-cta{padding:14px 32px;border-radius:40px;background:var(--g3);color:#fff;font-size:.97rem;font-weight:800;border:none;cursor:pointer;transition:opacity .2s,transform .15s}
+    .btn-cta:hover{opacity:.9;transform:translateY(-2px)}
+    .btn-cta-ol{padding:14px 32px;border-radius:40px;background:rgba(255,255,255,.07);color:var(--t1);font-size:.97rem;font-weight:600;border:1px solid rgba(255,255,255,.14);cursor:pointer;transition:all .2s}
+    .btn-cta-ol:hover{background:rgba(255,255,255,.12)}
+
+    /* ── FOOTER ── */
+    .footer{background:var(--bg1);border-top:1px solid var(--border);padding:52px 24px 26px;position:relative;z-index:1}
+    .ft-in{max-width:1320px;margin:0 auto}
+    .ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+    .ft-logo-text{font-size:1.25rem;font-weight:900;margin-bottom:12px;display:block}
+    .ft-desc{font-size:.84rem;color:var(--t2);line-height:1.6;max-width:260px}
+    .ft-socials{display:flex;gap:8px;margin-top:16px}
+    .soc{width:33px;height:33px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.85rem}
+    .soc:hover{background:rgba(141,27,255,.14);border-color:rgba(141,27,255,.3);color:#c084fc}
+    .fc h4{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin-bottom:13px}
+    .fc ul{display:flex;flex-direction:column;gap:8px}
+    .fc ul a{font-size:.84rem;color:var(--t2);transition:color .2s}.fc ul a:hover{color:var(--t1)}
+    .ft-bot{border-top:1px solid var(--border);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .ft-bot p{font-size:.78rem;color:var(--t3)}
+    .ft-links{display:flex;gap:16px}
+    .ft-links a{font-size:.78rem;color:var(--t3);transition:color .2s}.ft-links a:hover{color:var(--t2)}
+
+    /* ── MODAL ── */
+    .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-ov.open{display:flex}
+    .mbox{background:var(--bg2);border:1px solid rgba(141,27,255,.28);border-radius:24px;padding:36px;max-width:500px;width:100%;position:relative;animation:mIn .3s ease}
+    @keyframes mIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .mclose{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:background .2s}
+    .mclose:hover{background:rgba(255,255,255,.12)}
+    .mtitle{font-size:1.4rem;font-weight:800;margin-bottom:6px}
+    .msub{font-size:.84rem;color:var(--t2);margin-bottom:20px}
+    .minput{width:100%;padding:11px 14px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:9px;color:var(--t1);font-size:.875rem;font-family:inherit;outline:none;margin-bottom:10px;transition:border-color .2s}
+    .minput:focus{border-color:rgba(141,27,255,.5)}
+    .mbtn{width:100%;padding:13px;border-radius:40px;background:var(--g3);color:#fff;font-size:.92rem;font-weight:800;border:none;cursor:pointer;transition:opacity .2s}
+    .mbtn:hover{opacity:.9}
+    .mdiv{display:flex;align-items:center;gap:12px;margin:14px 0;color:var(--t3);font-size:.77rem}
+    .mdiv::before,.mdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+    .slogins{display:flex;gap:10px}
+    .slbtn{flex:1;padding:10px 12px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t1);font-size:.82rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .2s}
+    .slbtn:hover{background:rgba(255,255,255,.09)}
+
+    /* ── TOAST ── */
+    .toast-c{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+    .toast{background:var(--bg2);border:1px solid rgba(141,27,255,.28);border-radius:14px;padding:12px 16px;font-size:.84rem;display:flex;align-items:center;gap:9px;box-shadow:0 8px 28px rgba(0,0,0,.4);animation:tIn .3s ease;max-width:290px;pointer-events:auto}
+    @keyframes tIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+    .toast.success{border-color:rgba(100,239,155,.3)}
+    .toast.error{border-color:rgba(248,113,113,.3)}
+
+    /* ── FADE-UP ── */
+    .fu{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+    .fu.vis{opacity:1;transform:translateY(0)}
+    .fu:nth-child(2){transition-delay:.1s}.fu:nth-child(3){transition-delay:.2s}.fu:nth-child(4){transition-delay:.3s}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1100px){
+      .feat-grid{grid-template-columns:repeat(2,1fr)}
+      .mgrid{grid-template-columns:repeat(3,1fr)}
+      .ft-top{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:900px){
+      .ba-wrap{grid-template-columns:1fr}
+      .ggrid{grid-template-columns:repeat(2,1fr)}
+      .hd-nav{display:none}.mbtn{display:block}
+      .stats-in{grid-template-columns:repeat(2,1fr)}
+      .mgrid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:640px){
+      .hero{padding:60px 16px 36px}.sec{padding:56px 16px}
+      .feat-grid,.mgrid{grid-template-columns:1fr}
+      .sgrid{grid-template-columns:1fr;gap:24px}.sgrid::before{display:none}
+      .ggrid{grid-template-columns:1fr}
+      .ft-top{grid-template-columns:1fr}
+      .hd-act .btn-ol{display:none}
+      .ucard{padding:18px 14px}
+      .srow{flex-direction:column}
+      .stats-in{grid-template-columns:1fr 1fr}
+      .cta-btns{flex-direction:column;align-items:center}
+      .ba-slider{aspect-ratio:4/3}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Canvas BG -->
+<canvas id="bgc"></canvas>
+
+<!-- Banner -->
+<div class="banner">
+  🎉 限時優惠：新用戶免費獲得 50 點生成額度，無需信用卡
+  <a href="#" onclick="openModal();return false">立即領取 →</a>
+</div>
+
+<!-- Header -->
+<header class="hd">
+  <div class="hd-in">
+    <div class="logo" onclick="window.scrollTo(0,0)">
+      <div class="logo-box">🎬</div>
+      <span class="logo-text">Lit<span>Video</span></span>
+    </div>
+    <nav class="hd-nav">
+      <div class="ni on">圖片轉影片</div>
+      <div class="ni">文字轉影片</div>
+      <div class="ni">影片效果</div>
+      <div class="ni">AI 圖像</div>
+      <div class="ni">模型介紹</div>
+      <div class="ni">價格方案</div>
+    </nav>
+    <div class="hd-act">
+      <button class="btn-ol" onclick="openModal()">登入</button>
+      <button class="btn-pr" onclick="openModal()">免費開始</button>
+      <button class="mbtn" id="mbtn" onclick="toggleMob()" aria-label="選單">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Nav -->
+<nav class="mob" id="mobnav">
+  <div class="ni">圖片轉影片</div>
+  <div class="ni">文字轉影片</div>
+  <div class="ni">影片效果</div>
+  <div class="ni">AI 圖像</div>
+  <div class="ni">模型介紹</div>
+  <div class="ni">價格方案</div>
+  <div class="mob-act">
+    <button class="btn-ol" onclick="openModal()">登入</button>
+    <button class="btn-pr" onclick="openModal()">免費開始使用</button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="glow glow-c"></div>
+  <div class="hero-in" id="heroIn">
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      全球最先進 AI 影片生成平台 · 10 種頂尖模型
+    </div>
+
+    <h1 class="hero-title">
+      一站集結<span class="gt">最佳 AI</span><br>圖像轉影片模型
+    </h1>
+    <p class="hero-sub">
+      LitVideo 將頂尖 AI 影片生成技術匯聚於單一、易用的平台，讓圖像轉影片更輕鬆、更強大。自由選擇最適合您創意的 AI 模型，將圖片轉為精彩影片，快速取得高品質成果。
+    </p>
+
+    <!-- Model Tabs -->
+    <div class="mtabs-wrap">
+      <div class="mtabs-lbl">選擇 AI 模型</div>
+      <div class="mtabs" id="mtabs">
+        <div class="mt on" data-m="veo3" onclick="selModel(this)">Veo 3 <span class="nbadge">NEW</span></div>
+        <div class="mt" data-m="sora2" onclick="selModel(this)">Sora 2</div>
+        <div class="mt" data-m="litai" onclick="selModel(this)">LitAI 5</div>
+        <div class="mt" data-m="hailuo" onclick="selModel(this)">Hailuo</div>
+        <div class="mt" data-m="wan" onclick="selModel(this)">Wan</div>
+        <div class="mt" data-m="vidu" onclick="selModel(this)">Vidu</div>
+        <div class="mt" data-m="seedance" onclick="selModel(this)">Seedance</div>
+        <div class="mt" data-m="kling" onclick="selModel(this)">Kling</div>
+        <div class="mt" data-m="loveai" onclick="selModel(this)">Love AI 2.0</div>
+        <div class="mt" data-m="pixverse" onclick="selModel(this)">PixVerse</div>
+      </div>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="ucard">
+      <div class="dz" id="dz"
+           ondragover="ev(event,'over')" ondragleave="ev(event,'leave')" ondrop="ev(event,'drop')"
+           onclick="document.getElementById('fin').click()">
+        <div class="dz-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="dz-main">拖曳圖片至此，或點擊上傳</div>
+        <div class="dz-sub">支援 JPG · JPEG · PNG · BMP，最大 5MB</div>
+        <button class="dz-btn" onclick="e=>e.stopPropagation()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          選擇圖片
+        </button>
+      </div>
+      <input type="file" id="fin" accept="image/*" style="display:none" onchange="loadImg(event)">
+
+      <div class="pt-wrap">
+        <div class="pt-lbl">
+          <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          提示詞 <span class="pt-opt">選填</span>
+        </div>
+        <textarea class="pt-inp" id="ptinp" placeholder="描述您希望影片呈現的動態效果…&#10;例如：鏡頭緩緩推進，背景中的樹葉隨風搖曳，光線溫暖柔和，電影感構圖。"></textarea>
+      </div>
+
+      <div class="srow">
+        <div class="si"><div class="si-lbl">影片長度</div>
+          <select class="si-sel"><option>5 秒</option><option>10 秒</option><option>15 秒</option><option>20 秒</option></select></div>
+        <div class="si"><div class="si-lbl">畫面比例</div>
+          <select class="si-sel"><option>16:9 橫向</option><option>9:16 直向</option><option>1:1 正方</option><option>4:3 傳統</option></select></div>
+        <div class="si"><div class="si-lbl">影片品質</div>
+          <select class="si-sel"><option>標準 720p</option><option>高清 1080p</option><option>超清 4K</option></select></div>
+        <div class="si"><div class="si-lbl">運動強度</div>
+          <select class="si-sel"><option>輕微</option><option selected>中等</option><option>強烈</option></select></div>
+      </div>
+
+      <div class="grow">
+        <button class="btn-gen" id="genBtn" onclick="doGen()">
+          <div class="spin"></div>
+          <span class="btn-txt">✦ 立即生成影片</span>
+        </button>
+        <div class="credits"><span class="coin"></span>5 點／次</div>
+      </div>
+
+      <div class="prog" id="prog">
+        <div class="prog-top"><span id="pstat">AI 正在分析圖像…</span><span id="ppct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="result-vid">
+          <video id="rvideo" controls loop autoplay muted playsinline
+                 src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
+        </div>
+        <div class="result-act">
+          <button class="rBtn pr">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下載影片
+          </button>
+          <button class="rBtn" onclick="doShare()">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            分享
+          </button>
+          <button class="rBtn" onclick="doReset()">
+            <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            重新生成
+          </button>
+        </div>
+      </div>
+    </div><!-- /ucard -->
+  </div>
+</section>
+
+<!-- ========== STATS ========== -->
+<div class="stats">
+  <div class="stats-in">
+    <div class="stat"><div class="stat-n gt" id="sU">50萬+</div><div class="stat-l">活躍創作者</div></div>
+    <div class="stat"><div class="stat-n gt" id="sV">1000萬+</div><div class="stat-l">已生成影片</div></div>
+    <div class="stat"><div class="stat-n gt">10</div><div class="stat-l">頂尖 AI 模型</div></div>
+    <div class="stat"><div class="stat-n gt" id="sR">98%</div><div class="stat-l">用戶滿意度</div></div>
+  </div>
+</div>
+
+<!-- ========== GALLERY ========== -->
+<section class="gallery-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">看見 <span class="gt">AI 魔法</span>：<br>圖片轉影片精選</h2>
+    <p class="sec-sub fu">每一張圖片都是故事的開始，讓 AI 為它注入靈魂與動態</p>
+
+    <!-- Before/After Slider -->
+    <div class="ba-wrap fu">
+      <div>
+        <div class="ba-slider" id="baSlider">
+          <!-- Before (right side = original) -->
+          <div class="ba-bg" style="background:linear-gradient(145deg,#1a0e2e,#2d1844,#1e0f36)">
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+              <div style="font-size:5rem;filter:drop-shadow(0 0 24px rgba(228,85,212,.6))">👩‍🎤</div>
+              <div style="font-size:.75rem;color:rgba(255,255,255,.5)">原始人像圖片</div>
+            </div>
+          </div>
+          <!-- After (left side = AI generated look) -->
+          <div class="ba-fg-wrap" id="baFgWrap" style="width:50%">
+            <div class="ba-fg" style="background:linear-gradient(145deg,#0d1830,#1a2044,#0e1534)">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+                <div style="font-size:5rem;filter:drop-shadow(0 0 24px rgba(141,27,255,.7))">🎬</div>
+                <div style="font-size:.75rem;color:rgba(255,255,255,.5)">AI 生成影片</div>
+              </div>
+              <!-- Animated particles overlay -->
+              <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(141,27,255,.08),rgba(228,85,212,.05));animation:shimmer 3s ease-in-out infinite"></div>
+            </div>
+          </div>
+          <div class="ba-div" id="baDiv"></div>
+          <div class="ba-handle" id="baHandle">
+            <svg viewBox="0 0 24 24"><path d="M8 3L3 8 8 13M16 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="ba-lbl l">原始圖片</span>
+          <span class="ba-lbl r">✨ AI 生成</span>
+        </div>
+        <div class="ba-hint">← 拖動滑桿比較效果 →</div>
+      </div>
+      <div>
+        <div class="ba-info-box">
+          <div class="ba-info-title">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            提示詞
+          </div>
+          <div class="ba-info-text">西方音樂錄影帶中女性主角的特寫鏡頭。MV 風格視覺效果，動態光影、創意氛圍與電影感。鏡頭緩緩推進，柔和的光暈在髮絲間流動，眼神充滿故事性。</div>
+        </div>
+        <div class="ba-meta">
+          <span>使用模型：</span><span class="chip">Veo 3</span>
+          <span class="ba-time">⏱ 生成時間：28秒</span>
+        </div>
+        <div class="ba-btns">
+          <button class="btn-pr" style="flex:1;padding:12px" onclick="openModal()">✦ 試試看</button>
+          <button class="btn-ol" style="flex:1;padding:12px" onclick="doShare()">↗ 分享效果</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery Tabs -->
+    <div class="gtabs">
+      <div class="gtab on" onclick="filterG(this,'all')">全部</div>
+      <div class="gtab" onclick="filterG(this,'portrait')">人像</div>
+      <div class="gtab" onclick="filterG(this,'nature')">自然</div>
+      <div class="gtab" onclick="filterG(this,'city')">城市</div>
+      <div class="gtab" onclick="filterG(this,'art')">藝術</div>
+      <div class="gtab" onclick="filterG(this,'anime')">動漫</div>
+    </div>
+    <div class="ggrid" id="ggrid"></div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="feat-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">創作者為何首選 <span class="gt">LitVideo</span></h2>
+    <p class="sec-sub fu">進行圖像轉視頻創作</p>
+    <div class="feat-grid">
+      <div class="fcard fu">
+        <div class="ficon pu">🤖</div>
+        <div class="ftitle">卓越模型</div>
+        <div class="fdesc">在一個平台上使用最新、最先進的 AI 模型，包含 Veo 3、Sora 2、Kling 等 10 款，為您的專案提供更多創意可能性和控制權。</div>
+      </div>
+      <div class="fcard fu">
+        <div class="ficon pk">✨</div>
+        <div class="ftitle">用戶友好</div>
+        <div class="fdesc">我們的直觀介面讓從初學者到專業人士的每個人都能輕鬆地將圖像轉換為令人驚嘆的視頻，只需點擊幾下即可完成。</div>
+      </div>
+      <div class="fcard fu">
+        <div class="ficon bl">⚡</div>
+        <div class="ftitle">快速高品質</div>
+        <div class="fdesc">享受快速的處理時間和專業級視頻品質，最快 30 秒即可完成生成，非常適合社交媒體、廣告製作等多種用途。</div>
+      </div>
+      <div class="fcard fu">
+        <div class="ficon gr">🔒</div>
+        <div class="ftitle">安全隱私</div>
+        <div class="fdesc">您的創作和數據受到先進安全措施的保護，讓您在整個創意旅程中都能安心使用。我們絕不出售您的任何資料。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODELS ========== -->
+<section class="models-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">選擇您的 <span class="gt">AI 模型</span></h2>
+    <p class="sec-sub fu">每款模型各有特色，找到最適合您創作風格的那一個</p>
+    <div class="mgrid" id="mgrid"></div>
+  </div>
+</section>
+
+<!-- ========== STEPS ========== -->
+<section class="steps-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">如何在 LitVideo 上<span class="gt">輕鬆</span>使用<br>圖像轉視頻</h2>
+    <p class="sec-sub fu">三個簡單步驟，讓您的圖片動起來</p>
+    <div class="sgrid">
+      <div class="scard fu">
+        <div class="snum">1</div>
+        <div class="slbl">步驟 1</div>
+        <div class="stitle">上傳您的圖片</div>
+        <div class="sdesc">選擇您想要動畫化的圖片並將其上傳到 LitVideo 平台。支援 JPG、PNG 等常見格式，最大 5MB，高解析度效果更佳。</div>
+      </div>
+      <div class="scard fu">
+        <div class="snum">2</div>
+        <div class="slbl">步驟 2</div>
+        <div class="stitle">輸入您的提示詞</div>
+        <div class="sdesc">在提示框中描述您的創意構想或動畫想法，以指導 AI 進行轉換。越詳細的描述，效果越符合您的期待。</div>
+      </div>
+      <div class="scard fu">
+        <div class="snum">3</div>
+        <div class="slbl">步驟 3</div>
+        <div class="stitle">生成並下載</div>
+        <div class="sdesc">點擊「立即生成」，AI 將在數十秒內完成影片生成。準備好後即可立即預覽、下載，或分享到社群媒體。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EFFECTS ========== -->
+<section class="eff-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">熱門影片<span class="gt">效果與濾鏡</span></h2>
+    <p class="sec-sub fu">一鍵套用熱門效果，讓創作更快速有趣</p>
+    <div class="eff-scroll" id="effScroll">
+      <div class="eff-row" id="effRow"></div>
+    </div>
+    <div class="eff-cta">
+      <button class="btn-eff" onclick="showToast('前往效果頁面…','info')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        立即試用熱門效果
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="faq-sec sec">
+  <div class="sec-in">
+    <h2 class="sec-title fu">圖像轉視頻 <span class="gt">FAQ</span></h2>
+    <p class="sec-sub fu">常見問題，一次解答</p>
+    <div class="flist" id="flist"></div>
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta-sec">
+  <div class="cta-glow"></div>
+  <div class="cta-in">
+    <h2 class="cta-title">準備好讓您的圖片<br><span class="gt">動起來了嗎？</span></h2>
+    <p class="cta-sub">立即加入超過 50 萬名創作者，體驗最頂尖的 AI 圖像轉影片技術。</p>
+    <div class="cta-btns">
+      <button class="btn-cta" onclick="openModal()">🚀 免費開始使用</button>
+      <button class="btn-cta-ol" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">▶ 觀看演示</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="ft-in">
+    <div class="ft-top">
+      <div>
+        <span class="ft-logo-text">Lit<span style="color:var(--pu)">Video</span></span>
+        <p class="ft-desc">全球最先進的 AI 圖像轉影片平台，匯聚 10 款頂尖 AI 模型，讓每個人都能輕鬆創作專業級影片。</p>
+        <div class="ft-socials">
+          <div class="soc" title="Twitter">𝕏</div>
+          <div class="soc" title="Instagram">📸</div>
+          <div class="soc" title="YouTube">▶</div>
+          <div class="soc" title="TikTok">♪</div>
+          <div class="soc" title="Discord">💬</div>
+        </div>
+      </div>
+      <div class="fc">
+        <h4>產品</h4>
+        <ul>
+          <li><a href="#">圖片轉影片</a></li>
+          <li><a href="#">文字轉影片</a></li>
+          <li><a href="#">影片效果</a></li>
+          <li><a href="#">AI 圖像生成</a></li>
+          <li><a href="#">批量處理</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>AI 模型</h4>
+        <ul>
+          <li><a href="#">Veo 3</a></li>
+          <li><a href="#">Sora 2</a></li>
+          <li><a href="#">Kling</a></li>
+          <li><a href="#">Hailuo</a></li>
+          <li><a href="#">PixVerse</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>支援</h4>
+        <ul>
+          <li><a href="#">常見問題</a></li>
+          <li><a href="#">使用教學</a></li>
+          <li><a href="#">聯絡我們</a></li>
+          <li><a href="#">隱私政策</a></li>
+          <li><a href="#">服務條款</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <p>© 2025 LitVideo. All rights reserved.</p>
+      <div class="ft-links">
+        <a href="#">隱私政策</a>
+        <a href="#">服務條款</a>
+        <a href="#">Cookie 設定</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal-ov" id="modal" onclick="closeModalOut(event)">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div class="mtitle">開始創作影片 ✨</div>
+    <div class="msub">免費獲得 50 點生成額度，立即體驗最頂尖 AI 影片生成技術</div>
+    <input class="minput" type="email" placeholder="輸入您的電子郵件">
+    <input class="minput" type="password" placeholder="設定密碼（至少 8 個字元）">
+    <button class="mbtn" onclick="closeModal();showToast('🎉 歡迎加入 LitVideo！已獲得 50 點額度','success')">免費開始 →</button>
+    <div class="mdiv">或使用以下方式</div>
+    <div class="slogins">
+      <button class="slbtn">G&nbsp;Google</button>
+      <button class="slbtn">f&nbsp;Facebook</button>
+      <button class="slbtn">🍎&nbsp;Apple</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-c" id="toastC"></div>
+
+<style>
+@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:.8}}
+</style>
+
+<script>
+// ===== DATA =====
+const GALLERY = [
+  {em:'👩‍🎤',bg:'linear-gradient(135deg,#1a0e2e,#2d1844)',prompt:'電影感特寫，光影流動，髮絲隨風飄動，夢幻氛圍',model:'Veo 3',cat:'portrait'},
+  {em:'🏔️',bg:'linear-gradient(135deg,#0d1a0e,#1a3020)',prompt:'山頂雲霧流動，延時攝影效果，壯闊史詩感',model:'Sora 2',cat:'nature'},
+  {em:'🌆',bg:'linear-gradient(135deg,#0d0d1e,#1a1038)',prompt:'城市夜景霓虹閃爍，人潮快速流動，賽博朋克風',model:'Kling',cat:'city'},
+  {em:'🎨',bg:'linear-gradient(135deg,#1e0a0a,#3a1020)',prompt:'水彩筆觸緩緩暈染，色彩流動，藝術感十足',model:'LitAI 5',cat:'art'},
+  {em:'🌊',bg:'linear-gradient(135deg,#0d1a2e,#1a3050)',prompt:'海浪緩緩拍打礁石，夕陽映照金色水面',model:'Hailuo',cat:'nature'},
+  {em:'👫',bg:'linear-gradient(135deg,#1a100e,#2d2018)',prompt:'朋友圍坐歡笑，暖光照耀，快樂時光定格',model:'Vidu',cat:'portrait'},
+  {em:'🐱',bg:'linear-gradient(135deg,#1a1010,#2d1818)',prompt:'可愛貓咪慵懶伸展，毛髮柔順飄動，療癒系',model:'Seedance',cat:'nature'},
+  {em:'🌲',bg:'linear-gradient(135deg,#0a180a,#142a14)',prompt:'空中俯瞰森林，晨霧從樹梢升起，大自然呼吸',model:'Wan',cat:'nature'},
+  {em:'🏙️',bg:'linear-gradient(135deg,#0d0d1a,#1a1a30)',prompt:'現代辦公會議，人物動態流暢，商業質感',model:'PixVerse',cat:'city'},
+];
+
+const MODELS = [
+  {em:'🌊',name:'Veo 3',tag:'new',tl:'最新',desc:'Google 旗艦，業界頂尖畫質'},
+  {em:'🎬',name:'Sora 2',tag:'hot',tl:'熱門',desc:'OpenAI 出品，電影級敘事'},
+  {em:'⚡',name:'LitAI 5',tag:'fast',tl:'最快',desc:'自研模型，30秒極速生成'},
+  {em:'🎭',name:'Hailuo',tag:'hot',tl:'熱門',desc:'細膩人像，表情栩栩如生'},
+  {em:'🌸',name:'Wan',tag:'fast',tl:'高效',desc:'多風格，中文最佳化'},
+  {em:'🎯',name:'Vidu',tag:'std',tl:'穩定',desc:'出色的運動一致性'},
+  {em:'💃',name:'Seedance',tag:'hot',tl:'熱門',desc:'流暢舞蹈，細節豐富'},
+  {em:'👑',name:'Kling',tag:'new',tl:'新品',desc:'卓越物理模擬光影'},
+  {em:'❤️',name:'Love AI 2.0',tag:'std',tl:'浪漫',desc:'溫暖情感氛圍出色'},
+  {em:'🌈',name:'PixVerse',tag:'fast',tl:'輕快',desc:'豐富藝術風格多元'},
+];
+
+const EFFECTS = [
+  {em:'🎬',name:'電影慢動作',bg:'rgba(141,27,255,.12)'},
+  {em:'✨',name:'夢幻光暈',bg:'rgba(228,85,212,.12)'},
+  {em:'🌆',name:'賽博朋克',bg:'rgba(56,189,248,.12)'},
+  {em:'🎨',name:'水墨暈染',bg:'rgba(100,239,155,.12)'},
+  {em:'💥',name:'粒子爆炸',bg:'rgba(251,191,36,.12)'},
+  {em:'📽️',name:'復古膠片',bg:'rgba(249,115,22,.12)'},
+  {em:'🌟',name:'魔法流光',bg:'rgba(167,139,250,.12)'},
+  {em:'🎵',name:'Lo-Fi 風格',bg:'rgba(52,211,153,.12)'},
+  {em:'⏱️',name:'時間扭曲',bg:'rgba(244,63,94,.12)'},
+  {em:'🌌',name:'極光效果',bg:'rgba(6,182,212,.12)'},
+  {em:'🖌️',name:'油畫質感',bg:'rgba(245,158,11,.12)'},
+  {em:'📺',name:'故障藝術',bg:'rgba(236,72,153,.12)'},
+];
+
+const FAQ = [
+  {q:'1. 支援哪些圖片格式？',a:'LitVideo 支援常見格式，如 JPG、JPEG、PNG 和 BMP。建議使用高解析度圖片（1024×1024 以上）以獲得最佳效果。系統會自動最佳化上傳圖片。'},
+  {q:'2. 從圖片生成視頻需要多長時間？',a:'大多數視頻會在 30 秒至 3 分鐘內生成，具體時間取決於您的提示詞複雜度和選擇的 AI 模型。Veo 3 和 Sora 2 等高端模型可能需要較長時間，但品質更卓越。'},
+  {q:'3. 上傳的圖片大小是否有限制？',a:'是的，圖片大小不應超過 5MB。為獲得最佳效果，我們建議使用高解析度圖片。如果您的圖片超過限制，系統會提示您進行壓縮處理。'},
+  {q:'4. 我的原始圖片和生成的視頻會安全儲存嗎？',a:'當然。您的檔案受到 AES-256 加密保護，我們將您的隱私視為優先事項。生成完成後 24 小時，原始上傳檔案將自動從伺服器安全刪除。'},
+  {q:'5. 我可以將 LitVideo 用於商業專案嗎？',a:'是的，您可以自由地將生成的視頻用於個人和商業目的，包含社交媒體廣告、行銷素材、展示作品等。付費方案提供完整商業授權。'},
+  {q:'6. 是否有免費試用或演示版本？',a:'當然！LitVideo 提供免費試用，新用戶可獲得 50 點生成額度，每次生成消耗 5 點，讓您充分體驗所有功能後再決定是否訂閱。'},
+];
+
+// ===== PARTICLE CANVAS =====
+(function(){
+  const c=document.getElementById('bgc');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W,H,ps=[];
+  function rs(){W=c.width=innerWidth;H=c.height=innerHeight}
+  rs();window.addEventListener('resize',rs);
+  class P{
+    reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.2+.3;this.vx=(Math.random()-.5)*.25;this.vy=(Math.random()-.5)*.25;this.a=Math.random()*.45+.1;this.col=Math.random()>.5?'141,27,255':'228,85,212'}
+    constructor(){this.reset()}
+    step(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset()}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${this.col},${this.a})`;ctx.fill()}
+  }
+  for(let i=0;i<70;i++)ps.push(new P());
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    ps.forEach(p=>{p.step();p.draw()});
+    for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){
+      const dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90){ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);ctx.strokeStyle=`rgba(141,27,255,${.05*(1-d/90)})`;ctx.lineWidth=.5;ctx.stroke()}
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ===== BEFORE/AFTER SLIDER =====
+(function(){
+  const wrap=document.getElementById('baSlider');
+  const fw=document.getElementById('baFgWrap');
+  const dv=document.getElementById('baDiv');
+  const hd=document.getElementById('baHandle');
+  if(!wrap)return;
+  let drag=false;
+  function set(x){
+    const r=wrap.getBoundingClientRect();
+    let p=Math.max(.05,Math.min(.95,(x-r.left)/r.width));
+    const pStr=(p*100)+'%';
+    fw.style.width=pStr;dv.style.left=pStr;hd.style.left=pStr;
+  }
+  wrap.addEventListener('mousedown',e=>{drag=true;set(e.clientX);e.preventDefault()});
+  window.addEventListener('mousemove',e=>{if(drag)set(e.clientX)});
+  window.addEventListener('mouseup',()=>drag=false);
+  wrap.addEventListener('touchstart',e=>{drag=true;set(e.touches[0].clientX)},{passive:true});
+  window.addEventListener('touchmove',e=>{if(drag)set(e.touches[0].clientX)},{passive:true});
+  window.addEventListener('touchend',()=>drag=false);
+})();
+
+// ===== RENDER =====
+function renderGallery(cat='all'){
+  const items=cat==='all'?GALLERY:GALLERY.filter(d=>d.cat===cat);
+  document.getElementById('ggrid').innerHTML=items.length?items.map(d=>`
+    <div class="gitem fu" onclick="showToast('▶ 正在播放影片…','info')">
+      <div class="gthumb" style="background:${d.bg}">
+        <span class="gthumb-emoji">${d.em}</span>
+        <div class="ghover"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+      </div>
+      <div class="ginfo">
+        <div class="gprompt">${d.prompt}</div>
+        <div class="gmodel"><span class="gmodel-dot"></span> ${d.model}</div>
+      </div>
+    </div>`).join('')
+    :'<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--t3)">此分類暫無作品</div>';
+  observeFU();
+}
+
+function renderModels(){
+  document.getElementById('mgrid').innerHTML=MODELS.map((m,i)=>`
+    <div class="mcard fu${i===0?' on':''}" onclick="selModelCard(this,'${m.name}')">
+      <div class="mc-em">${m.em}</div>
+      <div class="mc-name">${m.name}</div>
+      <div class="mc-tag ${m.tag}">${m.tl}</div>
+      <div class="mc-desc">${m.desc}</div>
+    </div>`).join('');
+  observeFU();
+}
+
+function renderEffects(){
+  document.getElementById('effRow').innerHTML=EFFECTS.map(e=>`
+    <div class="eitem" onclick="showToast('已套用「${e.name}」效果','info')">
+      <div class="ethumb" style="background:${e.bg}">${e.em}</div>
+      <div class="ename">${e.name}</div>
+    </div>`).join('');
+  // Drag-scroll
+  const sc=document.getElementById('effScroll');
+  let down=false,startX,scrollL;
+  sc.addEventListener('mousedown',e=>{down=true;startX=e.pageX-sc.offsetLeft;scrollL=sc.scrollLeft;sc.style.cursor='grabbing'});
+  sc.addEventListener('mouseleave',()=>{down=false;sc.style.cursor='grab'});
+  sc.addEventListener('mouseup',()=>{down=false;sc.style.cursor='grab'});
+  sc.addEventListener('mousemove',e=>{if(!down)return;e.preventDefault();sc.scrollLeft=scrollL-(e.pageX-sc.offsetLeft-startX)});
+}
+
+function renderFAQ(){
+  document.getElementById('flist').innerHTML=FAQ.map((f,i)=>`
+    <div class="fitem" id="fq${i}">
+      <div class="fq" onclick="toggleFAQ(${i})">
+        <span>${f.q}</span>
+        <span class="fic">+</span>
+      </div>
+      <div class="fans"><div class="fans-in">${f.a}</div></div>
+    </div>`).join('');
+}
+
+// ===== INTERACTIONS =====
+function selModel(el){
+  document.querySelectorAll('.mt').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const name=el.dataset.m;
+  showToast(`已選擇 ${name.toUpperCase()} 模型`,'info');
+}
+
+function selModelCard(el,name){
+  document.querySelectorAll('.mcard').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  showToast(`已選擇 ${name} 模型`,'info');
+}
+
+function filterG(el,cat){
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  renderGallery(cat);
+}
+
+function toggleFAQ(i){
+  const item=document.getElementById('fq'+i);
+  const was=item.classList.contains('open');
+  document.querySelectorAll('.fitem').forEach(f=>f.classList.remove('open'));
+  if(!was)item.classList.add('open');
+}
+
+// ===== FILE UPLOAD =====
+function ev(e,type){
+  e.preventDefault();
+  const dz=document.getElementById('dz');
+  if(type==='over')dz.classList.add('drag');
+  else if(type==='leave')dz.classList.remove('drag');
+  else if(type==='drop'){dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadImg({target:{files:[f]}})}
+}
+
+function loadImg(e){
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>5*1024*1024){showToast('圖片大小不能超過 5MB','error');return}
+  const r=new FileReader();
+  r.onload=function(ev){
+    const dz=document.getElementById('dz');
+    dz.classList.add('loaded');
+    dz.onclick=null;
+    dz.innerHTML=`<img src="${ev.target.result}" alt="上傳圖片"><div class="dz-loaded-badge">✓ 圖片已就緒</div>`;
+    showToast('圖片上傳成功！可以開始生成了','success');
+  };
+  r.readAsDataURL(f);
+}
+
+// ===== GENERATE =====
+function doGen(){
+  const dz=document.getElementById('dz');
+  if(!dz.classList.contains('loaded')){
+    showToast('請先上傳一張圖片','error');
+    dz.style.borderColor='#f87171';
+    setTimeout(()=>dz.style.borderColor='',2000);
+    return;
+  }
+  const btn=document.getElementById('genBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  const prog=document.getElementById('prog');
+  const fill=document.getElementById('pfill');
+  const stat=document.getElementById('pstat');
+  const pct=document.getElementById('ppct');
+  prog.classList.add('vis');
+  const steps=[
+    {p:10,s:'AI 正在分析圖像結構…'},
+    {p:24,s:'識別主體與背景元素…'},
+    {p:42,s:'生成動態運動軌跡…'},
+    {p:58,s:'渲染影格序列…'},
+    {p:73,s:'套用視覺效果與色調…'},
+    {p:88,s:'最終畫質優化…'},
+    {p:100,s:'生成完成！🎉'},
+  ];
+  let si=0;
+  const iv=setInterval(()=>{
+    if(si>=steps.length){
+      clearInterval(iv);
+      setTimeout(()=>{
+        btn.classList.remove('loading');btn.disabled=false;
+        prog.classList.remove('vis');fill.style.width='0%';
+        document.getElementById('result').classList.add('vis');
+        showToast('🎉 影片生成成功！','success');
+        document.getElementById('result').scrollIntoView({behavior:'smooth',block:'center'});
+      },600);
+      return;
+    }
+    const s=steps[si++];
+    fill.style.width=s.p+'%';stat.textContent=s.s;pct.textContent=s.p+'%';
+  },700);
+}
+
+function doReset(){
+  const dz=document.getElementById('dz');
+  dz.classList.remove('loaded');
+  dz.onclick=()=>document.getElementById('fin').click();
+  dz.innerHTML=`
+    <div class="dz-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    <div class="dz-main">拖曳圖片至此，或點擊上傳</div>
+    <div class="dz-sub">支援 JPG · JPEG · PNG · BMP，最大 5MB</div>
+    <button class="dz-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 選擇圖片</button>`;
+  document.getElementById('result').classList.remove('vis');
+  document.getElementById('ptinp').value='';
+  document.getElementById('fin').value='';
+  showToast('已重置，開始新的創作吧！','info');
+}
+
+function doShare(){
+  if(navigator.share){navigator.share({title:'LitVideo AI 影片',text:'我用 AI 把圖片變成影片了！',url:location.href})}
+  else{navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>showToast('連結已複製！','success')).catch(()=>showToast('請手動複製頁面連結','info'))}
+}
+
+// ===== MODAL =====
+function openModal(){document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(){document.getElementById('modal').classList.remove('open');document.body.style.overflow=''}
+function closeModalOut(e){if(e.target===document.getElementById('modal'))closeModal()}
+
+// ===== MOBILE MENU =====
+function toggleMob(){
+  const m=document.getElementById('mobnav');
+  const b=document.getElementById('mbtn');
+  const open=m.classList.toggle('open');
+  b.textContent=open?'✕':'☰';
+  document.body.style.overflow=open?'hidden':'';
+}
+
+// ===== TOAST =====
+function showToast(msg,type='info'){
+  const icons={success:'✅',error:'❌',info:'💜'};
+  const c=document.getElementById('toastC');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.cssText='opacity:0;transform:translateX(16px);transition:all .3s';setTimeout(()=>t.remove(),300)},3200);
+}
+
+// ===== FADE-UP OBSERVER =====
+function observeFU(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}});
+  },{threshold:.1});
+  document.querySelectorAll('.fu:not(.vis)').forEach(el=>obs.observe(el));
+}
+
+// ===== HERO ENTRANCE =====
+function heroIn(){
+  const el=document.getElementById('heroIn');
+  if(!el)return;
+  [...el.children].forEach((c,i)=>{
+    c.style.cssText=`opacity:0;transform:translateY(26px);transition:opacity .7s ${i*.13}s ease,transform .7s ${i*.13}s ease`;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.opacity='1';c.style.transform='translateY(0)'}));
+  });
+}
+
+// ===== STATS COUNTER =====
+let statsDone=false;
+function initStats(){
+  const strip=document.querySelector('.stats');
+  if(!strip)return;
+  new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting&&!statsDone){
+      statsDone=true;
+      // already showing static values, optionally animate
+    }
+  },{threshold:.3}).observe(strip);
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',()=>{
+  heroIn();
+  renderGallery();
+  renderModels();
+  renderEffects();
+  renderFAQ();
+  observeFU();
+  initStats();
+  // Watch dynamic content
+  const mo=new MutationObserver(observeFU);
+  ['ggrid','mgrid'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)mo.observe(el,{childList:true});
+  });
+  // Nav links
+  document.querySelectorAll('.ni').forEach(n=>n.addEventListener('click',()=>{
+    document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+    n.classList.add('on');
+  }));
+});
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+</script>
+</body>
+</html>
